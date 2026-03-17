@@ -11,19 +11,35 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   background: #f5f5f5;
+  font-size: 16px;
 }
 
 header {
   text-align: center;
   background: linear-gradient(135deg, #ff5722, #ff9800);
   color: white;
-  padding: 25px;
+  padding: 25px 15px;
 }
 
 .logo {
-  width: 100px;
+  width: 90px;
   border-radius: 50%;
   border: 3px solid white;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 5px 0;
+}
+
+h2 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 14px;
 }
 
 .container {
@@ -32,58 +48,100 @@ header {
   margin: auto;
 }
 
-h2 {
-  margin-top: 20px;
-}
-
 .item {
   background: white;
-  padding: 15px;
+  padding: 14px;
   margin-bottom: 12px;
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
 .item div {
   max-width: 75%;
 }
 
+.item strong {
+  font-size: 16px;
+}
+
+.item div div {
+  font-size: 14px;
+  color: #666;
+}
+
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   font-weight: bold;
+  font-size: 16px;
 }
 
 .remove {
-  background: red;
+  background: #f44336;
+  padding: 5px 8px;
+  font-size: 12px;
 }
 
 input, select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
+  font-size: 16px;
 }
 
 #cart {
   background: white;
   padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+#cart li {
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .whatsapp {
   background: #25d366;
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
+  padding: 16px;
+  font-size: 17px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.whatsapp:active {
+  transform: scale(0.98);
+}
+
+/* MOBILE EXTRA */
+@media (max-width: 480px) {
+
+  .item {
+    padding: 12px;
+  }
+
+  .item strong {
+    font-size: 15px;
+  }
+
+  .item div div {
+    font-size: 13px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
 }
 </style>
 </head>
@@ -180,9 +238,7 @@ function renderMenu() {
     <div class="item">
       <div>
         <strong>${p.nome}</strong><br>
-        <div style="font-size:13px; color:#666; margin:4px 0;">
-          ${p.descricao}
-        </div>
+        <div>${p.descricao}</div>
         <strong>R$ ${p.preco}</strong>
       </div>
       <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
@@ -298,6 +354,10 @@ function sendWhatsApp() {
 renderMenu();
 renderExtras();
 
+</script>
+
+</body>
+</html>
 </script>
 
 </body>
