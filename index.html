@@ -92,7 +92,7 @@ input, select {
 <option value="">Selecione seu bairro</option>
 <option value="gratis">Parque dos Pinus</option>
 <option value="3">Centro</option>
-<option value="8">Outros bairros</option>
+<option value="5">Outros bairros</option>
 </select>
 
 <input type="text" id="address" placeholder="Rua e número">
@@ -102,7 +102,7 @@ input, select {
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
-<option value="PIX (5% OFF)">PIX (5% OFF)</option>
+<option value="PIX">PIX</option>
 <option value="Cartão">Cartão</option>
 </select>
 
@@ -175,7 +175,7 @@ function updateCart() {
 
   let taxa = 0;
   if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
+  if (bairro === "5") taxa = 5;
   if (total >= 50) taxa = 0;
 
   entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
@@ -225,7 +225,7 @@ function sendWhatsApp() {
 
   let taxa = 0;
   if (bairro.value === "3") taxa = 3;
-  if (bairro.value === "8") taxa = 8;
+  if (bairro.value === "5") taxa = 5;
   if (total >= 50) taxa = 0;
 
   message += "%0A";
