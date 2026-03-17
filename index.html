@@ -17,15 +17,12 @@ header {
   text-align: center;
   background: linear-gradient(135deg, #ff5722, #ff9800);
   color: white;
-  padding: 25px 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 25px;
 }
 
 .logo {
   width: 100px;
   border-radius: 50%;
-  margin-bottom: 10px;
-  border: 3px solid white;
 }
 
 .container {
@@ -34,76 +31,44 @@ header {
   margin: auto;
 }
 
-h2 {
-  margin-top: 25px;
-  color: #333;
-}
-
 .item {
   background: white;
   padding: 15px;
-  margin-bottom: 12px;
-  border-radius: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-  transition: 0.2s;
-}
-
-.item:hover {
-  transform: scale(1.02);
-}
-
-small {
-  color: #666;
 }
 
 button {
-  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  background: #4caf50;
   color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .remove {
-  background: #e53935;
+  background: red;
 }
 
 input, select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 #cart {
   background: white;
   padding: 15px;
-  border-radius: 12px;
-  margin-top: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-
-#cart-items li {
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-radius: 10px;
 }
 
 .whatsapp {
-  background: linear-gradient(135deg, #25d366, #1ebe5d);
+  background: #25d366;
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 10px;
-  margin-top: 10px;
-  font-weight: bold;
+  padding: 12px;
 }
 </style>
 </head>
@@ -111,12 +76,8 @@ input, select {
 <body>
 
 <header>
-<img src="logo.explosãodesabor.png" class="logo">
 <h1>🔥 Explosão de Sabor 🥭</h1>
-
-<p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
-
-<p><strong>🚚 Frete grátis acima de R$50</strong></p>
+<p>Frete grátis acima de R$50</p>
 </header>
 
 <div class="container">
@@ -124,28 +85,28 @@ input, select {
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
 
-<h2>➕ Adicionais</h2>
-<div id="extras"></div>
-
 <h2>📍 Seus Dados</h2>
 <input type="text" id="name" placeholder="Seu nome">
 
 <select id="bairro" onchange="updateCart()">
 <option value="">Selecione seu bairro</option>
-
 <option value="gratis">Parque dos Pinus</option>
-<option value="gratis">Planalto Verde</option>
-<option value="gratis">Maria Casa Grande</option>
-<option value="gratis">Orestes Lopes</option>
-<option value="gratis">Heitor Rigon</option>
-<option value="gratis">Valentina Figueiredo</option>
-<option value="gratis">Cristo Redentor</option>
-
 <option value="3">Centro</option>
 <option value="8">Outros bairros</option>
 </select>
 
 <input type="text" id="address" placeholder="Rua e número">
+
+<h2>💳 Pagamento</h2>
+
+<select id="payment" onchange="toggleTroco()">
+<option value="">Selecione a forma</option>
+<option value="Dinheiro">Dinheiro</option>
+<option value="PIX (5% OFF)">PIX (5% OFF)</option>
+<option value="Cartão">Cartão</option>
+</select>
+
+<input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
 
 <div id="cart">
 <h3>🛒 Carrinho</h3>
@@ -155,7 +116,7 @@ input, select {
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
 <button class="whatsapp" onclick="sendWhatsApp()">
-🚀 Finalizar Pedido no WhatsApp
+🚀 Finalizar Pedido
 </button>
 </div>
 
@@ -166,48 +127,20 @@ input, select {
 const phone = "5516981201169";
 
 const produtos = [
-{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • temperado", preco: 18 },
-{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • doce e picante", preco: 20 },
-{ nome: "🌴 Oásis", descricao: "Mix de frutas 500ml", preco: 22 }
-];
-
-const extras = [
-{ nome: "Pimenta Preta", preco: 1 },
-{ nome: "Canela", preco: 1 },
-{ nome: "Gengibre", preco: 1 },
-{ nome: "Páprica Doce", preco: 1 },
-{ nome: "Noz Moscada", preco: 1 },
-{ nome: "Leite Condensado", preco: 1.5 }
+{ nome: "💥 Explosão", preco: 18 },
+{ nome: "💣 Dinamite", preco: 20 },
+{ nome: "🌴 Oásis", preco: 22 }
 ];
 
 let cart = [];
 
 function renderMenu() {
   const menu = document.getElementById("menu");
-  menu.innerHTML = "";
-
   produtos.forEach(p => {
     menu.innerHTML += `
     <div class="item">
-      <span>
-        <strong>${p.nome}</strong><br>
-        <small>${p.descricao}</small><br>
-        <strong>R$ ${p.preco}</strong>
-      </span>
+      <span>${p.nome} - R$ ${p.preco}</span>
       <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
-    </div>`;
-  });
-}
-
-function renderExtras() {
-  const extrasDiv = document.getElementById("extras");
-  extrasDiv.innerHTML = "";
-
-  extras.forEach(e => {
-    extrasDiv.innerHTML += `
-    <div class="item">
-      <span>➕ ${e.nome} - R$ ${e.preco}</span>
-      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
     </div>`;
   });
 }
@@ -241,58 +174,87 @@ function updateCart() {
   });
 
   let taxa = 0;
-
-  if (bairro === "gratis") taxa = 0;
-  else if (bairro === "3") taxa = 3;
-  else if (bairro === "8") taxa = 8;
-
+  if (bairro === "3") taxa = 3;
+  if (bairro === "8") taxa = 8;
   if (total >= 50) taxa = 0;
 
-  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa.toFixed(2);
+  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
   totalEl.innerText = (total + taxa).toFixed(2);
+}
+
+function toggleTroco() {
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco");
+
+  if (payment === "Dinheiro") {
+    troco.style.display = "block";
+  } else {
+    troco.style.display = "none";
+    troco.value = "";
+  }
 }
 
 function sendWhatsApp() {
   const nome = document.getElementById("name").value;
-  const bairroSelect = document.getElementById("bairro");
-  const bairroTexto = bairroSelect.options[bairroSelect.selectedIndex].text;
+  const bairro = document.getElementById("bairro");
   const address = document.getElementById("address").value;
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco").value;
 
-  if (nome === "" || bairroTexto === "Selecione seu bairro") {
-    alert("Preencha nome e bairro!");
+  if (!nome || !payment) {
+    alert("Preencha nome e pagamento!");
     return;
   }
 
-  let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
-  message += `👤 Nome: ${nome}%0A`;
-  message += `📍 Bairro: ${bairroTexto}%0A`;
-  message += `🏠 Endereço: ${address}%0A%0A`;
+  if (cart.length === 0) {
+    alert("Adicione itens!");
+    return;
+  }
+
+  let message = "🔥 *NOVO PEDIDO*%0A%0A";
+  message += `👤 ${nome}%0A`;
+  message += `📍 ${bairro.options[bairro.selectedIndex].text}%0A`;
+  message += `🏠 ${address}%0A%0A`;
 
   let total = 0;
 
   cart.forEach(item => {
-    message += `- ${item.nome} (R$ ${item.preco})%0A`;
+    message += `🧾 ${item.nome} - R$ ${item.preco}%0A`;
     total += item.preco;
   });
 
   let taxa = 0;
-  const bairro = bairroSelect.value;
-
-  if (bairro === "gratis") taxa = 0;
-  else if (bairro === "3") taxa = 3;
-  else if (bairro === "8") taxa = 8;
-
+  if (bairro.value === "3") taxa = 3;
+  if (bairro.value === "8") taxa = 8;
   if (total >= 50) taxa = 0;
 
   message += "%0A";
   message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
+
+  message += `%0A💳 Pagamento: ${payment}%0A`;
+
+  if (payment === "Dinheiro") {
+    if (troco) {
+      message += `💵 Troco para: R$ ${troco}%0A`;
+    } else {
+      message += `💵 Sem troco%0A`;
+    }
+  }
+
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
   window.location.href = `https://wa.me/${phone}?text=${message}`;
+
+  cart = [];
+  updateCart();
 }
 
 renderMenu();
-renderExtras();
+
+</script>
+
+</body>
+</html>
 
 </script>
 
