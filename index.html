@@ -32,6 +32,10 @@ header {
   margin: auto;
 }
 
+h2 {
+  margin-top: 20px;
+}
+
 .item {
   background: white;
   padding: 15px;
@@ -39,19 +43,21 @@ header {
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
-small {
-  color: #666;
+.item div {
+  max-width: 75%;
 }
 
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 8px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
 }
 
 .remove {
@@ -63,6 +69,7 @@ input, select {
   padding: 12px;
   margin-bottom: 10px;
   border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
 #cart {
@@ -107,6 +114,10 @@ input, select {
 <option value="gratis">Parque dos Pinus</option>
 <option value="gratis">Planalto Verde</option>
 <option value="gratis">Maria Casa Grande</option>
+<option value="gratis">Orestes Lopes</option>
+<option value="gratis">Heitor Rigon</option>
+<option value="gratis">Valentina Figueiredo</option>
+<option value="gratis">Cristo Redentor</option>
 
 <option value="3">Centro</option>
 <option value="8">Outros bairros</option>
@@ -144,15 +155,17 @@ input, select {
 const phone = "5516981201169";
 
 const produtos = [
-{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, temperos", preco: 18 },
-{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • doce e picante", preco: 20 },
-{ nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml", preco: 22 }
+{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica", preco: 18 },
+{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • sal, limão, canela, leite condensado", preco: 20 },
+{ nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml • sal, limão, gengibre", preco: 22 }
 ];
 
 const extras = [
 { nome: "Pimenta Preta", preco: 1 },
 { nome: "Canela", preco: 1 },
 { nome: "Gengibre", preco: 1 },
+{ nome: "Páprica Doce", preco: 1 },
+{ nome: "Noz Moscada", preco: 1 },
 { nome: "Leite Condensado", preco: 1.5 }
 ];
 
@@ -165,11 +178,13 @@ function renderMenu() {
   produtos.forEach(p => {
     menu.innerHTML += `
     <div class="item">
-      <span>
+      <div>
         <strong>${p.nome}</strong><br>
-        <small>${p.descricao}</small><br>
+        <div style="font-size:13px; color:#666; margin:4px 0;">
+          ${p.descricao}
+        </div>
         <strong>R$ ${p.preco}</strong>
-      </span>
+      </div>
       <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
     </div>`;
   });
@@ -182,7 +197,7 @@ function renderExtras() {
   extras.forEach(e => {
     extrasDiv.innerHTML += `
     <div class="item">
-      <span>➕ ${e.nome} - R$ ${e.preco}</span>
+      <div>➕ ${e.nome} - R$ ${e.preco}</div>
       <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
     </div>`;
   });
@@ -282,11 +297,6 @@ function sendWhatsApp() {
 
 renderMenu();
 renderExtras();
-
-</script>
-
-</body>
-</html>
 
 </script>
 
