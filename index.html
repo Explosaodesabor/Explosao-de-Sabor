@@ -18,6 +18,12 @@ header {
   padding: 20px;
 }
 
+.logo {
+  width: 120px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
 .slogan {
   font-size: 14px;
   font-style: italic;
@@ -76,7 +82,10 @@ input, select {
 <body>
 
 <header>
+<img src="logo.explosãodesabor.png" class="logo">
+
 <h1>🔥 Explosão de Sabor 🥭</h1>
+
 <p class="slogan">
 Sabores que surpreendem.<br>
 Mordeu. Sorriu. Sentiu. Voltou.
@@ -243,7 +252,7 @@ function sendWhatsApp() {
 
   if (bairro === "gratis") taxa = 0;
   else if (bairro === "3") taxa = 3;
-  else if (bairro === "8") taxa = 8;
+  else if (bairro === "5") taxa = 5;
 
   if (total >= 50) taxa = 0;
 
@@ -257,6 +266,10 @@ function sendWhatsApp() {
 renderMenu();
 renderExtras();
 
+</script>
+
+</body>
+</html>
 </script>
 
 </body>
