@@ -18,10 +18,6 @@ header {
   padding: 20px;
 }
 
-.logo {
-  width: 140px;
-}
-
 .slogan {
   font-size: 14px;
   font-style: italic;
@@ -38,7 +34,6 @@ header {
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 small {
@@ -93,6 +88,9 @@ Mordeu. Sorriu. Sentiu. Voltou.
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
 
+<h2>➕ Adicionais</h2>
+<div id="extras"></div>
+
 <h2>📍 Seus Dados</h2>
 <input type="text" id="name" placeholder="Seu nome">
 
@@ -136,6 +134,15 @@ const produtos = [
 { nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml • sal, limão, lemon pepper, gengibre", preco: 22 }
 ];
 
+const extras = [
+{ nome: "Pimenta Preta", preco: 1 },
+{ nome: "Canela", preco: 1 },
+{ nome: "Gengibre", preco: 1 },
+{ nome: "Páprica Doce", preco: 1 },
+{ nome: "Noz Moscada", preco: 1 },
+{ nome: "Leite Condensado", preco: 1.5 }
+];
+
 let cart = [];
 
 function renderMenu() {
@@ -151,8 +158,20 @@ function renderMenu() {
         <strong>R$ ${p.preco}</strong>
       </span>
       <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
-    </div>
-    `;
+    </div>`;
+  });
+}
+
+function renderExtras() {
+  const extrasDiv = document.getElementById("extras");
+  extrasDiv.innerHTML = "";
+
+  extras.forEach(e => {
+    extrasDiv.innerHTML += `
+    <div class="item">
+      <span>➕ ${e.nome} - R$ ${e.preco}</span>
+      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
+    </div>`;
   });
 }
 
@@ -190,7 +209,6 @@ function updateCart() {
   else if (bairro === "3") taxa = 3;
   else if (bairro === "8") taxa = 8;
 
-  // 🚨 FRETE GRÁTIS ACIMA DE 50
   if (total >= 50) taxa = 0;
 
   entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa.toFixed(2);
@@ -237,6 +255,7 @@ function sendWhatsApp() {
 }
 
 renderMenu();
+renderExtras();
 
 </script>
 
