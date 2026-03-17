@@ -85,7 +85,7 @@
 <body>
 
 <header>
-  <img src="logo.explosãodesabor.png" class="logo">
+  <img src="logo.explosao.png" class="logo">
   <h1>🔥 Explosão de Sabor 🥭</h1>
   <p>Potes de 500ml</p>
 </header>
@@ -112,32 +112,32 @@
 </div>
 
 <script>
-  const phone = "551698120169"; // SEU NÚMERO
+  const phone = "551698120169";
 
   const produtos = [
-  { nome: "Explosao - Manga Temperada 500ml (sal, limao, lemon pepper, paprika picante)", preco: 18 },
-  { nome: "Dinamite - Abacaxi Temperado 500ml (sal, limao, canela, paprika picante, lemon pepper, leite condensado)", preco: 20 },
-  { nome: "Oasis - Manga + Abacaxi 500ml (sal, limao, lemon pepper, paprika picante, gengibre)", preco: 22 }
-];
+    { nome: "Explosão - Manga Temperada 500ml", preco: 18 },
+    { nome: "Dinamite - Abacaxi Temperado 500ml", preco: 20 },
+    { nome: "Oásis - Manga + Abacaxi 500ml", preco: 22 }
+  ];
 
   const extras = [
-    { name: "Pimenta Preta", price: 1 },
-    { name: "Canela", price: 1 },
-    { name: "Gengibre", price: 1 },
-    { name: "Páprica Doce", price: 1 },
-    { name: "Noz Moscada", price: 1 },
-    { name: "Leite Condensado", price: 1.5 }
+    { nome: "Pimenta Preta", preco: 1 },
+    { nome: "Canela", preco: 1 },
+    { nome: "Gengibre", preco: 1 },
+    { nome: "Páprica Doce", preco: 1 },
+    { nome: "Noz Moscada", preco: 1 },
+    { nome: "Leite Condensado", preco: 1.5 }
   ];
 
   let cart = [];
 
   function renderMenu() {
     const menu = document.getElementById("menu");
-    products.forEach(p => {
+    produtos.forEach(p => {
       menu.innerHTML += `
         <div class="item">
-          <span>${p.name} - R$ ${p.price}</span>
-          <button onclick="addToCart('${p.name}', ${p.price})">+</button>
+          <span>${p.nome} - R$ ${p.preco}</span>
+          <button onclick="addToCart('${p.nome}', ${p.preco})">+</button>
         </div>
       `;
     });
@@ -148,15 +148,15 @@
     extras.forEach(e => {
       extrasDiv.innerHTML += `
         <div class="item">
-          <span>➕ ${e.name} - R$ ${e.price}</span>
-          <button onclick="addToCart('Extra: ${e.name}', ${e.price})">+</button>
+          <span>➕ ${e.nome} - R$ ${e.preco}</span>
+          <button onclick="addToCart('Extra: ${e.nome}', ${e.preco})">+</button>
         </div>
       `;
     });
   }
 
-  function addToCart(name, price) {
-    cart.push({ name, price });
+  function addToCart(nome, preco) {
+    cart.push({ nome, preco });
     updateCart();
   }
 
@@ -173,10 +173,10 @@
     let total = 0;
 
     cart.forEach((item, index) => {
-      total += item.price;
+      total += item.preco;
       cartItems.innerHTML += `
         <li>
-          ${item.name} - R$ ${item.price}
+          ${item.nome} - R$ ${item.preco}
           <button class="remove" onclick="removeItem(${index})">x</button>
         </li>
       `;
@@ -186,10 +186,10 @@
   }
 
   function sendWhatsApp() {
-    const name = document.getElementById("name").value;
+    const nome = document.getElementById("name").value;
     const address = document.getElementById("address").value;
 
-    if (name === "" || address === "") {
+    if (nome === "" || address === "") {
       alert("Preencha nome e endereço!");
       return;
     }
@@ -200,14 +200,14 @@
     }
 
     let message = "🔥 Pedido - Explosão de Sabor:%0A";
-    message += `👤 Nome: ${name}%0A`;
+    message += `👤 Nome: ${nome}%0A`;
     message += `📍 Endereço: ${address}%0A%0A`;
 
     let total = 0;
 
     cart.forEach(item => {
-      message += `- ${item.name} (R$ ${item.price})%0A`;
-      total += item.price;
+      message += `- ${item.nome} (R$ ${item.preco})%0A`;
+      total += item.preco;
     });
 
     message += `%0ATotal: R$ ${total.toFixed(2)}`;
