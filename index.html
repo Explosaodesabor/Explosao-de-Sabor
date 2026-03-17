@@ -1,255 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Explosão de Sabor</title>
+<meta charset="UTF-8">
+<title>Explosão de Sabor</title>
 
-  <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #fff3e0;
-    }
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #fff3e0;
+}
 
-    header {
-      text-align: center;
-      background: linear-gradient(45deg, #ff9800, #ff5722);
-      color: white;
-      padding: 20px;
-    }
+header {
+  text-align: center;
+  background: linear-gradient(45deg, #ff9800, #ff5722);
+  color: white;
+  padding: 20px;
+}
 
-    .logo {
-      width: 140px;
-      margin-bottom: 10px;
-    }
+.logo {
+  width: 140px;
+}
 
-    .container {
-      padding: 15px;
-    }
+.slogan {
+  font-size: 14px;
+  font-style: italic;
+}
 
-    h2 {
-      margin-top: 20px;
-    }
+.container {
+  padding: 15px;
+}
 
-    .item {
-      background: white;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+.item {
+  background: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-    .item span {
-      max-width: 70%;
-    }
+small {
+  color: #555;
+}
 
-    small {
-      color: #555;
-      font-size: 13px;
-    }
+button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
 
-    button {
-      background: #4caf50;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+.remove {
+  background: #f44336;
+}
 
-    .remove {
-      background: #f44336;
-      margin-left: 5px;
-    }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+#cart {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
 
-    #cart {
-      margin-top: 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-    }
-
-    .whatsapp {
-      margin-top: 10px;
-      background: #25d366;
-      width: 100%;
-      font-size: 16px;
-      padding: 10px;
-    }
-  </style>
+.whatsapp {
+  background: #25d366;
+  width: 100%;
+  padding: 10px;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.explosãodesabor.png" class="logo">
-  <h1>🔥 Explosão de Sabor 🥭</h1>
-  <p class="slogan">
-  Sabores que surpreendem.<br>
-  Mordeu. Sorriu. Sentiu. Voltou.
+<h1>🔥 Explosão de Sabor 🥭</h1>
+<p class="slogan">
+Sabores que surpreendem.<br>
+Mordeu. Sorriu. Sentiu. Voltou.
 </p>
 </header>
 
 <div class="container">
 
-  <h2>🍍🥭 Cardápio</h2>
-  <div id="menu"></div>
+<h2>🍍 Cardápio</h2>
+<div id="menu"></div>
 
-  <h2>➕ Adicionais</h2>
-  <div id="extras"></div>
+<h2>📍 Seus Dados</h2>
+<input type="text" id="name" placeholder="Seu nome">
 
-  <h2>📍 Seus Dados</h2>
-  <input type="text" id="name" placeholder="Seu nome">
-  <input type="text" id="address" placeholder="Seu endereço">
+<select id="bairro" onchange="updateCart()">
+<option value="">Selecione seu bairro</option>
 
-  <div id="cart">
-    <h3>🛒 Carrinho</h3>
-    <ul id="cart-items"></ul>
-    <p><strong>Total: R$ <span id="total">0</span></strong></p>
-    <button class="whatsapp" onclick="sendWhatsApp()">Enviar Pedido</button>
-  </div>
+<option value="gratis">Parque dos Pinus</option>
+<option value="gratis">Planalto Verde</option>
+<option value="gratis">Maria Casa Grande</option>
+<option value="gratis">Orestes Lopes</option>
+<option value="gratis">Heitor Rigon</option>
+<option value="gratis">Valentina Figueiredo</option>
+<option value="gratis">Cristo Redentor</option>
+
+<option value="3">Centro</option>
+
+<option value="8">Outros bairros</option>
+</select>
+
+<input type="text" id="address" placeholder="Rua e número">
+
+<div id="cart">
+<h3>🛒 Carrinho</h3>
+<ul id="cart-items"></ul>
+
+<p>🚚 Entrega: <span id="entrega">0</span></p>
+<p><strong>Total: R$ <span id="total">0</span></strong></p>
+
+<button class="whatsapp" onclick="sendWhatsApp()">Enviar Pedido</button>
+</div>
 
 </div>
 
 <script>
-  const phone = "551698120169";
 
-  const produtos = [
-    { 
-      nome: "💥 Explosão", 
-      descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", 
-      preco: 18 
-    },
-    { 
-      nome: "💣 Dinamite", 
-      descricao: "Abacaxi 500ml • sal, limão, canela, páprica picante, lemon pepper, leite condensado", 
-      preco: 20 
-    },
-    { 
-      nome: "🌴 Oásis", 
-      descricao: "Manga + Abacaxi 500ml • sal, limão, lemon pepper, páprica picante, gengibre", 
-      preco: 22 
-    }
-  ];
+const phone = "551698120169";
 
-  const extras = [
-    { nome: "Pimenta Preta", preco: 1 },
-    { nome: "Canela", preco: 1 },
-    { nome: "Gengibre", preco: 1 },
-    { nome: "Páprica Doce", preco: 1 },
-    { nome: "Noz Moscada", preco: 1 },
-    { nome: "Leite Condensado", preco: 1.5 }
-  ];
+const produtos = [
+{ nome: "💥 Explosão", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", preco: 18 },
+{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • sal, limão, canela, páprica picante, leite condensado", preco: 20 },
+{ nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml • sal, limão, lemon pepper, gengibre", preco: 22 }
+];
 
-  let cart = [];
+let cart = [];
 
-  function renderMenu() {
-    const menu = document.getElementById("menu");
-    menu.innerHTML = "";
+function renderMenu() {
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
 
-    produtos.forEach(p => {
-      menu.innerHTML += `
-        <div class="item">
-          <span>
-            <strong>${p.nome}</strong><br>
-            <small>${p.descricao}</small><br>
-            <strong>R$ ${p.preco}</strong>
-          </span>
-          <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
-        </div>
-      `;
-    });
+  produtos.forEach(p => {
+    menu.innerHTML += `
+    <div class="item">
+      <span>
+        <strong>${p.nome}</strong><br>
+        <small>${p.descricao}</small><br>
+        <strong>R$ ${p.preco}</strong>
+      </span>
+      <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
+    </div>
+    `;
+  });
+}
+
+function addToCart(nome, preco) {
+  cart.push({ nome, preco });
+  updateCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+  const totalEl = document.getElementById("total");
+  const entregaEl = document.getElementById("entrega");
+  const bairro = document.getElementById("bairro").value;
+
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.preco;
+    cartItems.innerHTML += `
+    <li>
+      ${item.nome} - R$ ${item.preco}
+      <button class="remove" onclick="removeItem(${index})">x</button>
+    </li>`;
+  });
+
+  let taxa = 0;
+
+  if (bairro === "gratis") taxa = 0;
+  else if (bairro === "3") taxa = 3;
+  else if (bairro === "8") taxa = 8;
+
+  // 🚨 FRETE GRÁTIS ACIMA DE 50
+  if (total >= 50) taxa = 0;
+
+  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa.toFixed(2);
+  totalEl.innerText = (total + taxa).toFixed(2);
+}
+
+function sendWhatsApp() {
+  const nome = document.getElementById("name").value;
+  const bairroSelect = document.getElementById("bairro");
+  const bairroTexto = bairroSelect.options[bairroSelect.selectedIndex].text;
+  const address = document.getElementById("address").value;
+
+  if (nome === "" || bairroTexto === "Selecione seu bairro") {
+    alert("Preencha nome e bairro!");
+    return;
   }
 
-  function renderExtras() {
-    const extrasDiv = document.getElementById("extras");
-    extrasDiv.innerHTML = "";
+  let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
+  message += `👤 Nome: ${nome}%0A`;
+  message += `📍 Bairro: ${bairroTexto}%0A`;
+  message += `🏠 Endereço: ${address}%0A%0A`;
 
-    extras.forEach(e => {
-      extrasDiv.innerHTML += `
-        <div class="item">
-          <span>➕ ${e.nome} - R$ ${e.preco}</span>
-          <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
-        </div>
-      `;
-    });
-  }
+  let total = 0;
 
-  function addToCart(nome, preco) {
-    cart.push({ nome, preco });
-    updateCart();
-  }
+  cart.forEach(item => {
+    message += `- ${item.nome} (R$ ${item.preco})%0A`;
+    total += item.preco;
+  });
 
-  function removeItem(index) {
-    cart.splice(index, 1);
-    updateCart();
-  }
+  let taxa = 0;
+  const bairro = bairroSelect.value;
 
-  function updateCart() {
-    const cartItems = document.getElementById("cart-items");
-    const totalEl = document.getElementById("total");
+  if (bairro === "gratis") taxa = 0;
+  else if (bairro === "3") taxa = 3;
+  else if (bairro === "8") taxa = 8;
 
-    cartItems.innerHTML = "";
-    let total = 0;
+  if (total >= 50) taxa = 0;
 
-    cart.forEach((item, index) => {
-      total += item.preco;
-      cartItems.innerHTML += `
-        <li>
-          ${item.nome} - R$ ${item.preco}
-          <button class="remove" onclick="removeItem(${index})">x</button>
-        </li>
-      `;
-    });
+  message += "%0A";
+  message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
+  message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
-    totalEl.innerText = total.toFixed(2);
-  }
+  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+}
 
-  function sendWhatsApp() {
-    const nome = document.getElementById("name").value;
-    const address = document.getElementById("address").value;
+renderMenu();
 
-    if (nome === "" || address === "") {
-      alert("Preencha nome e endereço!");
-      return;
-    }
-
-    if (cart.length === 0) {
-      alert("Carrinho vazio!");
-      return;
-    }
-
-    let message = "🔥 *Pedido - Explosão de Sabor* %0A%0A";
-    message += `👤 Nome: ${nome}%0A`;
-    message += `📍 Endereço: ${address}%0A%0A`;
-
-    let total = 0;
-
-    cart.forEach(item => {
-      message += `- ${item.nome} (R$ ${item.preco})%0A`;
-      total += item.preco;
-    });
-
-    message += `%0ATotal: R$ ${total.toFixed(2)}`;
-
-    const url = `https://wa.me/${phone}?text=${message}`;
-    window.open(url, "_blank");
-  }
-
-  renderMenu();
-  renderExtras();
 </script>
 
 </body>
