@@ -5,7 +5,6 @@
 <title>Explosão de Sabor</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body {
@@ -29,9 +28,19 @@ header {
   margin-bottom: 10px;
 }
 
-h1 { font-size: 22px; margin: 5px 0; }
-h2 { font-size: 18px; margin-top: 20px; }
-p { font-size: 14px; }
+h1 {
+  font-size: 22px;
+  margin: 5px 0;
+}
+
+h2 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 14px;
+}
 
 .container {
   padding: 15px;
@@ -50,9 +59,18 @@ p { font-size: 14px; }
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
-.item div { max-width: 75%; }
-.item strong { font-size: 16px; }
-.item div div { font-size: 14px; color: #666; }
+.item div {
+  max-width: 75%;
+}
+
+.item strong {
+  font-size: 16px;
+}
+
+.item div div {
+  font-size: 14px;
+  color: #666;
+}
 
 button {
   background: #4caf50;
@@ -99,6 +117,32 @@ input, select {
   border-radius: 12px;
   margin-top: 10px;
 }
+
+.whatsapp:active {
+  transform: scale(0.98);
+}
+
+/* MOBILE EXTRA */
+@media (max-width: 480px) {
+
+  .item {
+    padding: 12px;
+  }
+
+  .item strong {
+    font-size: 15px;
+  }
+
+  .item div div {
+    font-size: 13px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+}
 </style>
 </head>
 
@@ -124,6 +168,7 @@ input, select {
 
 <select id="bairro" onchange="updateCart()">
 <option value="">Selecione seu bairro</option>
+
 <option value="gratis">Parque dos Pinus</option>
 <option value="gratis">Planalto Verde</option>
 <option value="gratis">Maria Casa Grande</option>
@@ -131,6 +176,7 @@ input, select {
 <option value="gratis">Heitor Rigon</option>
 <option value="gratis">Valentina Figueiredo</option>
 <option value="gratis">Cristo Redentor</option>
+
 <option value="3">Centro</option>
 <option value="8">Outros bairros</option>
 </select>
@@ -138,6 +184,7 @@ input, select {
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
+
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
@@ -150,32 +197,13 @@ input, select {
 <div id="cart">
 <h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
+
 <p>🚚 Entrega: <span id="entrega">0</span></p>
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
 <button class="whatsapp" onclick="sendWhatsApp()">
 🚀 Finalizar Pedido no WhatsApp
 </button>
-</div>
-
-<!-- PAINEL -->
-<div id="painel-vendedor" style="margin-top:20px; background:#fff; padding:12px; border-radius:12px;">
-<h3>🔐 Painel Admin</h3>
-
-<input type="password" id="senha" placeholder="Senha">
-<button onclick="login()">Entrar</button>
-
-<div id="area-admin" style="display:none">
-
-<input type="date" id="filtroData" onchange="mostrarPainel()">
-
-<canvas id="grafico"></canvas>
-
-<div id="painel-vendas"></div>
-
-<button onclick="resetarPainel()">🔄 Zerar Dados</button>
-
-</div>
 </div>
 
 </div>
@@ -185,29 +213,49 @@ input, select {
 const phone = "5516981201169";
 
 const produtos = [
-{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml", preco: 18 },
-{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml", preco: 20 },
-{ nome: "🌴 Oásis", descricao: "Mix", preco: 22 }
+{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", preco: 18 },
+{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • sal, limão, lemon pepper, canela, leite condensado", preco: 20 },
+{ nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml • sal, lemon pepper, limão, gengibre", preco: 22 }
 ];
 
 const extras = [
+{ nome: "Pimenta Preta", preco: 1 },
 { nome: "Canela", preco: 1 },
+{ nome: "Gengibre", preco: 1 },
+{ nome: "Páprica Doce", preco: 1 },
+{ nome: "Noz Moscada", preco: 1 },
 { nome: "Leite Condensado", preco: 1.5 }
 ];
 
 let cart = [];
 
 function renderMenu() {
-  menu.innerHTML="";
-  produtos.forEach(p=>{
-    menu.innerHTML+=`<div class="item"><div><strong>${p.nome}</strong><br>${p.descricao}<br>R$ ${p.preco}</div><button onclick="addToCart('${p.nome}',${p.preco})">+</button></div>`;
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
+
+  produtos.forEach(p => {
+    menu.innerHTML += `
+    <div class="item">
+      <div>
+        <strong>${p.nome}</strong><br>
+        <div>${p.descricao}</div>
+        <strong>R$ ${p.preco}</strong>
+      </div>
+      <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
+    </div>`;
   });
 }
 
 function renderExtras() {
-  extras.innerHTML="";
-  extras.forEach(e=>{
-    extras.innerHTML+=`<div class="item">➕ ${e.nome} R$ ${e.preco}<button onclick="addToCart('Extra: ${e.nome}',${e.preco})">+</button></div>`;
+  const extrasDiv = document.getElementById("extras");
+  extrasDiv.innerHTML = "";
+
+  extras.forEach(e => {
+    extrasDiv.innerHTML += `
+    <div class="item">
+      <div>➕ ${e.nome} - R$ ${e.preco}</div>
+      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
+    </div>`;
   });
 }
 
@@ -216,98 +264,100 @@ function addToCart(nome, preco) {
   updateCart();
 }
 
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
 function updateCart() {
-  let total=0;
-  cart-items.innerHTML="";
-  cart.forEach((i,index)=>{
-    total+=i.preco;
-    cart-items.innerHTML+=`<li>${i.nome} <button onclick="cart.splice(${index},1);updateCart()">x</button></li>`;
-  });
-  total.innerText=total.toFixed(2);
-}
+  const cartItems = document.getElementById("cart-items");
+  const totalEl = document.getElementById("total");
+  const entregaEl = document.getElementById("entrega");
+  const bairro = document.getElementById("bairro").value;
 
-function sendWhatsApp(){
-  adicionarPedido();
-  alert("Pedido salvo!");
-}
+  cartItems.innerHTML = "";
+  let total = 0;
 
-function adicionarPedido(){
-  let pedidos=JSON.parse(localStorage.getItem("listaPedidos")||"[]");
-
-  let total=cart.reduce((s,i)=>s+i.preco,0);
-
-  pedidos.push({
-    itens:cart,
-    total:total,
-    frete:0,
-    data:new Date().toISOString().split("T")[0]
+  cart.forEach((item, index) => {
+    total += item.preco;
+    cartItems.innerHTML += `
+    <li>
+      ${item.nome} - R$ ${item.preco}
+      <button class="remove" onclick="removeItem(${index})">x</button>
+    </li>`;
   });
 
-  localStorage.setItem("listaPedidos",JSON.stringify(pedidos));
+  let taxa = 0;
+  if (bairro === "3") taxa = 3;
+  if (bairro === "8") taxa = 8;
+  if (total >= 50) taxa = 0;
+
+  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
+  totalEl.innerText = (total + taxa).toFixed(2);
 }
 
-function login(){
-  if(senha.value==="1234"){
-    area-admin.style.display="block";
-    mostrarPainel();
+function toggleTroco() {
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco");
+
+  troco.style.display = payment === "Dinheiro" ? "block" : "none";
+}
+
+function sendWhatsApp() {
+  const nome = document.getElementById("name").value;
+  const bairro = document.getElementById("bairro");
+  const address = document.getElementById("address").value;
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco").value;
+
+  if (!nome || !payment) {
+    alert("Preencha nome e pagamento!");
+    return;
   }
-}
 
-function mostrarPainel(){
-
-  let pedidos=JSON.parse(localStorage.getItem("listaPedidos")||"[]");
-  let data=filtroData.value;
-
-  if(data){
-    pedidos=pedidos.filter(p=>p.data===data);
+  if (cart.length === 0) {
+    alert("Adicione itens!");
+    return;
   }
 
-  let resumo={};
-  let total=0;
+  let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
+  message += `👤 ${nome}%0A`;
+  message += `📍 ${bairro.options[bairro.selectedIndex].text}%0A`;
+  message += `🏠 ${address}%0A%0A`;
 
-  pedidos.forEach(p=>{
-    total+=p.total;
+  let total = 0;
 
-    p.itens.forEach(i=>{
-      if(!resumo[i.nome]) resumo[i.nome]=0;
-      resumo[i.nome]++;
-    });
+  cart.forEach(item => {
+    message += `🧾 ${item.nome} - R$ ${item.preco}%0A`;
+    total += item.preco;
   });
 
-  painel-vendas.innerHTML="";
-  Object.entries(resumo).forEach(([n,q])=>{
-    painel-vendas.innerHTML+=`${n} - ${q}<br>`;
-  });
+  let taxa = 0;
+  if (bairro.value === "3") taxa = 3;
+  if (bairro.value === "8") taxa = 8;
+  if (total >= 50) taxa = 0;
 
-  gerarGrafico(resumo);
-}
+  message += "%0A";
+  message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
 
-let chart;
+  message += `%0A💳 Pagamento: ${payment}%0A`;
 
-function gerarGrafico(resumo){
-  let labels=Object.keys(resumo);
-  let data=Object.values(resumo);
+  if (payment === "Dinheiro") {
+    message += troco ? `💵 Troco para: R$ ${troco}%0A` : `💵 Sem troco%0A`;
+  }
 
-  if(chart) chart.destroy();
+  message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
-  chart=new Chart(grafico,{
-    type:'bar',
-    data:{labels,datasets:[{data}]}
-  });
-}
-
-function resetarPainel(){
-  localStorage.removeItem("listaPedidos");
-  mostrarPainel();
-}
-
-if(!location.href.includes("admin")){
-  painel-vendedor.style.display="none";
+  window.location.href = `https://wa.me/${phone}?text=${message}`;
 }
 
 renderMenu();
 renderExtras();
 
+</script>
+
+</body>
+</html>
 </script>
 
 </body>
