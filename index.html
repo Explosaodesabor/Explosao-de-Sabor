@@ -5,7 +5,7 @@
 <title>Explosão de Sabor</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <style>
 body {
@@ -31,7 +31,6 @@ header {
 
 h1 { font-size: 22px; margin: 5px 0; }
 h2 { font-size: 18px; margin-top: 20px; }
-p { font-size: 14px; }
 
 .container {
   padding: 15px;
@@ -50,73 +49,41 @@ p { font-size: 14px; }
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
-.item div { max-width: 75%; }
-.item strong { font-size: 16px; }
-.item div div { font-size: 14px; color: #666; }
-
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 12px 14px;
+  padding: 12px;
   border-radius: 10px;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.remove {
-  background: #f44336;
-  padding: 5px 8px;
-  font-size: 12px;
 }
 
 input, select {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   margin-bottom: 12px;
   border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-}
-
-#cart {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-#cart li {
-  margin-bottom: 8px;
-  font-size: 14px;
 }
 
 .whatsapp {
   background: #25d366;
   width: 100%;
   padding: 16px;
-  font-size: 17px;
   border-radius: 12px;
-  margin-top: 10px;
 }
 
-.whatsapp:active {
-  transform: scale(0.98);
+/* PAINEL */
+.painel {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
 }
 
-@media (max-width: 480px) {
-  .item { padding: 12px; }
-  .item strong { font-size: 15px; }
-  .item div div { font-size: 13px; }
-  button { padding: 10px; font-size: 14px; }
-}
-
-/* ADMIN */
-.card-box {
+.cards {
   display: flex;
   gap: 10px;
-  margin: 10px 0;
 }
+
 .card {
   flex: 1;
   background: #f1f1f1;
@@ -124,16 +91,31 @@ input, select {
   border-radius: 10px;
   text-align: center;
 }
+
+table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #ff5722;
+  color: white;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<img src="logo.explosãodesabor.png" class="logo">
+<img src="./logo.explosãodesabor.png" class="logo">
 <h1>🔥 Explosão de Sabor 🥭</h1>
-<p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
-<p><strong>🚚 Frete grátis acima de R$50</strong></p>
 </header>
 
 <div class="container">
@@ -163,7 +145,6 @@ input, select {
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
-
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
@@ -171,54 +152,54 @@ input, select {
 <option value="Cartão">Cartão</option>
 </select>
 
-<input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
+<input type="text" id="troco" placeholder="Troco" style="display:none;">
 
 <div id="cart">
 <h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
-
 <p>🚚 Entrega: <span id="entrega">0</span></p>
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
-
-<button class="whatsapp" onclick="sendWhatsApp()">
-🚀 Finalizar Pedido no WhatsApp
-</button>
+<button class="whatsapp" onclick="sendWhatsApp()">Finalizar</button>
 </div>
 
-<!-- PAINEL ADMIN -->
-<div id="painel-vendedor" style="margin-top:20px; background:#fff; padding:15px; border-radius:12px;">
-<h3>📊 Painel Admin</h3>
+<!-- PAINEL PROFISSIONAL -->
+<div class="painel">
 
-<!-- LOGO ADICIONADA -->
-<img src="logo.explosãodesabor.png" style="width:70px; display:block; margin:10px auto;">
-
-<input type="password" id="senha" placeholder="Senha">
-<button onclick="login()">Entrar</button>
-
-<div id="area-admin" style="display:none">
+<h2>📊 Painel de Vendas</h2>
+<img src="./logo.explosãodesabor.png" style="width:70px; display:block; margin:auto;">
 
 <input type="date" id="filtroData" onchange="mostrarPainel()">
 
-<div class="card-box">
-<div class="card">Pedidos<br><strong id="totalPedidos">0</strong></div>
-<div class="card">Faturamento<br><strong id="totalValor">0</strong></div>
+<select id="filtroItem" onchange="mostrarPainel()">
+<option value="">Todos os itens</option>
+</select>
+
+<div class="cards">
+<div class="card">💰 Total<br><strong id="totalValor">0</strong></div>
+<div class="card">🚚 Frete<br><strong id="totalFrete">0</strong></div>
+<div class="card">📦 Pedidos<br><strong id="totalPedidos">0</strong></div>
 </div>
 
-<!-- CANVAS CORRETO -->
 <canvas id="grafico"></canvas>
 
-<div id="painel-vendas"></div>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Qtd</th>
+<th>Faturamento</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
 
-<button onclick="resetarPainel()">🔄 Zerar Dados</button>
+<button onclick="resetar()">Zerar Dados</button>
 
-</div>
 </div>
 
 </div>
 
 <script>
-
-const phone = "5516981201169";
 
 const produtos = [
 { nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", preco: 18 },
@@ -236,21 +217,66 @@ const extras = [
 ];
 
 let cart = [];
+let chart;
 
-/* TODAS SUAS FUNÇÕES ORIGINAIS MANTIDAS 100% */
+/* MENU ORIGINAL */
+function renderMenu(){
+  const menu = document.getElementById("menu");
+  menu.innerHTML="";
+  produtos.forEach(p=>{
+    menu.innerHTML+=`
+    <div class="item">
+      <div>
+        <strong>${p.nome}</strong><br>
+        <div>${p.descricao}</div>
+        <strong>R$ ${p.preco}</strong>
+      </div>
+      <button onclick='addToCart("${p.nome}",${p.preco})'>+</button>
+    </div>`;
+  });
+}
 
-/* SALVAR PEDIDO */
-function salvarPedido(){
-  let pedidos = JSON.parse(localStorage.getItem("listaPedidos") || "[]");
+function renderExtras(){
+  const extrasDiv = document.getElementById("extras");
+  extrasDiv.innerHTML="";
+  extras.forEach(e=>{
+    extrasDiv.innerHTML+=`
+    <div class="item">
+      ➕ ${e.nome} - R$ ${e.preco}
+      <button onclick='addToCart("Extra: ${e.nome}",${e.preco})'>+</button>
+    </div>`;
+  });
+}
+
+function addToCart(nome, preco){
+  cart.push({nome, preco});
+  updateCart();
+}
+
+function updateCart(){
+  let total=0;
+  const ul = document.getElementById("cart-items");
+  ul.innerHTML="";
+
+  cart.forEach((i,index)=>{
+    total+=i.preco;
+    ul.innerHTML+=`<li>${i.nome}</li>`;
+  });
+
+  document.getElementById("total").innerText=total.toFixed(2);
+}
+
+function toggleTroco(){
+  const payment=document.getElementById("payment").value;
+  document.getElementById("troco").style.display = payment==="Dinheiro"?"block":"none";
+}
+
+function sendWhatsApp(){
+
+  let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
 
   let total = cart.reduce((s,i)=>s+i.preco,0);
-
-  let bairro = document.getElementById("bairro").value;
   let taxa = 0;
-
-  if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
 
   pedidos.push({
     itens: cart,
@@ -259,80 +285,86 @@ function salvarPedido(){
     data: new Date().toISOString().split("T")[0]
   });
 
-  localStorage.setItem("listaPedidos", JSON.stringify(pedidos));
+  localStorage.setItem("pedidos",JSON.stringify(pedidos));
+
+  alert("Pedido salvo!");
 }
 
-/* CORREÇÃO DO GRÁFICO */
-let chart;
-
-function gerarGrafico(resumo){
-  let labels = Object.keys(resumo);
-  let data = Object.values(resumo);
-
-  if(chart) chart.destroy();
-
-  const ctx = document.getElementById("grafico").getContext("2d");
-
-  chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Itens vendidos",
-        data: data,
-        borderWidth: 1
-      }]
-    }
-  });
-}
-
-/* RESTANTE DO ADMIN IGUAL */
-function login(){
-  if(document.getElementById("senha").value==="1234"){
-    document.getElementById("area-admin").style.display="block";
-    mostrarPainel();
-  }
-}
-
+/* PAINEL */
 function mostrarPainel(){
-  let pedidos = JSON.parse(localStorage.getItem("listaPedidos") || "[]");
-  let data = document.getElementById("filtroData").value;
+
+  let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
+  let data=document.getElementById("filtroData").value;
+  let filtroItem=document.getElementById("filtroItem").value;
 
   if(data){
-    pedidos = pedidos.filter(p=>p.data===data);
+    pedidos=pedidos.filter(p=>p.data===data);
   }
 
-  let resumo = {};
-  let total = 0;
+  let resumo={};
+  let total=0;
+  let frete=0;
 
   pedidos.forEach(p=>{
-    total += p.total;
+    total+=p.total;
+    frete+=p.frete;
+
     p.itens.forEach(i=>{
-      if(!resumo[i.nome]) resumo[i.nome]=0;
-      resumo[i.nome]++;
+      if(filtroItem && i.nome!==filtroItem) return;
+
+      if(!resumo[i.nome]){
+        resumo[i.nome]={qtd:0, valor:0};
+      }
+
+      resumo[i.nome].qtd++;
+      resumo[i.nome].valor+=i.preco;
     });
   });
 
-  document.getElementById("totalPedidos").innerText = pedidos.length;
-  document.getElementById("totalValor").innerText = "R$ " + total.toFixed(2);
+  document.getElementById("totalValor").innerText="R$ "+total.toFixed(2);
+  document.getElementById("totalFrete").innerText="R$ "+frete.toFixed(2);
+  document.getElementById("totalPedidos").innerText=pedidos.length;
 
-  let div = document.getElementById("painel-vendas");
-  div.innerHTML = "";
+  let tabela=document.getElementById("tabela");
+  tabela.innerHTML="";
 
-  Object.entries(resumo).forEach(([nome,qtd])=>{
-    div.innerHTML += `${nome} - ${qtd}<br>`;
+  Object.entries(resumo).forEach(([nome,dados])=>{
+    tabela.innerHTML+=`
+    <tr>
+      <td>${nome}</td>
+      <td>${dados.qtd}</td>
+      <td>R$ ${dados.valor.toFixed(2)}</td>
+    </tr>`;
   });
 
+  atualizarFiltro(resumo);
   gerarGrafico(resumo);
 }
 
-function resetarPainel(){
-  localStorage.removeItem("listaPedidos");
-  mostrarPainel();
+function atualizarFiltro(resumo){
+  let select=document.getElementById("filtroItem");
+  select.innerHTML='<option value="">Todos</option>';
+  Object.keys(resumo).forEach(i=>{
+    select.innerHTML+=`<option value="${i}">${i}</option>`;
+  });
 }
 
-if(!location.href.includes("admin")){
-  document.getElementById("painel-vendedor").style.display="none";
+function gerarGrafico(resumo){
+
+  let labels=Object.keys(resumo);
+  let data=Object.values(resumo).map(i=>i.qtd);
+
+  if(chart) chart.destroy();
+
+  chart=new Chart(document.getElementById("grafico"),{
+    type:"bar",
+    data:{labels,datasets:[{data}]}
+  });
+}
+
+function resetar(){
+  localStorage.clear();
+  mostrarPainel();
 }
 
 renderMenu();
