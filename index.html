@@ -5,7 +5,6 @@
 <title>Explosão de Sabor</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <style>
 body {
@@ -29,8 +28,19 @@ header {
   margin-bottom: 10px;
 }
 
-h1 { font-size: 22px; margin: 5px 0; }
-h2 { font-size: 18px; margin-top: 20px; }
+h1 {
+  font-size: 22px;
+  margin: 5px 0;
+}
+
+h2 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 14px;
+}
 
 .container {
   padding: 15px;
@@ -49,14 +59,27 @@ h2 { font-size: 18px; margin-top: 20px; }
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
-.item div { max-width: 75%; }
+.item div {
+  max-width: 75%;
+}
+
+.item strong {
+  font-size: 16px;
+}
+
+.item div div {
+  font-size: 14px;
+  color: #666;
+}
 
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .remove {
@@ -71,57 +94,54 @@ input, select {
   margin-bottom: 12px;
   border-radius: 10px;
   border: 1px solid #ddd;
+  font-size: 16px;
 }
 
 #cart {
   background: white;
   padding: 15px;
   border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+#cart li {
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .whatsapp {
   background: #25d366;
   width: 100%;
   padding: 16px;
+  font-size: 17px;
   border-radius: 12px;
-}
-
-/* PAINEL */
-.painel {
-  background: #fff;
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 20px;
-}
-
-.cards {
-  display: flex;
-  gap: 10px;
-}
-
-.card {
-  flex: 1;
-  background: #f1f1f1;
-  padding: 10px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-table {
-  width: 100%;
   margin-top: 10px;
-  border-collapse: collapse;
 }
 
-th, td {
-  padding: 8px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
+.whatsapp:active {
+  transform: scale(0.98);
 }
 
-th {
-  background: #ff5722;
-  color: white;
+/* MOBILE EXTRA */
+@media (max-width: 480px) {
+
+  .item {
+    padding: 12px;
+  }
+
+  .item strong {
+    font-size: 15px;
+  }
+
+  .item div div {
+    font-size: 13px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
 }
 </style>
 </head>
@@ -148,6 +168,7 @@ th {
 
 <select id="bairro" onchange="updateCart()">
 <option value="">Selecione seu bairro</option>
+
 <option value="gratis">Parque dos Pinus</option>
 <option value="gratis">Planalto Verde</option>
 <option value="gratis">Maria Casa Grande</option>
@@ -155,6 +176,7 @@ th {
 <option value="gratis">Heitor Rigon</option>
 <option value="gratis">Valentina Figueiredo</option>
 <option value="gratis">Cristo Redentor</option>
+
 <option value="3">Centro</option>
 <option value="8">Outros bairros</option>
 </select>
@@ -162,57 +184,26 @@ th {
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
+
 <select id="payment" onchange="toggleTroco()">
-<option value="">Selecione</option>
+<option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
 <option value="PIX">PIX</option>
 <option value="Cartão">Cartão</option>
 </select>
 
-<input type="text" id="troco" placeholder="Troco" style="display:none;">
+<input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
 
 <div id="cart">
 <h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
+
 <p>🚚 Entrega: <span id="entrega">0</span></p>
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
-<button class="whatsapp" onclick="sendWhatsApp()">Finalizar</button>
-</div>
 
-<!-- PAINEL -->
-<div class="painel">
-
-<h2>📊 Painel de Vendas</h2>
-
-<img src="./logo.explosãodesabor.png" style="width:70px; display:block; margin:auto;">
-
-<input type="date" id="filtroData" onchange="mostrarPainel()">
-
-<select id="filtroItem" onchange="mostrarPainel()">
-<option value="">Todos os itens</option>
-</select>
-
-<div class="cards">
-<div class="card">💰 Total<br><strong id="totalValor">0</strong></div>
-<div class="card">🚚 Frete<br><strong id="totalFrete">0</strong></div>
-<div class="card">📦 Pedidos<br><strong id="totalPedidos">0</strong></div>
-</div>
-
-<canvas id="grafico"></canvas>
-
-<table>
-<thead>
-<tr>
-<th>Item</th>
-<th>Qtd</th>
-<th>Faturamento</th>
-</tr>
-</thead>
-<tbody id="tabela"></tbody>
-</table>
-
-<button onclick="resetar()">Zerar Dados</button>
-
+<button class="whatsapp" onclick="sendWhatsApp()">
+🚀 Finalizar Pedido no WhatsApp
+</button>
 </div>
 
 </div>
@@ -237,164 +228,136 @@ const extras = [
 ];
 
 let cart = [];
-let chart;
 
-/* ORIGINAL */
-function renderMenu(){
+function renderMenu() {
   const menu = document.getElementById("menu");
-  menu.innerHTML="";
-  produtos.forEach(p=>{
-    menu.innerHTML+=`
+  menu.innerHTML = "";
+
+  produtos.forEach(p => {
+    menu.innerHTML += `
     <div class="item">
       <div>
         <strong>${p.nome}</strong><br>
         <div>${p.descricao}</div>
         <strong>R$ ${p.preco}</strong>
       </div>
-      <button onclick='addToCart("${p.nome}",${p.preco})'>+</button>
+      <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
     </div>`;
   });
 }
 
-function renderExtras(){
+function renderExtras() {
   const extrasDiv = document.getElementById("extras");
-  extrasDiv.innerHTML="";
-  extras.forEach(e=>{
-    extrasDiv.innerHTML+=`
+  extrasDiv.innerHTML = "";
+
+  extras.forEach(e => {
+    extrasDiv.innerHTML += `
     <div class="item">
-      ➕ ${e.nome} - R$ ${e.preco}
-      <button onclick='addToCart("Extra: ${e.nome}",${e.preco})'>+</button>
+      <div>➕ ${e.nome} - R$ ${e.preco}</div>
+      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
     </div>`;
   });
 }
 
-function addToCart(nome, preco){
-  cart.push({nome, preco});
+function addToCart(nome, preco) {
+  cart.push({ nome, preco });
   updateCart();
 }
 
-function updateCart(){
-  let total=0;
-  const ul = document.getElementById("cart-items");
-  ul.innerHTML="";
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
 
-  cart.forEach((i,index)=>{
-    total+=i.preco;
-    ul.innerHTML+=`<li>${i.nome}</li>`;
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+  const totalEl = document.getElementById("total");
+  const entregaEl = document.getElementById("entrega");
+  const bairro = document.getElementById("bairro").value;
+
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.preco;
+    cartItems.innerHTML += `
+    <li>
+      ${item.nome} - R$ ${item.preco}
+      <button class="remove" onclick="removeItem(${index})">x</button>
+    </li>`;
   });
 
-  document.getElementById("total").innerText=total.toFixed(2);
-}
-
-function toggleTroco(){
-  const payment=document.getElementById("payment").value;
-  document.getElementById("troco").style.display = payment==="Dinheiro"?"block":"none";
-}
-
-function sendWhatsApp(){
-
-  let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
-
-  let total = cart.reduce((s,i)=>s+i.preco,0);
   let taxa = 0;
+  if (bairro === "3") taxa = 3;
+  if (bairro === "8") taxa = 8;
+  if (total >= 50) taxa = 0;
 
-  pedidos.push({
-    itens: cart,
-    total: total + taxa,
-    frete: taxa,
-    data: new Date().toISOString().split("T")[0]
-  });
-
-  localStorage.setItem("pedidos",JSON.stringify(pedidos));
-
-  alert("Pedido salvo!");
+  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
+  totalEl.innerText = (total + taxa).toFixed(2);
 }
 
-/* PAINEL */
-function mostrarPainel(){
+function toggleTroco() {
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco");
 
-  let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
-  let data=document.getElementById("filtroData").value;
-  let filtroItem=document.getElementById("filtroItem").value;
+  troco.style.display = payment === "Dinheiro" ? "block" : "none";
+}
 
-  if(data){
-    pedidos=pedidos.filter(p=>p.data===data);
+function sendWhatsApp() {
+  const nome = document.getElementById("name").value;
+  const bairro = document.getElementById("bairro");
+  const address = document.getElementById("address").value;
+  const payment = document.getElementById("payment").value;
+  const troco = document.getElementById("troco").value;
+
+  if (!nome || !payment) {
+    alert("Preencha nome e pagamento!");
+    return;
   }
 
-  let resumo={};
-  let total=0;
-  let frete=0;
+  if (cart.length === 0) {
+    alert("Adicione itens!");
+    return;
+  }
 
-  pedidos.forEach(p=>{
-    total+=p.total;
-    frete+=p.frete;
+  let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
+  message += `👤 ${nome}%0A`;
+  message += `📍 ${bairro.options[bairro.selectedIndex].text}%0A`;
+  message += `🏠 ${address}%0A%0A`;
 
-    p.itens.forEach(i=>{
-      if(filtroItem && i.nome!==filtroItem) return;
+  let total = 0;
 
-      if(!resumo[i.nome]){
-        resumo[i.nome]={qtd:0, valor:0};
-      }
-
-      resumo[i.nome].qtd++;
-      resumo[i.nome].valor+=i.preco;
-    });
+  cart.forEach(item => {
+    message += `🧾 ${item.nome} - R$ ${item.preco}%0A`;
+    total += item.preco;
   });
 
-  document.getElementById("totalValor").innerText="R$ "+total.toFixed(2);
-  document.getElementById("totalFrete").innerText="R$ "+frete.toFixed(2);
-  document.getElementById("totalPedidos").innerText=pedidos.length;
+  let taxa = 0;
+  if (bairro.value === "3") taxa = 3;
+  if (bairro.value === "8") taxa = 8;
+  if (total >= 50) taxa = 0;
 
-  let tabela=document.getElementById("tabela");
-  tabela.innerHTML="";
+  message += "%0A";
+  message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
 
-  Object.entries(resumo).forEach(([nome,dados])=>{
-    tabela.innerHTML+=`
-    <tr>
-      <td>${nome}</td>
-      <td>${dados.qtd}</td>
-      <td>R$ ${dados.valor.toFixed(2)}</td>
-    </tr>`;
-  });
+  message += `%0A💳 Pagamento: ${payment}%0A`;
 
-  atualizarFiltro(resumo);
-  gerarGrafico(resumo);
-}
+  if (payment === "Dinheiro") {
+    message += troco ? `💵 Troco para: R$ ${troco}%0A` : `💵 Sem troco%0A`;
+  }
 
-function atualizarFiltro(resumo){
-  let select=document.getElementById("filtroItem");
-  select.innerHTML='<option value="">Todos</option>';
-  Object.keys(resumo).forEach(i=>{
-    select.innerHTML+=`<option value="${i}">${i}</option>`;
-  });
-}
+  message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
-function gerarGrafico(resumo){
-
-  let labels=Object.keys(resumo);
-  let data=Object.values(resumo).map(i=>i.qtd);
-
-  if(chart) chart.destroy();
-
-  chart=new Chart(document.getElementById("grafico"),{
-    type:"bar",
-    data:{labels,datasets:[{data}]}
-  });
-}
-
-function resetar(){
-  localStorage.clear();
-  mostrarPainel();
-}
-
-/* ESCONDER DO CLIENTE */
-if (!window.location.href.includes("admin")) {
-  document.querySelector(".painel").style.display = "none";
+  window.location.href = `https://wa.me/${phone}?text=${message}`;
 }
 
 renderMenu();
 renderExtras();
 
+</script>
+
+</body>
+</html>
 </script>
 
 </body>
