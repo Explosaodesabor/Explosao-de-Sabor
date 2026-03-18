@@ -2,147 +2,103 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Explosão de Sabor</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Painel de Vendas</title>
 
 <style>
 body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
+  font-family: Arial;
   background: #f5f5f5;
+  padding: 20px;
 }
 
-header {
-  text-align: center;
-  background: linear-gradient(135deg, #ff5722, #ff9800);
-  color: white;
-  padding: 25px 15px;
-}
-
-.container {
-  padding: 15px;
+.painel {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
   max-width: 500px;
   margin: auto;
 }
 
-.item {
-  background: white;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
+h2 {
+  text-align: center;
+}
+
+p {
+  font-size: 16px;
+  margin: 6px 0;
 }
 
 button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 10px;
   background: #4caf50;
   color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-#cart {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
+  font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>🔥 Explosão de Sabor</h1>
-</header>
-
-<div class="container">
-
-<h2>🍍 Cardápio</h2>
-<div id="menu"></div>
-
-<h2>📍 Dados</h2>
-<input type="text" id="name" placeholder="Nome">
-<select id="bairro">
-<option value="">Bairro</option>
-<option value="3">Centro</option>
-<option value="8">Outros</option>
-</select>
-
-<h2>🛒 Carrinho</h2>
-<ul id="cart-items"></ul>
-<p>Total: R$ <span id="total">0</span></p>
-
-<button onclick="sendWhatsApp()">Finalizar</button>
-
+<div class="painel">
+  <h2>📊 Painel de Vendas</h2>
+  <div id="painel"></div>
+  <button onclick="resetar()">🔄 Zerar Dados</button>
 </div>
 
 <script>
 
-const phone = "5516981201169";
-
-const produtos = [
-{ nome: "Explosão", preco: 18 },
-{ nome: "Dinamite", preco: 20 },
-{ nome: "Oásis", preco: 22 }
-];
-
-let cart = [];
-
-function renderMenu() {
-  const menu = document.getElementById("menu");
-  produtos.forEach(p => {
-    menu.innerHTML += `
-    <div class="item">
-      ${p.nome} - R$ ${p.preco}
-      <button onclick='add("${p.nome}", ${p.preco})'>+</button>
-    </div>`;
-  });
-}
-
-function add(nome, preco) {
-  cart.push({ nome, preco });
-  update();
-}
-
-function update() {
-  const ul = document.getElementById("cart-items");
-  ul.innerHTML = "";
-  let total = 0;
-
-  cart.forEach(i => {
-    total += i.preco;
-    ul.innerHTML += `<li>${i.nome}</li>`;
-  });
-
-  document.getElementById("total").innerText = total;
-}
-
-function sendWhatsApp() {
-  let total = 0;
-  cart.forEach(i => total += i.preco);
-
-  let taxa = 0;
-  const bairro = document.getElementById("bairro").value;
-  if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
-
+function mostrarPainel() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
 
-  pedidos.push({
-    itens: cart,
-    total: total + taxa,
-    frete: taxa
+  const resumo = {};
+  let totalGeral = 0;
+  let totalFrete = 0;
+
+  pedidos.forEach(pedido => {
+    totalGeral += pedido.total;
+    totalFrete += pedido.frete;
+
+    pedido.itens.forEach(item => {
+      if (!resumo[item.nome]) {
+        resumo[item.nome] = {
+          quantidade: 0,
+          faturamento: 0
+        };
+      }
+
+      resumo[item.nome].quantidade += 1;
+      resumo[item.nome].faturamento += item.preco;
+    });
   });
 
-  localStorage.setItem("listaPedidos", JSON.stringify(pedidos));
+  const div = document.getElementById("painel");
 
-  window.location.href = `https://wa.me/${phone}`;
+  div.innerHTML = "<h3>📦 Itens vendidos</h3>";
+
+  Object.entries(resumo)
+    .sort((a, b) => b[1].quantidade - a[1].quantidade)
+    .forEach(([nome, dados]) => {
+      div.innerHTML += `
+        <p>${nome} — ${dados.quantidade} vendidos — R$ ${dados.faturamento.toFixed(2)}</p>
+      `;
+    });
+
+  div.innerHTML += `<hr>`;
+  div.innerHTML += `<p>🚚 Frete: R$ ${totalFrete.toFixed(2)}</p>`;
+  div.innerHTML += `<p><strong>💰 Total: R$ ${totalGeral.toFixed(2)}</strong></p>`;
 }
 
-renderMenu();
+function resetar() {
+  localStorage.removeItem("listaPedidos");
+  mostrarPainel();
+}
+
+mostrarPainel();
 
 </script>
 
