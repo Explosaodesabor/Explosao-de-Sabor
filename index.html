@@ -28,19 +28,9 @@ header {
   margin-bottom: 10px;
 }
 
-h1 {
-  font-size: 22px;
-  margin: 5px 0;
-}
-
-h2 {
-  font-size: 18px;
-  margin-top: 20px;
-}
-
-p {
-  font-size: 14px;
-}
+h1 { font-size: 22px; margin: 5px 0; }
+h2 { font-size: 18px; margin-top: 20px; }
+p { font-size: 14px; }
 
 .container {
   padding: 15px;
@@ -59,18 +49,9 @@ p {
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
-.item div {
-  max-width: 75%;
-}
-
-.item strong {
-  font-size: 16px;
-}
-
-.item div div {
-  font-size: 14px;
-  color: #666;
-}
+.item div { max-width: 75%; }
+.item strong { font-size: 16px; }
+.item div div { font-size: 14px; color: #666; }
 
 button {
   background: #4caf50;
@@ -118,31 +99,6 @@ input, select {
   margin-top: 10px;
 }
 
-.whatsapp:active {
-  transform: scale(0.98);
-}
-
-/* MOBILE EXTRA */
-@media (max-width: 480px) {
-
-  .item {
-    padding: 12px;
-  }
-
-  .item strong {
-    font-size: 15px;
-  }
-
-  .item div div {
-    font-size: 13px;
-  }
-
-  button {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-}
 </style>
 </head>
 
@@ -168,7 +124,6 @@ input, select {
 
 <select id="bairro" onchange="updateCart()">
 <option value="">Selecione seu bairro</option>
-
 <option value="gratis">Parque dos Pinus</option>
 <option value="gratis">Planalto Verde</option>
 <option value="gratis">Maria Casa Grande</option>
@@ -176,7 +131,6 @@ input, select {
 <option value="gratis">Heitor Rigon</option>
 <option value="gratis">Valentina Figueiredo</option>
 <option value="gratis">Cristo Redentor</option>
-
 <option value="3">Centro</option>
 <option value="8">Outros bairros</option>
 </select>
@@ -184,7 +138,6 @@ input, select {
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
-
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
@@ -197,13 +150,19 @@ input, select {
 <div id="cart">
 <h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
-
 <p>🚚 Entrega: <span id="entrega">0</span></p>
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
 <button class="whatsapp" onclick="sendWhatsApp()">
 🚀 Finalizar Pedido no WhatsApp
 </button>
+</div>
+
+<!-- PAINEL DO VENDEDOR -->
+<div id="painel-vendedor" style="margin-top:20px; background:#fff; padding:12px; border-radius:12px;">
+  <h3>📊 Controle de Pedidos</h3>
+  <p>Total de pedidos: <strong id="contador">0</strong></p>
+  <button onclick="resetarContador()">🔄 Zerar</button>
 </div>
 
 </div>
@@ -232,7 +191,6 @@ let cart = [];
 function renderMenu() {
   const menu = document.getElementById("menu");
   menu.innerHTML = "";
-
   produtos.forEach(p => {
     menu.innerHTML += `
     <div class="item">
@@ -249,7 +207,6 @@ function renderMenu() {
 function renderExtras() {
   const extrasDiv = document.getElementById("extras");
   extrasDiv.innerHTML = "";
-
   extras.forEach(e => {
     extrasDiv.innerHTML += `
     <div class="item">
@@ -298,9 +255,7 @@ function updateCart() {
 
 function toggleTroco() {
   const payment = document.getElementById("payment").value;
-  const troco = document.getElementById("troco");
-
-  troco.style.display = payment === "Dinheiro" ? "block" : "none";
+  document.getElementById("troco").style.display = payment === "Dinheiro" ? "block" : "none";
 }
 
 function sendWhatsApp() {
@@ -348,16 +303,36 @@ function sendWhatsApp() {
 
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
+  adicionarPedido();
+
   window.location.href = `https://wa.me/${phone}?text=${message}`;
+}
+
+// CONTADOR
+let pedidos = localStorage.getItem("pedidos");
+pedidos = pedidos ? parseInt(pedidos) : 0;
+document.getElementById("contador").innerText = pedidos;
+
+function adicionarPedido() {
+  pedidos++;
+  localStorage.setItem("pedidos", pedidos);
+  document.getElementById("contador").innerText = pedidos;
+}
+
+function resetarContador() {
+  pedidos = 0;
+  localStorage.setItem("pedidos", pedidos);
+  document.getElementById("contador").innerText = pedidos;
+}
+
+// esconder de clientes
+if (!window.location.href.includes("admin")) {
+  document.getElementById("painel-vendedor").style.display = "none";
 }
 
 renderMenu();
 renderExtras();
 
-</script>
-
-</body>
-</html>
 </script>
 
 </body>
