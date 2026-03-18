@@ -30,7 +30,6 @@ header {
 
 h1 { font-size: 22px; margin: 5px 0; }
 h2 { font-size: 18px; margin-top: 20px; }
-p { font-size: 14px; }
 
 .container {
   padding: 15px;
@@ -45,58 +44,22 @@ p { font-size: 14px; }
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
-
-.item div { max-width: 75%; }
-.item strong { font-size: 16px; }
-.item div div { font-size: 14px; color: #666; }
 
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 12px 14px;
+  padding: 12px;
   border-radius: 10px;
-  font-weight: bold;
-  font-size: 16px;
 }
 
-.remove {
-  background: #f44336;
-  padding: 5px 8px;
-  font-size: 12px;
-}
-
-input, select {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-}
-
-#cart {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-#cart li {
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.whatsapp {
-  background: #25d366;
-  width: 100%;
-  padding: 16px;
-  font-size: 17px;
-  border-radius: 12px;
-  margin-top: 10px;
+#painel-vendedor {
+  margin-top:20px;
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
 }
 </style>
 </head>
@@ -104,10 +67,7 @@ input, select {
 <body>
 
 <header>
-<img src="logo.explosãodesabor.png" class="logo">
-<h1>🔥 Explosão de Sabor 🥭</h1>
-<p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
-<p><strong>🚚 Frete grátis acima de R$50</strong></p>
+<h1>🔥 Explosão de Sabor</h1>
 </header>
 
 <div class="container">
@@ -115,102 +75,41 @@ input, select {
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
 
-<h2>➕ Adicionais</h2>
-<div id="extras"></div>
-
-<h2>📍 Seus Dados</h2>
-<input type="text" id="name" placeholder="Seu nome">
-
-<select id="bairro" onchange="updateCart()">
-<option value="">Selecione seu bairro</option>
-<option value="gratis">Parque dos Pinus</option>
-<option value="gratis">Planalto Verde</option>
-<option value="gratis">Maria Casa Grande</option>
-<option value="gratis">Orestes Lopes</option>
-<option value="gratis">Heitor Rigon</option>
-<option value="gratis">Valentina Figueiredo</option>
-<option value="gratis">Cristo Redentor</option>
-<option value="3">Centro</option>
-<option value="8">Outros bairros</option>
-</select>
-
-<input type="text" id="address" placeholder="Rua e número">
-
-<h2>💳 Pagamento</h2>
-<select id="payment" onchange="toggleTroco()">
-<option value="">Selecione a forma</option>
-<option value="Dinheiro">Dinheiro</option>
-<option value="PIX">PIX</option>
-<option value="Cartão">Cartão</option>
-</select>
-
-<input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
-
-<div id="cart">
-<h3>🛒 Carrinho</h3>
+<h2>🛒 Carrinho</h2>
 <ul id="cart-items"></ul>
-<p>🚚 Entrega: <span id="entrega">0</span></p>
-<p><strong>Total: R$ <span id="total">0</span></strong></p>
-
-<button class="whatsapp" onclick="sendWhatsApp()">
-🚀 Finalizar Pedido no WhatsApp
-</button>
-</div>
+<p>Total: R$ <span id="total">0</span></p>
+<button onclick="sendWhatsApp()">Finalizar Pedido</button>
 
 <!-- PAINEL -->
-<div id="painel-vendedor" style="margin-top:20px; background:#fff; padding:12px; border-radius:12px;">
+<div id="painel-vendedor">
   <h3>📊 Painel de Vendas</h3>
+
+  <!-- FILTRO -->
+  <input type="date" id="filtroData">
+
   <div id="painel-vendas"></div>
-  <button onclick="resetarPainel()">🔄 Zerar Dados</button>
+  <button onclick="resetarPainel()">Zerar Dados</button>
 </div>
 
 </div>
 
 <script>
 
-const phone = "5516981201169";
-
 const produtos = [
-{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", preco: 18 },
-{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml • sal, limão, lemon pepper, canela, leite condensado", preco: 20 },
-{ nome: "🌴 Oásis", descricao: "Manga + Abacaxi 500ml • sal, lemon pepper, limão, gengibre", preco: 22 }
-];
-
-const extras = [
-{ nome: "Pimenta Preta", preco: 1 },
-{ nome: "Canela", preco: 1 },
-{ nome: "Gengibre", preco: 1 },
-{ nome: "Páprica Doce", preco: 1 },
-{ nome: "Noz Moscada", preco: 1 },
-{ nome: "Leite Condensado", preco: 1.5 }
+{ nome: "💥 Explosão", preco: 18 },
+{ nome: "💣 Dinamite", preco: 20 },
+{ nome: "🌴 Oásis", preco: 22 }
 ];
 
 let cart = [];
 
 function renderMenu() {
   const menu = document.getElementById("menu");
-  menu.innerHTML = "";
   produtos.forEach(p => {
     menu.innerHTML += `
     <div class="item">
-      <div>
-        <strong>${p.nome}</strong><br>
-        <div>${p.descricao}</div>
-        <strong>R$ ${p.preco}</strong>
-      </div>
+      ${p.nome} - R$ ${p.preco}
       <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
-    </div>`;
-  });
-}
-
-function renderExtras() {
-  const extrasDiv = document.getElementById("extras");
-  extrasDiv.innerHTML = "";
-  extras.forEach(e => {
-    extrasDiv.innerHTML += `
-    <div class="item">
-      <div>➕ ${e.nome} - R$ ${e.preco}</div>
-      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
     </div>`;
   });
 }
@@ -220,170 +119,86 @@ function addToCart(nome, preco) {
   updateCart();
 }
 
-function removeItem(index) {
-  cart.splice(index, 1);
-  updateCart();
-}
-
 function updateCart() {
-  const cartItems = document.getElementById("cart-items");
+  const list = document.getElementById("cart-items");
   const totalEl = document.getElementById("total");
-  const entregaEl = document.getElementById("entrega");
-  const bairro = document.getElementById("bairro").value;
 
-  cartItems.innerHTML = "";
-  let total = 0;
-
-  cart.forEach((item, index) => {
-    total += item.preco;
-    cartItems.innerHTML += `
-    <li>
-      ${item.nome} - R$ ${item.preco}
-      <button class="remove" onclick="removeItem(${index})">x</button>
-    </li>`;
-  });
-
-  let taxa = 0;
-  if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
-
-  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
-  totalEl.innerText = (total + taxa).toFixed(2);
-}
-
-function toggleTroco() {
-  const payment = document.getElementById("payment").value;
-  document.getElementById("troco").style.display = payment === "Dinheiro" ? "block" : "none";
-}
-
-function sendWhatsApp() {
-  const nome = document.getElementById("name").value;
-  const bairro = document.getElementById("bairro");
-  const address = document.getElementById("address").value;
-  const payment = document.getElementById("payment").value;
-  const troco = document.getElementById("troco").value;
-
-  if (!nome || !payment) {
-    alert("Preencha nome e pagamento!");
-    return;
-  }
-
-  if (cart.length === 0) {
-    alert("Adicione itens!");
-    return;
-  }
-
-  let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
-  message += `👤 ${nome}%0A`;
-  message += `📍 ${bairro.options[bairro.selectedIndex].text}%0A`;
-  message += `🏠 ${address}%0A%0A`;
-
+  list.innerHTML = "";
   let total = 0;
 
   cart.forEach(item => {
-    message += `🧾 ${item.nome} - R$ ${item.preco}%0A`;
     total += item.preco;
+    list.innerHTML += `<li>${item.nome}</li>`;
   });
 
-  let taxa = 0;
-  if (bairro.value === "3") taxa = 3;
-  if (bairro.value === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
-
-  message += "%0A";
-  message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
-
-  message += `%0A💳 Pagamento: ${payment}%0A`;
-
-  if (payment === "Dinheiro") {
-    message += troco ? `💵 Troco para: R$ ${troco}%0A` : `💵 Sem troco%0A`;
-  }
-
-  message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
-
-  adicionarPedido();
-
-  window.location.href = `https://wa.me/${phone}?text=${message}`;
+  totalEl.innerText = total.toFixed(2);
 }
 
-// SISTEMA DE VENDAS (ATUALIZADO COM DATA)
+function sendWhatsApp() {
+  adicionarPedido();
+  alert("Pedido salvo!");
+}
+
+// 🔥 SALVANDO COM DATA CORRETA
 function adicionarPedido() {
-  let pedidosSalvos = localStorage.getItem("listaPedidos");
-  pedidosSalvos = pedidosSalvos ? JSON.parse(pedidosSalvos) : [];
+  let pedidos = localStorage.getItem("listaPedidos");
+  pedidos = pedidos ? JSON.parse(pedidos) : [];
 
   let total = 0;
   cart.forEach(item => total += item.preco);
 
-  let taxa = 0;
-  const bairro = document.getElementById("bairro").value;
-  if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
-
-  pedidosSalvos.push({
+  pedidos.push({
     itens: cart,
-    total: total + taxa,
-    frete: taxa,
-   data: new Date().toLocaleDateString("sv-SE")
+    total: total,
+    frete: 0,
+    data: new Date().toLocaleDateString("sv-SE")
   });
 
-  localStorage.setItem("listaPedidos", JSON.stringify(pedidosSalvos));
+  localStorage.setItem("listaPedidos", JSON.stringify(pedidos));
 
-  function mostrarPainel() {
+  mostrarPainel();
+}
+
+// 🔥 PAINEL CORRIGIDO
+function mostrarPainel() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
 
-  const dataSelecionada = document.getElementById("filtroData")?.value;
+  const dataSelecionada = document.getElementById("filtroData").value;
 
   const resumo = {};
   let totalGeral = 0;
-  let totalFrete = 0;
 
   pedidos.forEach(pedido => {
 
-    // 🔥 GARANTE comparação correta
-    if (dataSelecionada) {
-      if (!pedido.data) return;
+    let dataPedido = pedido.data;
 
-      // força formato padrão
-      const dataPedido = pedido.data;
-
-      if (dataPedido !== dataSelecionada) return;
+    // 🔥 CONVERTE SE ESTIVER ERRADO
+    if (dataPedido && dataPedido.includes("/")) {
+      const [dia, mes, ano] = dataPedido.split("/");
+      dataPedido = `${ano}-${mes}-${dia}`;
     }
 
+    if (dataSelecionada && dataPedido !== dataSelecionada) return;
+
     totalGeral += pedido.total;
-    totalFrete += pedido.frete;
 
     pedido.itens.forEach(item => {
       if (!resumo[item.nome]) {
-        resumo[item.nome] = {
-          quantidade: 0,
-          faturamento: 0
-        };
+        resumo[item.nome] = { quantidade: 0 };
       }
-
-      resumo[item.nome].quantidade += 1;
-      resumo[item.nome].faturamento += item.preco;
+      resumo[item.nome].quantidade++;
     });
   });
 
   const div = document.getElementById("painel-vendas");
-  if (!div) return;
+  div.innerHTML = "";
 
-  div.innerHTML = "<h4>📦 Vendas por item</h4>";
+  Object.entries(resumo).forEach(([nome, dados]) => {
+    div.innerHTML += `<p>${nome}: ${dados.quantidade}</p>`;
+  });
 
-  Object.entries(resumo)
-    .sort((a, b) => b[1].quantidade - a[1].quantidade)
-    .forEach(([nome, dados]) => {
-      div.innerHTML += `
-        <p>${nome} — ${dados.quantidade} — R$ ${dados.faturamento.toFixed(2)}</p>
-      `;
-    });
-
-  div.innerHTML += `<hr>`;
-  div.innerHTML += `<p>🚚 Frete: R$ ${totalFrete.toFixed(2)}</p>`;
-  div.innerHTML += `<p><strong>💰 Total: R$ ${totalGeral.toFixed(2)}</strong></p>`;
+  div.innerHTML += `<hr><strong>Total: R$ ${totalGeral.toFixed(2)}</strong>`;
 }
 
 function resetarPainel() {
@@ -391,16 +206,14 @@ function resetarPainel() {
   mostrarPainel();
 }
 
-// esconder de clientes
-if (!window.location.href.includes("admin")) {
-  document.getElementById("painel-vendedor").style.display = "none";
-}
+// 🔥 ATUALIZA AUTOMATICO AO MUDAR DATA
+document.getElementById("filtroData").addEventListener("change", mostrarPainel);
 
 renderMenu();
-renderExtras();
 mostrarPainel();
 
 </script>
 
 </body>
+</html>
 </html>
