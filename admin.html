@@ -8,33 +8,46 @@
 body {
   font-family: Arial;
   background: #f5f5f5;
-  padding: 20px;
+  padding: 15px;
 }
 
 .painel {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
   max-width: 500px;
   margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.valor {
+  font-size: 18px;
+  margin-top: 5px;
 }
 
 h2 {
   text-align: center;
 }
 
-p {
-  font-size: 16px;
-}
-
 button {
   width: 100%;
   padding: 12px;
-  margin-top: 15px;
   border: none;
   border-radius: 10px;
   background: #4caf50;
   color: white;
+  margin-top: 10px;
+  font-size: 16px;
 }
 </style>
 </head>
@@ -43,7 +56,10 @@ button {
 
 <div class="painel">
   <h2>📊 Painel de Vendas</h2>
-  <div id="painel"></div>
+
+  <div id="resumo"></div>
+  <div id="itens"></div>
+
   <button onclick="resetar()">🔄 Zerar Dados</button>
 </div>
 
@@ -53,42 +69,70 @@ function mostrarPainel() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
 
-  const resumo = {};
+  const resumoItens = {};
   let totalGeral = 0;
   let totalFrete = 0;
 
-  pedidos.forEach(pedido => {
-    totalGeral += pedido.total;
-    totalFrete += pedido.frete;
+  pedidos.forEach(p => {
+    totalGeral += p.total;
+    totalFrete += p.frete;
 
-    pedido.itens.forEach(item => {
-      if (!resumo[item.nome]) {
-        resumo[item.nome] = {
-          quantidade: 0,
-          faturamento: 0
-        };
+    p.itens.forEach(item => {
+      if (!resumoItens[item.nome]) {
+        resumoItens[item.nome] = { qtd: 0, valor: 0 };
       }
-
-      resumo[item.nome].quantidade += 1;
-      resumo[item.nome].faturamento += item.preco;
+      resumoItens[item.nome].qtd++;
+      resumoItens[item.nome].valor += item.preco;
     });
   });
 
-  const div = document.getElementById("painel");
+  // ITEM MAIS VENDIDO
+  let maisVendido = "";
+  let maiorQtd = 0;
 
-  div.innerHTML = "<h3>📦 Itens vendidos</h3>";
+  Object.entries(resumoItens).forEach(([nome, dados]) => {
+    if (dados.qtd > maiorQtd) {
+      maiorQtd = dados.qtd;
+      maisVendido = nome;
+    }
+  });
 
-  Object.entries(resumo)
-    .sort((a, b) => b[1].quantidade - a[1].quantidade)
+  // RESUMO
+  const resumoDiv = document.getElementById("resumo");
+  resumoDiv.innerHTML = `
+    <div class="card">
+      💰 Faturamento Total
+      <div class="valor">R$ ${totalGeral.toFixed(2)}</div>
+    </div>
+
+    <div class="card">
+      🚚 Total de Frete
+      <div class="valor">R$ ${totalFrete.toFixed(2)}</div>
+    </div>
+
+    <div class="card">
+      🥇 Mais Vendido
+      <div class="valor">${maisVendido || "Nenhum"}</div>
+    </div>
+  `;
+
+  // LISTA DE ITENS
+  const itensDiv = document.getElementById("itens");
+  itensDiv.innerHTML = "<h3>📦 Itens vendidos</h3>";
+
+  Object.entries(resumoItens)
+    .sort((a, b) => b[1].qtd - a[1].qtd)
     .forEach(([nome, dados]) => {
-      div.innerHTML += `
-        <p>${nome} — ${dados.quantidade} vendidos — R$ ${dados.faturamento.toFixed(2)}</p>
+      itensDiv.innerHTML += `
+        <div class="card">
+          <div class="topo">
+            <span>${nome}</span>
+            <span>${dados.qtd}x</span>
+          </div>
+          <div class="valor">R$ ${dados.valor.toFixed(2)}</div>
+        </div>
       `;
     });
-
-  div.innerHTML += `<hr>`;
-  div.innerHTML += `<p>🚚 Frete: R$ ${totalFrete.toFixed(2)}</p>`;
-  div.innerHTML += `<p><strong>💰 Total: R$ ${totalGeral.toFixed(2)}</strong></p>`;
 }
 
 function resetar() {
