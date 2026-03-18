@@ -366,10 +366,16 @@ function sendWhatsApp() {
     total += item.preco;
   });
 
-  let taxa = 0;
-  if (bairro.value === "3") taxa = 3;
-  if (bairro.value === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
+  const bairro = document.getElementById("bairro").value;
+
+let taxa = parseFloat(bairro);
+if (isNaN(taxa)) taxa = 0;
+
+// frete grátis acima de 50
+if (total >= 50) taxa = 0;
+
+entregaEl.innerText = taxa === 0 ? "GRÁTIS" : `R$ ${taxa.toFixed(2)}`;
+totalEl.innerText = (Number(total) + taxa).toFixed(2);
 
   message += "%0A";
   message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
