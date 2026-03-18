@@ -330,18 +330,28 @@ function adicionarPedido() {
 
   localStorage.setItem("listaPedidos", JSON.stringify(pedidosSalvos));
 
-  mostrarPainel();
-}
-
-function mostrarPainel() {
+  function mostrarPainel() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
+
+  const dataSelecionada = document.getElementById("filtroData")?.value;
 
   const resumo = {};
   let totalGeral = 0;
   let totalFrete = 0;
 
   pedidos.forEach(pedido => {
+
+    // 🔥 GARANTE comparação correta
+    if (dataSelecionada) {
+      if (!pedido.data) return;
+
+      // força formato padrão
+      const dataPedido = pedido.data;
+
+      if (dataPedido !== dataSelecionada) return;
+    }
+
     totalGeral += pedido.total;
     totalFrete += pedido.frete;
 
@@ -359,7 +369,6 @@ function mostrarPainel() {
   });
 
   const div = document.getElementById("painel-vendas");
-
   if (!div) return;
 
   div.innerHTML = "<h4>📦 Vendas por item</h4>";
@@ -368,13 +377,13 @@ function mostrarPainel() {
     .sort((a, b) => b[1].quantidade - a[1].quantidade)
     .forEach(([nome, dados]) => {
       div.innerHTML += `
-        <p>${nome} — ${dados.quantidade} vendidos — R$ ${dados.faturamento.toFixed(2)}</p>
+        <p>${nome} — ${dados.quantidade} — R$ ${dados.faturamento.toFixed(2)}</p>
       `;
     });
 
   div.innerHTML += `<hr>`;
-  div.innerHTML += `<p>🚚 Frete total: R$ ${totalFrete.toFixed(2)}</p>`;
-  div.innerHTML += `<p><strong>💰 Faturamento total: R$ ${totalGeral.toFixed(2)}</strong></p>`;
+  div.innerHTML += `<p>🚚 Frete: R$ ${totalFrete.toFixed(2)}</p>`;
+  div.innerHTML += `<p><strong>💰 Total: R$ ${totalGeral.toFixed(2)}</strong></p>`;
 }
 
 function resetarPainel() {
