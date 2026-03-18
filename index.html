@@ -12,20 +12,26 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   background: #f5f5f5;
+  font-size: 16px;
 }
 
 header {
   text-align: center;
   background: linear-gradient(135deg, #ff5722, #ff9800);
   color: white;
-  padding: 25px;
+  padding: 25px 15px;
 }
 
 .logo {
   width: 90px;
   border-radius: 50%;
   border: 3px solid white;
+  margin-bottom: 10px;
 }
+
+h1 { font-size: 22px; margin: 5px 0; }
+h2 { font-size: 18px; margin-top: 20px; }
+p { font-size: 14px; }
 
 .container {
   padding: 15px;
@@ -40,44 +46,58 @@ header {
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
+
+.item div { max-width: 75%; }
+.item strong { font-size: 16px; }
+.item div div { font-size: 14px; color: #666; }
 
 button {
   background: #4caf50;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px 14px;
   border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.remove {
+  background: #f44336;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+#cart {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+#cart li {
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .whatsapp {
   background: #25d366;
   width: 100%;
-  padding: 15px;
+  padding: 16px;
+  font-size: 17px;
+  border-radius: 12px;
   margin-top: 10px;
-}
-
-/* PAINEL */
-#painel-vendedor {
-  display:none;
-  margin-top:20px;
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-}
-
-.cards {
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-.card {
-  flex:1;
-  background:#fafafa;
-  padding:10px;
-  border-radius:10px;
-  text-align:center;
 }
 </style>
 </head>
@@ -86,7 +106,9 @@ button {
 
 <header>
 <img src="logo.explosãodesabor.png" class="logo">
-<h1>🔥 Explosão de Sabor</h1>
+<h1>🔥 Explosão de Sabor 🥭</h1>
+<p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
+<p><strong>🚚 Frete grátis acima de R$50</strong></p>
 </header>
 
 <div class="container">
@@ -98,196 +120,189 @@ button {
 <div id="extras"></div>
 
 <h2>📍 Seus Dados</h2>
-<input id="name" placeholder="Nome">
+<input type="text" id="name" placeholder="Seu nome">
+
 <select id="bairro" onchange="updateCart()">
-<option value="">Bairro</option>
-<option value="0">Gratis</option>
+<option value="">Selecione seu bairro</option>
+<option value="gratis">Parque dos Pinus</option>
+<option value="gratis">Planalto Verde</option>
+<option value="gratis">Maria Casa Grande</option>
+<option value="gratis">Orestes Lopes</option>
+<option value="gratis">Heitor Rigon</option>
+<option value="gratis">Valentina Figueiredo</option>
+<option value="gratis">Cristo Redentor</option>
 <option value="3">Centro</option>
-<option value="8">Outros</option>
+<option value="8">Outros bairros</option>
 </select>
+
+<input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
-<select id="payment">
-<option value="">Selecione</option>
-<option>Dinheiro</option>
-<option>PIX</option>
-<option>Cartão</option>
+<select id="payment" onchange="toggleTroco()">
+<option value="">Selecione a forma</option>
+<option value="Dinheiro">Dinheiro</option>
+<option value="PIX">PIX</option>
+<option value="Cartão">Cartão</option>
 </select>
 
+<input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
+
 <div id="cart">
+<h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
-<p>Total: R$ <span id="total">0</span></p>
-<button class="whatsapp" onclick="send()">Finalizar</button>
+<p>🚚 Entrega: <span id="entrega">0</span></p>
+<p><strong>Total: R$ <span id="total">0</span></strong></p>
+
+<button class="whatsapp" onclick="sendWhatsApp()">
+🚀 Finalizar Pedido no WhatsApp
+</button>
 </div>
 
 <!-- PAINEL -->
-<div id="painel-vendedor">
-
-<h2>🔐 Painel Admin</h2>
+<div id="painel-vendedor" style="margin-top:20px; background:#fff; padding:12px; border-radius:12px;">
+<h3>🔐 Painel Admin</h3>
 
 <input type="password" id="senha" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 
-<div id="conteudo" style="display:none">
+<div id="area-admin" style="display:none">
 
-<h3>📅 Filtrar Data</h3>
-<input type="date" id="filtro" onchange="carregarPainel()">
-
-<div class="cards">
-<div class="card">Pedidos<br><b id="pedidos"></b></div>
-<div class="card">Frete<br><b id="frete"></b></div>
-<div class="card">Total<br><b id="totalGeral"></b></div>
-</div>
+<input type="date" id="filtroData" onchange="mostrarPainel()">
 
 <canvas id="grafico"></canvas>
 
-<div id="lista"></div>
+<div id="painel-vendas"></div>
 
-<button onclick="resetar()">Zerar</button>
+<button onclick="resetarPainel()">🔄 Zerar Dados</button>
 
 </div>
-
 </div>
 
 </div>
 
 <script>
 
+const phone = "5516981201169";
+
 const produtos = [
-{nome:"Explosão", preco:18},
-{nome:"Dinamite", preco:20},
-{nome:"Oásis", preco:22}
+{ nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml", preco: 18 },
+{ nome: "💣 Dinamite", descricao: "Abacaxi 500ml", preco: 20 },
+{ nome: "🌴 Oásis", descricao: "Mix", preco: 22 }
 ];
 
 const extras = [
-{nome:"Canela", preco:1},
-{nome:"Leite Condensado", preco:1.5}
+{ nome: "Canela", preco: 1 },
+{ nome: "Leite Condensado", preco: 1.5 }
 ];
 
-let cart=[];
+let cart = [];
 
-function renderMenu(){
-menu.innerHTML="";
-produtos.forEach(p=>{
-menu.innerHTML+=`<div class="item">${p.nome} R$${p.preco}
-<button onclick="add('${p.nome}',${p.preco})">+</button></div>`;
-});
+function renderMenu() {
+  menu.innerHTML="";
+  produtos.forEach(p=>{
+    menu.innerHTML+=`<div class="item"><div><strong>${p.nome}</strong><br>${p.descricao}<br>R$ ${p.preco}</div><button onclick="addToCart('${p.nome}',${p.preco})">+</button></div>`;
+  });
 }
 
-function renderExtras(){
-extrasDiv.innerHTML="";
-extras.forEach(e=>{
-extrasDiv.innerHTML+=`<div class="item">${e.nome} R$${e.preco}
-<button onclick="add('${e.nome}',${e.preco})">+</button></div>`;
-});
+function renderExtras() {
+  extras.innerHTML="";
+  extras.forEach(e=>{
+    extras.innerHTML+=`<div class="item">➕ ${e.nome} R$ ${e.preco}<button onclick="addToCart('Extra: ${e.nome}',${e.preco})">+</button></div>`;
+  });
 }
 
-function add(nome,preco){
-cart.push({nome,preco});
-updateCart();
+function addToCart(nome, preco) {
+  cart.push({ nome, preco });
+  updateCart();
 }
 
-function updateCart(){
-let total=0;
-cartItems.innerHTML="";
-cart.forEach((i,index)=>{
-total+=i.preco;
-cartItems.innerHTML+=`${i.nome} <button onclick="remove(${index})">x</button><br>`;
-});
-totalEl.innerText=total.toFixed(2);
+function updateCart() {
+  let total=0;
+  cart-items.innerHTML="";
+  cart.forEach((i,index)=>{
+    total+=i.preco;
+    cart-items.innerHTML+=`<li>${i.nome} <button onclick="cart.splice(${index},1);updateCart()">x</button></li>`;
+  });
+  total.innerText=total.toFixed(2);
 }
 
-function remove(i){
-cart.splice(i,1);
-updateCart();
+function sendWhatsApp(){
+  adicionarPedido();
+  alert("Pedido salvo!");
 }
 
-function send(){
+function adicionarPedido(){
+  let pedidos=JSON.parse(localStorage.getItem("listaPedidos")||"[]");
 
-let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
+  let total=cart.reduce((s,i)=>s+i.preco,0);
 
-pedidos.push({
-itens:cart,
-total:cart.reduce((s,i)=>s+i.preco,0),
-frete:0,
-data:new Date().toISOString().split("T")[0]
-});
+  pedidos.push({
+    itens:cart,
+    total:total,
+    frete:0,
+    data:new Date().toISOString().split("T")[0]
+  });
 
-localStorage.setItem("pedidos",JSON.stringify(pedidos));
-
-alert("Pedido enviado!");
-
-cart=[];
-updateCart();
+  localStorage.setItem("listaPedidos",JSON.stringify(pedidos));
 }
 
 function login(){
-if(senha.value==="1234"){
-conteudo.style.display="block";
-carregarPainel();
-}
-}
-
-function carregarPainel(){
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos")||"[]");
-let data=filtro.value;
-
-if(data){
-pedidos=pedidos.filter(p=>p.data===data);
+  if(senha.value==="1234"){
+    area-admin.style.display="block";
+    mostrarPainel();
+  }
 }
 
-let resumo={};
-let total=0;
-let frete=0;
+function mostrarPainel(){
 
-pedidos.forEach(p=>{
-total+=p.total;
-frete+=p.frete;
+  let pedidos=JSON.parse(localStorage.getItem("listaPedidos")||"[]");
+  let data=filtroData.value;
 
-p.itens.forEach(i=>{
-if(!resumo[i.nome]) resumo[i.nome]={q:0,v:0};
-resumo[i.nome].q++;
-resumo[i.nome].v+=i.preco;
-});
-});
+  if(data){
+    pedidos=pedidos.filter(p=>p.data===data);
+  }
 
-pedidosEl.innerText=pedidos.length;
-freteEl.innerText=frete;
-totalGeral.innerText=total.toFixed(2);
+  let resumo={};
+  let total=0;
 
-lista.innerHTML="";
-Object.entries(resumo).forEach(([n,d])=>{
-lista.innerHTML+=`${n} - ${d.q} vendas<br>`;
-});
+  pedidos.forEach(p=>{
+    total+=p.total;
 
-gerarGrafico(resumo);
+    p.itens.forEach(i=>{
+      if(!resumo[i.nome]) resumo[i.nome]=0;
+      resumo[i.nome]++;
+    });
+  });
 
+  painel-vendas.innerHTML="";
+  Object.entries(resumo).forEach(([n,q])=>{
+    painel-vendas.innerHTML+=`${n} - ${q}<br>`;
+  });
+
+  gerarGrafico(resumo);
 }
 
 let chart;
 
 function gerarGrafico(resumo){
+  let labels=Object.keys(resumo);
+  let data=Object.values(resumo);
 
-let labels=Object.keys(resumo);
-let data=Object.values(resumo).map(i=>i.q);
+  if(chart) chart.destroy();
 
-if(chart) chart.destroy();
-
-chart=new Chart(grafico,{
-type:"bar",
-data:{labels,datasets:[{data}]}
-});
-
+  chart=new Chart(grafico,{
+    type:'bar',
+    data:{labels,datasets:[{data}]}
+  });
 }
 
-function resetar(){
-localStorage.removeItem("pedidos");
-carregarPainel();
+function resetarPainel(){
+  localStorage.removeItem("listaPedidos");
+  mostrarPainel();
 }
 
-if(location.href.includes("admin")){
-painel-vendedor.style.display="block";
+if(!location.href.includes("admin")){
+  painel-vendedor.style.display="none";
 }
 
 renderMenu();
