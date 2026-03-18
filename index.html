@@ -325,7 +325,7 @@ function adicionarPedido() {
     itens: cart,
     total: total + taxa,
     frete: taxa,
-    data: new Date().toISOString().split("T")[0]
+   data: new Date().toLocaleDateString("sv-SE")
   });
 
   localStorage.setItem("listaPedidos", JSON.stringify(pedidosSalvos));
