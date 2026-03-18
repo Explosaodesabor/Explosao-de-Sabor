@@ -321,10 +321,10 @@ function updateCart() {
     </li>`;
   });
 
-  let taxa = 0;
-  if (bairro === "3") taxa = 3;
-  if (bairro === "8") taxa = 8;
-  if (total >= 50) taxa = 0;
+  let taxa = parseFloat(bairro) || 0;
+
+// frete grátis acima de 50
+if (total >= 50) taxa = 0;
 
   entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
   totalEl.innerText = (total + taxa).toFixed(2);
