@@ -49,6 +49,8 @@ h2 { font-size: 18px; margin-top: 20px; }
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
+.item div { max-width: 75%; }
+
 button {
   background: #4caf50;
   color: white;
@@ -57,11 +59,24 @@ button {
   border-radius: 10px;
 }
 
+.remove {
+  background: #f44336;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
 input, select {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin-bottom: 12px;
   border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+#cart {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
 }
 
 .whatsapp {
@@ -116,6 +131,7 @@ th {
 <header>
 <img src="./logo.explosãodesabor.png" class="logo">
 <h1>🔥 Explosão de Sabor 🥭</h1>
+<p>Sabores que surpreendem.</p>
 </header>
 
 <div class="container">
@@ -146,7 +162,7 @@ th {
 
 <h2>💳 Pagamento</h2>
 <select id="payment" onchange="toggleTroco()">
-<option value="">Selecione a forma</option>
+<option value="">Selecione</option>
 <option value="Dinheiro">Dinheiro</option>
 <option value="PIX">PIX</option>
 <option value="Cartão">Cartão</option>
@@ -162,10 +178,11 @@ th {
 <button class="whatsapp" onclick="sendWhatsApp()">Finalizar</button>
 </div>
 
-<!-- PAINEL PROFISSIONAL -->
+<!-- PAINEL -->
 <div class="painel">
 
 <h2>📊 Painel de Vendas</h2>
+
 <img src="./logo.explosãodesabor.png" style="width:70px; display:block; margin:auto;">
 
 <input type="date" id="filtroData" onchange="mostrarPainel()">
@@ -201,6 +218,8 @@ th {
 
 <script>
 
+const phone = "5516981201169";
+
 const produtos = [
 { nome: "💥 Explosão ⭐ MAIS PEDIDO", descricao: "Manga 500ml • sal, limão, lemon pepper, páprica picante", preco: 18 },
 { nome: "💣 Dinamite", descricao: "Abacaxi 500ml • sal, limão, lemon pepper, canela, leite condensado", preco: 20 },
@@ -219,7 +238,7 @@ const extras = [
 let cart = [];
 let chart;
 
-/* MENU ORIGINAL */
+/* ORIGINAL */
 function renderMenu(){
   const menu = document.getElementById("menu");
   menu.innerHTML="";
@@ -365,6 +384,11 @@ function gerarGrafico(resumo){
 function resetar(){
   localStorage.clear();
   mostrarPainel();
+}
+
+/* ESCONDER DO CLIENTE */
+if (!window.location.href.includes("admin")) {
+  document.querySelector(".painel").style.display = "none";
 }
 
 renderMenu();
