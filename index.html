@@ -226,7 +226,7 @@ function renderMenu() {
         <div>${p.descricao}</div>
         <strong>R$ ${p.preco}</strong>
       </div>
-      <button onclick='addToCart("${p.nome}", ${p.preco})'>+</button>
+      <button onclick='addToCart("${p.nome}", "${p.descricao}", ${p.preco})'>+</button>
     </div>`;
   });
 }
@@ -239,13 +239,13 @@ function renderExtras() {
     extrasDiv.innerHTML += `
     <div class="item">
       <div>➕ ${e.nome} - R$ ${e.preco}</div>
-      <button onclick='addToCart("Extra: ${e.nome}", ${e.preco})'>+</button>
+      <button onclick='addToCart("Extra: ${e.nome}", "${e.nome}", ${e.preco})'>+</button>
     </div>`;
   });
 }
 
-function addToCart(nome, preco) {
-  cart.push({ nome, preco });
+function addToCart(nome, descricao, preco) {
+  cart.push({ nome, descricao, preco });
   updateCart();
 }
 
@@ -315,7 +315,11 @@ function sendWhatsApp() {
   let total = 0;
 
   cart.forEach(item => {
-    message += `🧾 ${item.nome} - R$ ${item.preco}%0A`;
+    message += `🧾 ${item.nome}%0A`;
+    if (item.descricao) {
+      message += `   ${item.descricao}%0A`;
+    }
+    message += `   R$ ${item.preco}%0A`;
     total += item.preco;
   });
 
