@@ -28,19 +28,9 @@ header {
   margin-bottom: 10px;
 }
 
-h1 {
-  font-size: 22px;
-  margin: 5px 0;
-}
-
-h2 {
-  font-size: 18px;
-  margin-top: 20px;
-}
-
-p {
-  font-size: 14px;
-}
+h1 { font-size: 22px; margin: 5px 0; }
+h2 { font-size: 18px; margin-top: 20px; }
+p { font-size: 14px; }
 
 .container {
   padding: 15px;
@@ -59,18 +49,9 @@ p {
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
-.item div {
-  max-width: 75%;
-}
-
-.item strong {
-  font-size: 16px;
-}
-
-.item div div {
-  font-size: 14px;
-  color: #666;
-}
+.item div { max-width: 75%; }
+.item strong { font-size: 16px; }
+.item div div { font-size: 14px; color: #666; }
 
 button {
   background: #4caf50;
@@ -117,32 +98,6 @@ input, select {
   border-radius: 12px;
   margin-top: 10px;
 }
-
-.whatsapp:active {
-  transform: scale(0.98);
-}
-
-/* MOBILE EXTRA */
-@media (max-width: 480px) {
-
-  .item {
-    padding: 12px;
-  }
-
-  .item strong {
-    font-size: 15px;
-  }
-
-  .item div div {
-    font-size: 13px;
-  }
-
-  button {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-}
 </style>
 </head>
 
@@ -167,7 +122,6 @@ input, select {
 <input type="text" id="name" placeholder="Seu nome">
 
 <select id="bairro" onchange="updateCart()">
-
 <option value="">Selecione seu bairro</option>
 
 <option value="0">PARQUE DOS PINUS – GRÁTIS</option>
@@ -212,13 +166,11 @@ input, select {
 <option value="5">JARDIM PAULISTA – R$ 5,00</option>
 
 <option value="7">OUTROS BAIRROS – R$ 7,00</option>
-
 </select>
 
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
-
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
@@ -231,7 +183,6 @@ input, select {
 <div id="cart">
 <h3>🛒 Carrinho</h3>
 <ul id="cart-items"></ul>
-
 <p>🚚 Entrega: <span id="entrega">0</span></p>
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
@@ -321,12 +272,12 @@ function updateCart() {
     </li>`;
   });
 
-  let taxa = parseFloat(bairro) || 0;
+  let taxa = parseFloat(bairro);
+  if (isNaN(taxa)) taxa = 0;
 
-// frete grátis acima de 50
-if (total >= 50) taxa = 0;
+  if (total >= 50) taxa = 0;
 
-  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : taxa;
+  entregaEl.innerText = taxa === 0 ? "GRÁTIS" : `R$ ${taxa.toFixed(2)}`;
   totalEl.innerText = (total + taxa).toFixed(2);
 }
 
@@ -339,7 +290,9 @@ function toggleTroco() {
 
 function sendWhatsApp() {
   const nome = document.getElementById("name").value;
-  const bairro = document.getElementById("bairro");
+  const bairroSelect = document.getElementById("bairro");
+  const bairroTexto = bairroSelect.options[bairroSelect.selectedIndex].text;
+  const bairroValor = bairroSelect.value;
   const address = document.getElementById("address").value;
   const payment = document.getElementById("payment").value;
   const troco = document.getElementById("troco").value;
@@ -356,7 +309,7 @@ function sendWhatsApp() {
 
   let message = "🔥 *Pedido - Explosão de Sabor*%0A%0A";
   message += `👤 ${nome}%0A`;
-  message += `📍 ${bairro.options[bairro.selectedIndex].text}%0A`;
+  message += `📍 ${bairroTexto}%0A`;
   message += `🏠 ${address}%0A%0A`;
 
   let total = 0;
@@ -366,24 +319,22 @@ function sendWhatsApp() {
     total += item.preco;
   });
 
-  const bairro = document.getElementById("bairro").value;
+  let taxa = parseFloat(bairroValor);
+  if (isNaN(taxa)) taxa = 0;
 
-let taxa = parseFloat(bairro);
-if (isNaN(taxa)) taxa = 0;
-
-// frete grátis acima de 50
-if (total >= 50) taxa = 0;
-
-entregaEl.innerText = taxa === 0 ? "GRÁTIS" : `R$ ${taxa.toFixed(2)}`;
-totalEl.innerText = (Number(total) + taxa).toFixed(2);
+  if (total >= 50) taxa = 0;
 
   message += "%0A";
-  message += taxa === 0 ? "🚚 Entrega: GRÁTIS%0A" : `🚚 Entrega: R$ ${taxa}%0A`;
+  message += taxa === 0 
+    ? "🚚 Entrega: GRÁTIS%0A" 
+    : `🚚 Entrega: R$ ${taxa.toFixed(2)}%0A`;
 
   message += `%0A💳 Pagamento: ${payment}%0A`;
 
   if (payment === "Dinheiro") {
-    message += troco ? `💵 Troco para: R$ ${troco}%0A` : `💵 Sem troco%0A`;
+    message += troco 
+      ? `💵 Troco para: R$ ${troco}%0A` 
+      : `💵 Sem troco%0A`;
   }
 
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
@@ -394,10 +345,6 @@ totalEl.innerText = (Number(total) + taxa).toFixed(2);
 renderMenu();
 renderExtras();
 
-</script>
-
-</body>
-</html>
 </script>
 
 </body>
