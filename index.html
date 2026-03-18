@@ -307,11 +307,12 @@ function sendWhatsApp() {
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
   salvarVenda();
+  mostrarPainel(); // 🔥 CORREÇÃO AQUI
 
   window.location.href = `https://wa.me/${phone}?text=${message}`;
 }
 
-// NOVO SISTEMA DE VENDAS
+// SALVAR VENDA
 function salvarVenda() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
@@ -335,6 +336,7 @@ function salvarVenda() {
   localStorage.setItem("listaPedidos", JSON.stringify(pedidos));
 }
 
+// PAINEL
 function mostrarPainel() {
   let pedidos = localStorage.getItem("listaPedidos");
   pedidos = pedidos ? JSON.parse(pedidos) : [];
@@ -387,7 +389,7 @@ function resetarPainel() {
   mostrarPainel();
 }
 
-// esconder painel do cliente
+// esconder do cliente
 if (!window.location.href.includes("admin")) {
   document.getElementById("painel-vendedor").style.display = "none";
 }
