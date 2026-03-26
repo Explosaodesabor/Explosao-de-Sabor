@@ -2,16 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Admin</title>
+<title>Painel Explosão de Sabor</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f4f4f4;
 margin:0;
+font-family:Arial;
+background:#111;
+color:white;
 }
 
 .login{
@@ -22,57 +23,87 @@ align-items:center;
 }
 
 .login-box{
-background:white;
+background:#1f1f1f;
 padding:40px;
 border-radius:12px;
+width:320px;
 text-align:center;
-width:300px;
+box-shadow:0 0 20px rgba(0,0,0,0.6);
 }
 
 .login-box input{
 width:100%;
-padding:10px;
+padding:12px;
 margin-top:10px;
+border:none;
+border-radius:8px;
 }
 
 .login-box button{
 width:100%;
-padding:10px;
+padding:12px;
 margin-top:10px;
-background:#4caf50;
-color:white;
 border:none;
 border-radius:8px;
+background:#25d366;
+color:white;
+font-size:16px;
 }
 
 .painel{
 display:none;
-max-width:500px;
+max-width:900px;
 margin:auto;
-padding:20px;
+padding:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-bottom:20px;
 }
 
 .card{
-background:white;
-padding:15px;
+background:#1f1f1f;
+padding:20px;
 border-radius:12px;
-margin-bottom:10px;
 }
 
-button{
-width:100%;
-padding:10px;
-background:#4caf50;
-color:white;
-border:none;
-border-radius:8px;
-margin-top:5px;
+.card h3{
+margin:0;
+font-size:18px;
+}
+
+.card p{
+font-size:22px;
+margin-top:10px;
+color:#25d366;
+}
+
+.box{
+background:#1f1f1f;
+padding:20px;
+border-radius:12px;
+margin-top:20px;
 }
 
 input{
 width:100%;
 padding:10px;
-margin-bottom:10px;
+border:none;
+border-radius:8px;
+margin-top:10px;
+}
+
+button{
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#25d366;
+color:white;
+width:100%;
 }
 
 </style>
@@ -96,28 +127,52 @@ margin-bottom:10px;
 
 <div class="painel" id="painel">
 
-<h2>📊 Painel ADMIN</h2>
+<h1>📊 Painel Explosão de Sabor</h1>
 
-<input type="date" id="filtroData" onchange="mostrarPainel()">
+<div class="cards">
 
-<div id="resumo"></div>
+<div class="card">
+<h3>Pedidos</h3>
+<p id="pedidos"></p>
+</div>
+
+<div class="card">
+<h3>Total Vendido</h3>
+<p id="vendas"></p>
+</div>
+
+<div class="card">
+<h3>Entregas</h3>
+<p id="entregas"></p>
+</div>
+
+<div class="card">
+<h3>Lucro</h3>
+<p id="lucro"></p>
+</div>
+
+</div>
+
+<div class="box">
+
+<h3>📊 Produtos vendidos</h3>
 
 <canvas id="grafico"></canvas>
 
-<h3>💵 Despesas</h3>
+</div>
+
+<div class="box">
+
+<h3>💵 Adicionar Despesa</h3>
 
 <input id="descDespesa" placeholder="Descrição">
 <input id="valorDespesa" type="number" placeholder="Valor">
 
-<button onclick="adicionarDespesa()">Adicionar despesa</button>
+<button onclick="adicionarDespesa()">Adicionar</button>
 
 <div id="listaDespesas"></div>
 
-<h3>📈 Lucro</h3>
-
-<div id="lucro"></div>
-
-<button onclick="resetar()">Zerar dados</button>
+</div>
 
 </div>
 
@@ -179,17 +234,13 @@ totalDespesas+=d.valor;
 
 });
 
-document.getElementById("resumo").innerHTML=`
-<div class="card">📦 Pedidos: ${qtdPedidos}</div>
-<div class="card">💰 Total vendido: R$ ${totalVendas.toFixed(2)}</div>
-<div class="card">🚚 Entregas: R$ ${totalEntrega.toFixed(2)}</div>
-`;
+document.getElementById("pedidos").innerText=qtdPedidos;
+document.getElementById("vendas").innerText="R$ "+totalVendas.toFixed(2);
+document.getElementById("entregas").innerText="R$ "+totalEntrega.toFixed(2);
 
 const lucro=totalVendas-totalDespesas;
 
-document.getElementById("lucro").innerHTML=`
-<div class="card">Lucro: R$ ${lucro.toFixed(2)}</div>
-`;
+document.getElementById("lucro").innerText="R$ "+lucro.toFixed(2);
 
 const ctx=document.getElementById("grafico");
 
@@ -212,11 +263,7 @@ lista.innerHTML="";
 
 despesas.forEach(d=>{
 
-lista.innerHTML+=`
-<div class="card">
-${d.desc} - R$ ${d.valor.toFixed(2)}
-</div>
-`;
+lista.innerHTML+=`<p>${d.desc} - R$ ${d.valor.toFixed(2)}</p>`;
 
 });
 
@@ -248,19 +295,6 @@ document.getElementById("descDespesa").value="";
 document.getElementById("valorDespesa").value="";
 
 mostrarPainel();
-
-}
-
-function resetar(){
-
-if(confirm("Deseja apagar tudo?")){
-
-localStorage.removeItem("pedidos");
-localStorage.removeItem("despesas");
-
-mostrarPainel();
-
-}
 
 }
 
