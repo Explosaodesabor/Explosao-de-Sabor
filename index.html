@@ -55,6 +55,7 @@ border:none;
 padding:12px 14px;
 border-radius:10px;
 font-weight:bold;
+font-size:16px;
 }
 
 .remove{
@@ -94,6 +95,8 @@ margin-top:10px;
 
 <header>
 
+<img src="logo.explosãodesabor.png" class="logo">
+
 <h1>🔥 Explosão de Sabor 🥭</h1>
 
 <p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
@@ -117,11 +120,49 @@ margin-top:10px;
 <select id="bairro" onchange="updateCart()">
 
 <option value="">Selecione seu bairro</option>
+
 <option value="0">PARQUE DOS PINUS – GRÁTIS</option>
-<option value="1">MARINCEK – R$1</option>
-<option value="2">JOSE SAMPAIO – R$2</option>
-<option value="3">IPIRANGA – R$3</option>
-<option value="5">CENTRO – R$5</option>
+<option value="0">HEITOR RIGON – GRÁTIS</option>
+<option value="0">ORESTES LOPES – GRÁTIS</option>
+<option value="0">MARIA CASA GRANDE – GRÁTIS</option>
+
+<option value="1">MARINCEK – R$ 1,00</option>
+<option value="1">VALENTINA FIGUEIREDO – R$ 1,00</option>
+<option value="1">GERALDO DE CARVALHO – R$ 1,00</option>
+
+<option value="1.5">CRISTO REDENTOR – R$ 1,50</option>
+<option value="1.5">PARQUE DAS OLIVEIRAS – R$ 1,50</option>
+<option value="1.5">ALEXANDRE BALBO – R$ 1,50</option>
+<option value="1.5">PARQUE DAS ANDORINHAS – R$ 1,50</option>
+
+<option value="2">PARQUE DAS FIGUEIRAS – R$ 2,00</option>
+<option value="2">JOSE SAMPAIO – R$ 2,00</option>
+
+<option value="2.5">PLANALTO VERDE – R$ 2,50</option>
+<option value="2.5">DOM MIELLI – R$ 2,50</option>
+<option value="2.5">EUGENIO LOPES – R$ 2,50</option>
+<option value="2.5">PAULO GOMES – R$ 2,50</option>
+<option value="2.5">JARDIM PAIVA – R$ 2,50</option>
+
+<option value="3">MACAUBAS – R$ 3,00</option>
+<option value="3">ALTO DO IPIRANGA – R$ 3,00</option>
+<option value="3">IPIRANGA – R$ 3,00</option>
+<option value="3">MONTE ALEGRE – R$ 3,00</option>
+<option value="3">SUMAREZINHO – R$ 3,00</option>
+
+<option value="3.5">VILA TIBERIO – R$ 3,50</option>
+<option value="3.5">CAMPOS ELISEOS – R$ 3,50</option>
+
+<option value="4">QUINTINO FACCI 1 – R$ 4,00</option>
+<option value="4">QUINTINO FACCI 2 – R$ 4,00</option>
+<option value="4">SIMIOMI – R$ 4,00</option>
+
+<option value="5">CENTRO – R$ 5,00</option>
+<option value="5">JARDIM SUMARE – R$ 5,00</option>
+<option value="5">VILA VIRGINIA – R$ 5,00</option>
+<option value="5">JARDIM PAULISTA – R$ 5,00</option>
+
+<option value="7">OUTROS BAIRROS – R$ 7,00</option>
 
 </select>
 
@@ -131,7 +172,7 @@ margin-top:10px;
 
 <select id="payment" onchange="toggleTroco()">
 
-<option value="">Selecione</option>
+<option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
 <option value="PIX">PIX</option>
 <option value="Cartão">Cartão</option>
@@ -150,7 +191,7 @@ margin-top:10px;
 
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
-<button class="whatsapp" onclick="registrarPedido(); sendWhatsApp();">
+<button class="whatsapp" onclick="sendWhatsApp()">
 🚀 Finalizar Pedido no WhatsApp
 </button>
 
@@ -163,24 +204,18 @@ margin-top:10px;
 const phone="5516981201169";
 
 const produtos=[
-
 {nome:"💥 Explosão ⭐ MAIS PEDIDO",descricao:"Manga 500ml • sal, limão, lemon pepper, páprica picante",preco:18},
-
 {nome:"💣 Dinamite",descricao:"Abacaxi 500ml • sal, limão, lemon pepper, canela, leite condensado",preco:20},
-
 {nome:"🌴 Oásis",descricao:"Manga + Abacaxi 500ml • sal, lemon pepper, limão, gengibre",preco:22}
-
 ];
 
 const extras=[
-
 {nome:"Pimenta Preta",preco:1},
 {nome:"Canela",preco:1},
 {nome:"Gengibre",preco:1},
 {nome:"Paprica Doce",preco:1},
 {nome:"Noz Moscada",preco:1},
 {nome:"Leite Condensado",preco:1.5}
-
 ];
 
 let cart=[];
@@ -188,29 +223,19 @@ let cart=[];
 function renderMenu(){
 
 const menu=document.getElementById("menu");
-
 menu.innerHTML="";
 
 produtos.forEach(p=>{
 
 menu.innerHTML+=`
-
 <div class="item">
-
 <div>
-
 <strong>${p.nome}</strong><br>
-
-${p.descricao}<br>
-
+<div>${p.descricao}</div>
 <strong>R$ ${p.preco}</strong>
-
 </div>
-
 <button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
-
 </div>
-
 `;
 
 });
@@ -220,21 +245,15 @@ ${p.descricao}<br>
 function renderExtras(){
 
 const extrasDiv=document.getElementById("extras");
-
 extrasDiv.innerHTML="";
 
 extras.forEach(e=>{
 
 extrasDiv.innerHTML+=`
-
 <div class="item">
-
 <div>➕ ${e.nome} - R$ ${e.preco}</div>
-
 <button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
-
 </div>
-
 `;
 
 });
@@ -244,15 +263,13 @@ extrasDiv.innerHTML+=`
 function addToCart(nome,descricao,preco){
 
 cart.push({nome,descricao,preco});
-
 updateCart();
 
 }
 
-function removeItem(i){
+function removeItem(index){
 
-cart.splice(i,1);
-
+cart.splice(index,1);
 updateCart();
 
 }
@@ -260,31 +277,23 @@ updateCart();
 function updateCart(){
 
 const cartItems=document.getElementById("cart-items");
-
 const totalEl=document.getElementById("total");
-
 const entregaEl=document.getElementById("entrega");
-
 const bairro=document.getElementById("bairro").value;
 
 cartItems.innerHTML="";
 
 let total=0;
 
-cart.forEach((item,i)=>{
+cart.forEach((item,index)=>{
 
 total+=item.preco;
 
 cartItems.innerHTML+=`
-
 <li>
-
 ${item.nome} - R$ ${item.preco}
-
-<button class="remove" onclick="removeItem(${i})">x</button>
-
+<button class="remove" onclick="removeItem(${index})">x</button>
 </li>
-
 `;
 
 });
@@ -292,10 +301,9 @@ ${item.nome} - R$ ${item.preco}
 let taxa=parseFloat(bairro);
 
 if(isNaN(taxa))taxa=0;
-
 if(total>=50)taxa=0;
 
-entregaEl.innerText=taxa===0?"GRÁTIS":"R$ "+taxa;
+entregaEl.innerText=taxa===0?"GRÁTIS":"R$ "+taxa.toFixed(2);
 
 totalEl.innerText=(total+taxa).toFixed(2);
 
@@ -304,7 +312,6 @@ totalEl.innerText=(total+taxa).toFixed(2);
 function toggleTroco(){
 
 const payment=document.getElementById("payment").value;
-
 document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"none";
 
 }
@@ -312,42 +319,40 @@ document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"non
 function sendWhatsApp(){
 
 const nome=document.getElementById("name").value;
-
 const bairroSelect=document.getElementById("bairro");
-
 const bairroTexto=bairroSelect.options[bairroSelect.selectedIndex].text;
-
 const bairroValor=bairroSelect.value;
-
 const address=document.getElementById("address").value;
-
 const payment=document.getElementById("payment").value;
-
 const troco=document.getElementById("troco").value;
 
-if(!nome){alert("Digite seu nome");return;}
+if(!nome||!payment){
+alert("Preencha nome e pagamento!");
+return;
+}
 
-if(!payment){alert("Selecione pagamento");return;}
+if(cart.length===0){
+alert("Adicione itens!");
+return;
+}
 
-if(cart.length===0){alert("Adicione itens");return;}
+let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 
-let message="🔥 *Pedido - Explosão de Sabor*%0A%0A";
-
-message+=`👤 ${nome}%0A`;
-
-message+=`📍 ${bairroTexto}%0A`;
-
-message+=`🏠 ${address}%0A%0A`;
+message+=`👤 ${nome}\n`;
+message+=`📍 ${bairroTexto}\n`;
+message+=`🏠 ${address}\n\n`;
 
 let total=0;
 
 cart.forEach(item=>{
 
-message+=`🧾 ${item.nome}%0A`;
+message+=`🧾 ${item.nome}\n`;
 
-message+=`${item.descricao}%0A`;
+if(item.descricao){
+message+=`${item.descricao}\n`;
+}
 
-message+=`R$ ${item.preco}%0A`;
+message+=`R$ ${item.preco}\n`;
 
 total+=item.preco;
 
@@ -356,16 +361,17 @@ total+=item.preco;
 let taxa=parseFloat(bairroValor);
 
 if(isNaN(taxa))taxa=0;
-
 if(total>=50)taxa=0;
 
-message+=taxa===0?"🚚 Entrega: GRÁTIS%0A":`🚚 Entrega: R$ ${taxa}%0A`;
+message+="\n";
 
-message+=`💳 Pagamento: ${payment}%0A`;
+message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
+
+message+=`\n💳 Pagamento: ${payment}\n`;
 
 if(payment==="Dinheiro"){
 
-message+=troco?`💵 Troco para: ${troco}%0A`:`💵 Sem troco%0A`;
+message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
 
 }
 
@@ -375,56 +381,7 @@ window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}
 
 }
 
-function registrarPedido(){
-
-try{
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
-
-let bairroValor=document.getElementById("bairro").value;
-
-let total=0;
-
-cart.forEach(item=>{
-
-total+=item.preco;
-
-});
-
-let taxa=parseFloat(bairroValor);
-
-if(isNaN(taxa))taxa=0;
-
-if(total>=50)taxa=0;
-
-let produtosPedido=cart.map(item=>item.nome);
-
-pedidos.push({
-
-data:new Date().toISOString().split('T')[0],
-
-produtos:produtosPedido,
-
-valor:total,
-
-entrega:taxa,
-
-total:total+taxa
-
-});
-
-localStorage.setItem("pedidos",JSON.stringify(pedidos));
-
-}catch(e){
-
-console.log("Erro ao salvar pedido",e);
-
-}
-
-}
-
 renderMenu();
-
 renderExtras();
 
 </script>
