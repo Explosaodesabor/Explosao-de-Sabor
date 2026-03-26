@@ -54,6 +54,22 @@ margin-top:10px;
 
 <body>
 
+<script>
+
+const senhaCorreta = "1234";
+
+const senha = prompt("Digite a senha do painel ADMIN:");
+
+if(senha !== senhaCorreta){
+
+alert("Acesso negado");
+
+window.location.href = "/";
+
+}
+
+</script>
+
 <div class="painel">
 
 <h2>📊 Painel ADMIN</h2>
