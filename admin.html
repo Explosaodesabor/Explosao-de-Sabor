@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -52,27 +52,28 @@ canvas {
 
 <div class="painel">
 
-  <!-- LOGIN -->
-  <div id="login">
-    <h2>🔐 Acesso</h2>
-    <input type="password" id="senha" placeholder="Digite a senha">
-    <button onclick="entrar()">Entrar</button>
-  </div>
+<!-- LOGIN -->
+<div id="login">
+<h2>🔐 Acesso</h2>
+<input type="password" id="senha" placeholder="Digite a senha">
+<button onclick="entrar()">Entrar</button>
+</div>
 
-  <!-- PAINEL -->
-  <div id="sistema" style="display:none;">
-    <h2>📊 Painel</h2>
+<!-- PAINEL -->
+<div id="sistema" style="display:none;">
+<h2>📊 Painel</h2>
 
-    <input type="date" id="filtroData" onchange="mostrarPainel()">
+<input type="date" id="filtroData" onchange="mostrarPainel()">
 
-    <div id="resumo"></div>
+<div id="resumo"></div>
 
-    <canvas id="grafico"></canvas>
+<canvas id="grafico"></canvas>
 
-    <div id="itens"></div>
+<div id="itens"></div>
 
-    <button onclick="resetar()">🔄 Zerar Dados</button>
-  </div>
+<button onclick="resetar()">🔄 Zerar Dados</button>
+
+</div>
 
 </div>
 
@@ -80,89 +81,114 @@ canvas {
 
 const SENHA = "1234"; // ALTERE AQUI
 
-function entrar() {
-  const s = document.getElementById("senha").value;
-  if (s === SENHA) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("sistema").style.display = "block";
-    mostrarPainel();
-  } else {
-    alert("Senha incorreta");
-  }
+function entrar(){
+
+const s = document.getElementById("senha").value;
+
+if(s === SENHA){
+
+document.getElementById("login").style.display="none";
+document.getElementById("sistema").style.display="block";
+
+mostrarPainel();
+
+}else{
+
+alert("Senha incorreta");
+
 }
 
-function mostrarPainel() {
-  let pedidos = localStorage.getItem("listaPedidos");
-  pedidos = pedidos ? JSON.parse(pedidos) : [];
-
-  const filtro = document.getElementById("filtroData").value;
-
-  const resumoItens = {};
-  let totalGeral = 0;
-  let totalFrete = 0;
-
-  pedidos.forEach(p => {
-
-    if (filtro && p.data !== filtro) return;
-
-    totalGeral += p.total;
-    totalFrete += p.frete;
-
-    p.itens.forEach(item => {
-      if (!resumoItens[item.nome]) {
-        resumoItens[item.nome] = { qtd: 0, valor: 0 };
-      }
-      resumoItens[item.nome].qtd++;
-      resumoItens[item.nome].valor += item.preco;
-    });
-  });
-
-  // RESUMO
-  document.getElementById("resumo").innerHTML = `
-    <div class="card">💰 Total: R$ ${totalGeral.toFixed(2)}</div>
-    <div class="card">🚚 Frete: R$ ${totalFrete.toFixed(2)}</div>
-  `;
-
-  // ITENS
-  const itensDiv = document.getElementById("itens");
-  itensDiv.innerHTML = "";
-
-  let labels = [];
-  let valores = [];
-
-  Object.entries(resumoItens).forEach(([nome, dados]) => {
-    itensDiv.innerHTML += `
-      <div class="card">
-        ${nome} — ${dados.qtd}x — R$ ${dados.valor.toFixed(2)}
-      </div>
-    `;
-
-    labels.push(nome);
-    valores.push(dados.qtd);
-  });
-
-  // GRÁFICO
-  const ctx = document.getElementById("grafico");
-
-  if (window.grafico) {
-    window.grafico.destroy();
-  }
-
-  window.grafico = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Vendas",
-        data: valores
-      }]
-    }
-  });
 }
 
-function resetar() {
-  localStorage.removeItem("listaPedidos");
-  mostrarPainel();
+function mostrarPainel(){
+
+let pedidos = localStorage.getItem("pedidos");
+
+pedidos = pedidos ? JSON.parse(pedidos) : [];
+
+const filtro = document.getElementById("filtroData").value;
+
+const resumoItens = {};
+
+let totalGeral = 0;
+let totalEntrega = 0;
+
+pedidos.forEach(p => {
+
+if(filtro && p.data !== filtro) return;
+
+totalGeral += p.total;
+
+totalEntrega += p.entrega;
+
+p.produtos.forEach(nome => {
+
+if(!resumoItens[nome]){
+
+resumoItens[nome] = { qtd:0 };
+
+}
+
+resumoItens[nome].qtd++;
+
+});
+
+});
+
+document.getElementById("resumo").innerHTML = `
+
+<div class="card">💰 Total Vendido: R$ ${totalGeral.toFixed(2)}</div>
+<div class="card">🚚 Total Entregas: R$ ${totalEntrega.toFixed(2)}</div>
+
+`;
+
+const itensDiv = document.getElementById("itens");
+
+itensDiv.innerHTML="";
+
+let labels=[];
+let valores=[];
+
+Object.entries(resumoItens).forEach(([nome,dados])=>{
+
+itensDiv.innerHTML += `
+<div class="card">
+${nome} — ${dados.qtd} vendas
+</div>
+`;
+
+labels.push(nome);
+valores.push(dados.qtd);
+
+});
+
+const ctx=document.getElementById("grafico");
+
+if(window.grafico){
+
+window.grafico.destroy();
+
+}
+
+window.grafico=new Chart(ctx,{
+type:"bar",
+data:{
+labels:labels,
+datasets:[{
+label:"Vendas",
+data:valores
+}]
+}
+});
+
+}
+
+function resetar(){
+
+localStorage.removeItem("pedidos");
+
+mostrarPainel();
+
 }
 
 </script>
