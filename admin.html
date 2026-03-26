@@ -2,66 +2,73 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel de Vendas</title>
+<title>Painel ADMIN - Explosão de Sabor</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
-  font-family: Arial;
-  background: #f5f5f5;
-  padding: 15px;
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+padding:15px;
 }
 
-.painel {
-  max-width: 500px;
-  margin: auto;
+.painel{
+max-width:500px;
+margin:auto;
 }
 
-.card {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 10px;
+.card{
+background:white;
+padding:15px;
+border-radius:12px;
+margin-bottom:10px;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: #4caf50;
-  color: white;
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#4caf50;
+color:white;
+margin-top:5px;
 }
 
-canvas {
-  background: white;
-  border-radius: 12px;
-  padding: 10px;
+canvas{
+background:white;
+border-radius:12px;
+padding:10px;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="painel">
 
-<!-- LOGIN -->
 <div id="login">
+
 <h2>🔐 Acesso</h2>
+
 <input type="password" id="senha" placeholder="Digite a senha">
+
 <button onclick="entrar()">Entrar</button>
+
 </div>
 
-<!-- PAINEL -->
 <div id="sistema" style="display:none;">
-<h2>📊 Painel</h2>
+
+<h2>📊 Painel ADMIN</h2>
 
 <input type="date" id="filtroData" onchange="mostrarPainel()">
 
@@ -71,6 +78,20 @@ canvas {
 
 <div id="itens"></div>
 
+<h3>💸 Despesas</h3>
+
+<input type="text" id="nomeDespesa" placeholder="Descrição">
+
+<input type="number" id="valorDespesa" placeholder="Valor">
+
+<button onclick="addDespesa()">Adicionar despesa</button>
+
+<div id="listaDespesas"></div>
+
+<h3>📈 Lucro</h3>
+
+<div id="lucro"></div>
+
 <button onclick="resetar()">🔄 Zerar Dados</button>
 
 </div>
@@ -79,15 +100,16 @@ canvas {
 
 <script>
 
-const SENHA = "1234"; // ALTERE AQUI
+const SENHA="1234";
 
 function entrar(){
 
-const s = document.getElementById("senha").value;
+const s=document.getElementById("senha").value;
 
-if(s === SENHA){
+if(s===SENHA){
 
 document.getElementById("login").style.display="none";
+
 document.getElementById("sistema").style.display="block";
 
 mostrarPainel();
@@ -102,30 +124,31 @@ alert("Senha incorreta");
 
 function mostrarPainel(){
 
-let pedidos = localStorage.getItem("pedidos");
+let pedidos=localStorage.getItem("pedidos");
+pedidos=pedidos?JSON.parse(pedidos):[];
 
-pedidos = pedidos ? JSON.parse(pedidos) : [];
+let despesas=localStorage.getItem("despesas");
+despesas=despesas?JSON.parse(despesas):[];
 
-const filtro = document.getElementById("filtroData").value;
+const filtro=document.getElementById("filtroData").value;
 
-const resumoItens = {};
+const resumoItens={};
 
-let totalGeral = 0;
-let totalEntrega = 0;
+let totalGeral=0;
+let totalEntrega=0;
 
-pedidos.forEach(p => {
+pedidos.forEach(p=>{
 
-if(filtro && p.data !== filtro) return;
+if(filtro && p.data!==filtro) return;
 
-totalGeral += p.total;
+totalGeral+=p.total;
+totalEntrega+=p.entrega;
 
-totalEntrega += p.entrega;
-
-p.produtos.forEach(nome => {
+p.produtos.forEach(nome=>{
 
 if(!resumoItens[nome]){
 
-resumoItens[nome] = { qtd:0 };
+resumoItens[nome]={qtd:0};
 
 }
 
@@ -135,15 +158,14 @@ resumoItens[nome].qtd++;
 
 });
 
-document.getElementById("resumo").innerHTML = `
+document.getElementById("resumo").innerHTML=`
 
 <div class="card">💰 Total Vendido: R$ ${totalGeral.toFixed(2)}</div>
 <div class="card">🚚 Total Entregas: R$ ${totalEntrega.toFixed(2)}</div>
 
 `;
 
-const itensDiv = document.getElementById("itens");
-
+const itensDiv=document.getElementById("itens");
 itensDiv.innerHTML="";
 
 let labels=[];
@@ -151,7 +173,7 @@ let valores=[];
 
 Object.entries(resumoItens).forEach(([nome,dados])=>{
 
-itensDiv.innerHTML += `
+itensDiv.innerHTML+=`
 <div class="card">
 ${nome} — ${dados.qtd} vendas
 </div>
@@ -181,11 +203,57 @@ data:valores
 }
 });
 
+let totalDespesas=0;
+
+const lista=document.getElementById("listaDespesas");
+lista.innerHTML="";
+
+despesas.forEach(d=>{
+
+totalDespesas+=d.valor;
+
+lista.innerHTML+=`
+<div class="card">
+${d.nome} - R$ ${d.valor}
+</div>
+`;
+
+});
+
+const lucro=totalGeral-totalDespesas;
+
+document.getElementById("lucro").innerHTML=`
+<div class="card">
+Lucro: R$ ${lucro.toFixed(2)}
+</div>
+`;
+
+}
+
+function addDespesa(){
+
+let nome=document.getElementById("nomeDespesa").value;
+let valor=parseFloat(document.getElementById("valorDespesa").value);
+
+let despesas=localStorage.getItem("despesas");
+despesas=despesas?JSON.parse(despesas):[];
+
+despesas.push({
+nome:nome,
+valor:valor
+});
+
+localStorage.setItem("despesas",JSON.stringify(despesas));
+
+mostrarPainel();
+
 }
 
 function resetar(){
 
 localStorage.removeItem("pedidos");
+
+localStorage.removeItem("despesas");
 
 mostrarPainel();
 
