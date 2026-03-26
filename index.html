@@ -365,14 +365,16 @@ renderMenu();
 renderExtras();
 
 </script>
-  function saveOrder(total, taxa){
+function saveOrder(total, taxa){
+
+try{
 
 let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
 
 let produtosPedido = cart.map(item => item.nome);
 
 pedidos.push({
-data: new Date().toLocaleDateString(),
+data: new Date().toISOString().split('T')[0],
 produtos: produtosPedido,
 valor: total,
 entrega: taxa,
@@ -380,6 +382,10 @@ total: total + taxa
 });
 
 localStorage.setItem("pedidos", JSON.stringify(pedidos));
+
+}catch(e){
+
+console.log("Erro ao salvar pedido:", e);
 
 }
 
