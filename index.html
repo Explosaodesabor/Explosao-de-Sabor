@@ -365,29 +365,33 @@ renderMenu();
 renderExtras();
 
 </script>
-function saveOrder(total, taxa){
+message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
-try{
+// abre WhatsApp primeiro
+window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+// salva pedido (não interfere no envio)
+setTimeout(() => {
+  try {
 
-let produtosPedido = cart.map(item => item.nome);
+    let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
 
-pedidos.push({
-data: new Date().toISOString().split('T')[0],
-produtos: produtosPedido,
-valor: total,
-entrega: taxa,
-total: total + taxa
-});
+    let produtosPedido = cart.map(item => item.nome);
 
-localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    pedidos.push({
+      data: new Date().toISOString().split('T')[0],
+      produtos: produtosPedido,
+      valor: total,
+      entrega: taxa,
+      total: total + taxa
+    });
 
-}catch(e){
+    localStorage.setItem("pedidos", JSON.stringify(pedidos));
 
-console.log("Erro ao salvar pedido:", e);
-
-}
+  } catch(e) {
+    console.log("Erro ao salvar pedido", e);
+  }
+}, 500);
 
 </body>
 </html>
