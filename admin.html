@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel ADMIN</title>
+<title>Painel Admin</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -11,12 +11,45 @@
 body{
 font-family:Arial;
 background:#f4f4f4;
-padding:20px;
+margin:0;
+}
+
+.login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.login-box{
+background:white;
+padding:40px;
+border-radius:12px;
+text-align:center;
+width:300px;
+}
+
+.login-box input{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+.login-box button{
+width:100%;
+padding:10px;
+margin-top:10px;
+background:#4caf50;
+color:white;
+border:none;
+border-radius:8px;
 }
 
 .painel{
+display:none;
 max-width:500px;
 margin:auto;
+padding:20px;
 }
 
 .card{
@@ -26,27 +59,20 @@ border-radius:12px;
 margin-bottom:10px;
 }
 
+button{
+width:100%;
+padding:10px;
+background:#4caf50;
+color:white;
+border:none;
+border-radius:8px;
+margin-top:5px;
+}
+
 input{
 width:100%;
 padding:10px;
 margin-bottom:10px;
-}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#4caf50;
-color:white;
-font-size:16px;
-}
-
-canvas{
-background:white;
-border-radius:12px;
-padding:10px;
-margin-top:10px;
 }
 
 </style>
@@ -54,23 +80,21 @@ margin-top:10px;
 
 <body>
 
-<script>
+<div class="login">
 
-const senhaCorreta = "1234";
+<div class="login-box">
 
-const senha = prompt("Digite a senha do painel ADMIN:");
+<h2>🔒 Painel Admin</h2>
 
-if(senha !== senhaCorreta){
+<input type="password" id="senha" placeholder="Digite a senha">
 
-alert("Acesso negado");
+<button onclick="login()">Entrar</button>
 
-window.location.href = "/";
+</div>
 
-}
+</div>
 
-</script>
-
-<div class="painel">
+<div class="painel" id="painel">
 
 <h2>📊 Painel ADMIN</h2>
 
@@ -80,9 +104,9 @@ window.location.href = "/";
 
 <canvas id="grafico"></canvas>
 
-<h3>💵 Adicionar Despesa</h3>
+<h3>💵 Despesas</h3>
 
-<input id="descDespesa" placeholder="Descrição da despesa">
+<input id="descDespesa" placeholder="Descrição">
 <input id="valorDespesa" type="number" placeholder="Valor">
 
 <button onclick="adicionarDespesa()">Adicionar despesa</button>
@@ -93,37 +117,53 @@ window.location.href = "/";
 
 <div id="lucro"></div>
 
-<button onclick="resetar()">🔄 Zerar Dados</button>
+<button onclick="resetar()">Zerar dados</button>
 
 </div>
 
 <script>
 
+const senhaCorreta="1234";
+
+function login(){
+
+const senha=document.getElementById("senha").value;
+
+if(senha===senhaCorreta){
+
+document.querySelector(".login").style.display="none";
+document.getElementById("painel").style.display="block";
+
+mostrarPainel();
+
+}else{
+
+alert("Senha incorreta");
+
+}
+
+}
+
 function mostrarPainel(){
 
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
-const filtro = document.getElementById("filtroData").value;
+let totalVendas=0;
+let totalEntrega=0;
+let qtdPedidos=0;
 
-let totalVendas = 0;
-let totalEntrega = 0;
-let qtdPedidos = 0;
-
-const produtos = {};
+const produtos={};
 
 pedidos.forEach(p=>{
 
-if(filtro && p.data !== filtro) return;
-
-totalVendas += p.valor;
-totalEntrega += p.entrega;
-
+totalVendas+=p.valor;
+totalEntrega+=p.entrega;
 qtdPedidos++;
 
 p.produtos.forEach(prod=>{
 
-if(!produtos[prod]) produtos[prod]=0;
+if(!produtos[prod])produtos[prod]=0;
 
 produtos[prod]++;
 
@@ -131,37 +171,48 @@ produtos[prod]++;
 
 });
 
-let totalDespesas = 0;
+let totalDespesas=0;
 
 despesas.forEach(d=>{
 
-if(filtro && d.data !== filtro) return;
-
-totalDespesas += d.valor;
+totalDespesas+=d.valor;
 
 });
 
-document.getElementById("resumo").innerHTML = `
+document.getElementById("resumo").innerHTML=`
 <div class="card">📦 Pedidos: ${qtdPedidos}</div>
 <div class="card">💰 Total vendido: R$ ${totalVendas.toFixed(2)}</div>
-<div class="card">🚚 Total entregas: R$ ${totalEntrega.toFixed(2)}</div>
+<div class="card">🚚 Entregas: R$ ${totalEntrega.toFixed(2)}</div>
 `;
 
-const lucro = totalVendas - totalDespesas;
+const lucro=totalVendas-totalDespesas;
 
-document.getElementById("lucro").innerHTML = `
-<div class="card">💰 Lucro: R$ ${lucro.toFixed(2)}</div>
+document.getElementById("lucro").innerHTML=`
+<div class="card">Lucro: R$ ${lucro.toFixed(2)}</div>
 `;
 
-const lista = document.getElementById("listaDespesas");
+const ctx=document.getElementById("grafico");
+
+if(window.grafico)window.grafico.destroy();
+
+window.grafico=new Chart(ctx,{
+type:"bar",
+data:{
+labels:Object.keys(produtos),
+datasets:[{
+label:"Produtos vendidos",
+data:Object.values(produtos)
+}]
+}
+});
+
+const lista=document.getElementById("listaDespesas");
 
 lista.innerHTML="";
 
 despesas.forEach(d=>{
 
-if(filtro && d.data !== filtro) return;
-
-lista.innerHTML += `
+lista.innerHTML+=`
 <div class="card">
 ${d.desc} - R$ ${d.valor.toFixed(2)}
 </div>
@@ -169,47 +220,26 @@ ${d.desc} - R$ ${d.valor.toFixed(2)}
 
 });
 
-const labels = Object.keys(produtos);
-const valores = Object.values(produtos);
-
-const ctx = document.getElementById("grafico");
-
-if(window.grafico) window.grafico.destroy();
-
-window.grafico = new Chart(ctx,{
-type:"bar",
-data:{
-labels:labels,
-datasets:[{
-label:"Produtos vendidos",
-data:valores
-}]
-}
-});
-
 }
 
 function adicionarDespesa(){
 
-const desc = document.getElementById("descDespesa").value;
-const valor = parseFloat(document.getElementById("valorDespesa").value);
+const desc=document.getElementById("descDespesa").value;
+const valor=parseFloat(document.getElementById("valorDespesa").value);
 
-if(!desc || !valor){
+if(!desc||!valor){
 
-alert("Preencha descrição e valor");
+alert("Preencha os campos");
 
 return;
 
 }
 
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
 despesas.push({
-
 desc:desc,
-valor:valor,
-data:new Date().toISOString().split('T')[0]
-
+valor:valor
 });
 
 localStorage.setItem("despesas",JSON.stringify(despesas));
@@ -223,7 +253,7 @@ mostrarPainel();
 
 function resetar(){
 
-if(confirm("Deseja apagar todos os dados?")){
+if(confirm("Deseja apagar tudo?")){
 
 localStorage.removeItem("pedidos");
 localStorage.removeItem("despesas");
@@ -233,8 +263,6 @@ mostrarPainel();
 }
 
 }
-
-mostrarPainel();
 
 </script>
 
