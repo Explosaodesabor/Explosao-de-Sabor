@@ -289,6 +289,7 @@ function toggleTroco() {
 }
 
 function sendWhatsApp() {
+
   const nome = document.getElementById("name").value;
   const bairroSelect = document.getElementById("bairro");
   const bairroTexto = bairroSelect.options[bairroSelect.selectedIndex].text;
@@ -315,41 +316,72 @@ function sendWhatsApp() {
   let total = 0;
 
   cart.forEach(item => {
+
     message += `🧾 ${item.nome}%0A`;
+
     if (item.descricao) {
       message += `   ${item.descricao}%0A`;
     }
+
     message += `   R$ ${item.preco}%0A`;
+
     total += item.preco;
+
   });
 
   let taxa = parseFloat(bairroValor);
+
   if (isNaN(taxa)) taxa = 0;
 
   if (total >= 50) taxa = 0;
 
   message += "%0A";
-  message += taxa === 0 
-    ? "🚚 Entrega: GRÁTIS%0A" 
+
+  message += taxa === 0
+    ? "🚚 Entrega: GRÁTIS%0A"
     : `🚚 Entrega: R$ ${taxa.toFixed(2)}%0A`;
 
   message += `%0A💳 Pagamento: ${payment}%0A`;
 
   if (payment === "Dinheiro") {
-    message += troco 
-      ? `💵 Troco para: R$ ${troco}%0A` 
+
+    message += troco
+      ? `💵 Troco para: R$ ${troco}%0A`
       : `💵 Sem troco%0A`;
+
   }
 
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
+  // SALVA O PEDIDO NO SISTEMA
+  saveOrder(total, taxa);
+
+  // ENVIA PARA WHATSAPP
   window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
 }
 
 renderMenu();
 renderExtras();
 
 </script>
+  function saveOrder(total, taxa){
+
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+
+let produtosPedido = cart.map(item => item.nome);
+
+pedidos.push({
+data: new Date().toLocaleDateString(),
+produtos: produtosPedido,
+valor: total,
+entrega: taxa,
+total: total + taxa
+});
+
+localStorage.setItem("pedidos", JSON.stringify(pedidos));
+
+}
 
 </body>
 </html>
