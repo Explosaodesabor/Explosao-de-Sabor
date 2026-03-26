@@ -117,7 +117,6 @@ margin-top:10px;
 <select id="bairro" onchange="updateCart()">
 
 <option value="">Selecione seu bairro</option>
-
 <option value="0">PARQUE DOS PINUS – GRÁTIS</option>
 <option value="1">MARINCEK – R$1</option>
 <option value="2">JOSE SAMPAIO – R$2</option>
@@ -151,7 +150,7 @@ margin-top:10px;
 
 <p><strong>Total: R$ <span id="total">0</span></strong></p>
 
-<button class="whatsapp" onclick="sendWhatsApp()">
+<button class="whatsapp" onclick="registrarPedido(); sendWhatsApp();">
 🚀 Finalizar Pedido no WhatsApp
 </button>
 
@@ -190,6 +189,8 @@ function renderMenu(){
 
 const menu=document.getElementById("menu");
 
+menu.innerHTML="";
+
 produtos.forEach(p=>{
 
 menu.innerHTML+=`
@@ -219,6 +220,8 @@ ${p.descricao}<br>
 function renderExtras(){
 
 const extrasDiv=document.getElementById("extras");
+
+extrasDiv.innerHTML="";
 
 extras.forEach(e=>{
 
@@ -370,9 +373,29 @@ message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
 
 window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-setTimeout(()=>{
+}
+
+function registrarPedido(){
+
+try{
 
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
+
+let bairroValor=document.getElementById("bairro").value;
+
+let total=0;
+
+cart.forEach(item=>{
+
+total+=item.preco;
+
+});
+
+let taxa=parseFloat(bairroValor);
+
+if(isNaN(taxa))taxa=0;
+
+if(total>=50)taxa=0;
 
 let produtosPedido=cart.map(item=>item.nome);
 
@@ -392,7 +415,11 @@ total:total+taxa
 
 localStorage.setItem("pedidos",JSON.stringify(pedidos));
 
-},300);
+}catch(e){
+
+console.log("Erro ao salvar pedido",e);
+
+}
 
 }
 
