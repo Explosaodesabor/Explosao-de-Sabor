@@ -66,7 +66,7 @@ margin-top:10px;
 
 <h3>💵 Despesas</h3>
 
-<input id="descDespesa" placeholder="Descrição">
+<input id="descDespesa" placeholder="Descrição da despesa">
 <input id="valorDespesa" type="number" placeholder="Valor">
 
 <button onclick="adicionarDespesa()">Adicionar despesa</button>
@@ -130,7 +130,7 @@ document.getElementById("resumo").innerHTML = `
 const lucro = totalVendas - totalDespesas;
 
 document.getElementById("lucro").innerHTML = `
-<div class="card">Lucro: R$ ${lucro.toFixed(2)}</div>
+<div class="card">💰 Lucro: R$ ${lucro.toFixed(2)}</div>
 `;
 
 const lista = document.getElementById("listaDespesas");
