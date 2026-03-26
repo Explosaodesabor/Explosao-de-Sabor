@@ -80,7 +80,7 @@ window.location.href = "/";
 
 <canvas id="grafico"></canvas>
 
-<h3>💵 Despesas</h3>
+<h3>💵 Adicionar Despesa</h3>
 
 <input id="descDespesa" placeholder="Descrição da despesa">
 <input id="valorDespesa" type="number" placeholder="Valor">
@@ -108,6 +108,7 @@ const filtro = document.getElementById("filtroData").value;
 
 let totalVendas = 0;
 let totalEntrega = 0;
+let qtdPedidos = 0;
 
 const produtos = {};
 
@@ -117,6 +118,8 @@ if(filtro && p.data !== filtro) return;
 
 totalVendas += p.valor;
 totalEntrega += p.entrega;
+
+qtdPedidos++;
 
 p.produtos.forEach(prod=>{
 
@@ -139,8 +142,9 @@ totalDespesas += d.valor;
 });
 
 document.getElementById("resumo").innerHTML = `
-<div class="card">💰 Total Vendido: R$ ${totalVendas.toFixed(2)}</div>
-<div class="card">🚚 Total Entregas: R$ ${totalEntrega.toFixed(2)}</div>
+<div class="card">📦 Pedidos: ${qtdPedidos}</div>
+<div class="card">💰 Total vendido: R$ ${totalVendas.toFixed(2)}</div>
+<div class="card">🚚 Total entregas: R$ ${totalEntrega.toFixed(2)}</div>
 `;
 
 const lucro = totalVendas - totalDespesas;
@@ -191,19 +195,24 @@ const desc = document.getElementById("descDespesa").value;
 const valor = parseFloat(document.getElementById("valorDespesa").value);
 
 if(!desc || !valor){
+
 alert("Preencha descrição e valor");
+
 return;
+
 }
 
 let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
 despesas.push({
+
 desc:desc,
 valor:valor,
 data:new Date().toISOString().split('T')[0]
+
 });
 
-localStorage.setItem("despesas", JSON.stringify(despesas));
+localStorage.setItem("despesas",JSON.stringify(despesas));
 
 document.getElementById("descDespesa").value="";
 document.getElementById("valorDespesa").value="";
@@ -214,7 +223,7 @@ mostrarPainel();
 
 function resetar(){
 
-if(confirm("Tem certeza que deseja apagar tudo?")){
+if(confirm("Deseja apagar todos os dados?")){
 
 localStorage.removeItem("pedidos");
 localStorage.removeItem("despesas");
