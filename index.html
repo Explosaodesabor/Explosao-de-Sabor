@@ -343,7 +343,7 @@ function sendWhatsApp() {
 
   message += `💰 Total: R$ ${(total + taxa).toFixed(2)}`;
 
-  window.location.href = `https://wa.me/${phone}?text=${message}`;
+  window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
 renderMenu();
