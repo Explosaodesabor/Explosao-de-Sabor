@@ -115,6 +115,28 @@ color:white;
 width:100%;
 }
 
+/* DESPESAS */
+
+.despesa{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+background:#2a2a2a;
+padding:10px;
+border-radius:8px;
+}
+
+.btn-excluir{
+background:#e53935;
+border:none;
+color:white;
+padding:5px 10px;
+border-radius:6px;
+cursor:pointer;
+width:auto;
+}
+
 </style>
 </head>
 
@@ -126,7 +148,7 @@ width:100%;
 
 <div class="login-box">
 
-<img src="logo.explosãodesabor.png" class="logo">
+<img src="logo.png" class="logo">
 
 <h2>Painel Admin</h2>
 
@@ -276,9 +298,14 @@ const lista=document.getElementById("listaDespesas");
 
 lista.innerHTML="";
 
-despesas.forEach(d=>{
+despesas.forEach((d,index)=>{
 
-lista.innerHTML+=`<p>${d.desc} - R$ ${d.valor.toFixed(2)}</p>`;
+lista.innerHTML+=`
+<div class="despesa">
+<span>${d.desc} - R$ ${d.valor.toFixed(2)}</span>
+<button class="btn-excluir" onclick="excluirDespesa(${index})">Excluir</button>
+</div>
+`;
 
 });
 
@@ -308,6 +335,28 @@ localStorage.setItem("despesas",JSON.stringify(despesas));
 
 document.getElementById("descDespesa").value="";
 document.getElementById("valorDespesa").value="";
+
+mostrarPainel();
+
+}
+
+function excluirDespesa(index){
+
+const senha=prompt("Digite a senha para excluir");
+
+if(senha!==senhaCorreta){
+
+alert("Senha incorreta");
+
+return;
+
+}
+
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
+
+despesas.splice(index,1);
+
+localStorage.setItem("despesas",JSON.stringify(despesas));
 
 mostrarPainel();
 
