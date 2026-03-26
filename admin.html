@@ -100,8 +100,6 @@ border-radius:10px;
 
 <body>
 
-<!-- LOGIN -->
-
 <div class="login" id="login">
 
 <img src="logo.explosãodesabor.png" width="120">
@@ -113,9 +111,6 @@ border-radius:10px;
 <button onclick="entrar()">Entrar</button>
 
 </div>
-
-
-<!-- PAINEL -->
 
 <div class="painel" id="painel">
 
@@ -132,7 +127,6 @@ border-radius:10px;
 <p>Lucro: R$ <span id="lucro">0</span></p>
 
 </div>
-
 
 <div class="card">
 
@@ -152,7 +146,6 @@ Total Despesas: R$ <span id="totalDespesasPainel">0</span>
 
 </div>
 
-
 <div class="card">
 
 <h3>📊 Vendas</h3>
@@ -163,10 +156,10 @@ Total Despesas: R$ <span id="totalDespesasPainel">0</span>
 
 </div>
 
-
 <script>
 
 const senhaAdmin = "admin123";
+let grafico;
 
 function entrar(){
 
@@ -187,29 +180,22 @@ alert("Senha incorreta");
 
 }
 
-
 function carregarPainel(){
 
 carregarDespesas();
-
 atualizarPainel();
-
 criarGrafico();
 
 }
 
-
-
 function adicionarDespesa(){
 
 let descricao = document.getElementById("descricaoDespesa").value;
-
 let valor = document.getElementById("valorDespesa").value;
 
 if(descricao=="" || valor==""){
 
 alert("Preencha os campos");
-
 return;
 
 }
@@ -217,10 +203,8 @@ return;
 let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
 despesas.push({
-
 descricao:descricao,
 valor:parseFloat(valor)
-
 });
 
 localStorage.setItem("despesas",JSON.stringify(despesas));
@@ -229,17 +213,14 @@ document.getElementById("descricaoDespesa").value="";
 document.getElementById("valorDespesa").value="";
 
 carregarDespesas();
-
 atualizarPainel();
+atualizarGrafico();
 
 }
-
-
 
 function carregarDespesas(){
 
 let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-
 let lista = document.getElementById("listaDespesas");
 
 lista.innerHTML="";
@@ -268,8 +249,6 @@ document.getElementById("totalDespesasPainel").innerText = total.toFixed(2);
 
 }
 
-
-
 function excluirDespesa(index){
 
 let senha = prompt("Digite a senha para excluir:");
@@ -277,7 +256,6 @@ let senha = prompt("Digite a senha para excluir:");
 if(senha !== senhaAdmin){
 
 alert("Senha incorreta");
-
 return;
 
 }
@@ -289,76 +267,61 @@ despesas.splice(index,1);
 localStorage.setItem("despesas",JSON.stringify(despesas));
 
 carregarDespesas();
-
 atualizarPainel();
+atualizarGrafico();
 
 }
-
-
 
 function atualizarPainel(){
 
 let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-
 let vendas = 0;
 
 pedidos.forEach(p=>{
-
 vendas += Number(p.total);
-
 });
 
 let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-
 let totalDespesas = 0;
 
 despesas.forEach(d=>{
-
 totalDespesas += Number(d.valor);
-
 });
 
 let lucro = vendas - totalDespesas;
 
 document.getElementById("totalVendas").innerText = vendas.toFixed(2);
-
 document.getElementById("totalDespesas").innerText = totalDespesas.toFixed(2);
-
 document.getElementById("lucro").innerText = lucro.toFixed(2);
 
 }
-
-
 
 function criarGrafico(){
 
 let ctx = document.getElementById("grafico");
 
-new Chart(ctx,{
-
+grafico = new Chart(ctx,{
 type:"bar",
-
 data:{
-
 labels:["Vendas","Despesas"],
-
 datasets:[{
-
 label:"Financeiro",
-
-data:[
-
-Number(document.getElementById("totalVendas").innerText),
-
-Number(document.getElementById("totalDespesas").innerText)
-
-]
-
+data:[0,0]
 }]
+}
+});
+
+atualizarGrafico();
 
 }
 
-});
+function atualizarGrafico(){
+
+let vendas = Number(document.getElementById("totalVendas").innerText);
+let despesas = Number(document.getElementById("totalDespesas").innerText);
+
+grafico.data.datasets[0].data=[vendas,despesas];
+grafico.update();
 
 }
 
