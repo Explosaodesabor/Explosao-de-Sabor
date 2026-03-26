@@ -116,15 +116,15 @@ width:100%;
 cursor:pointer;
 }
 
-/* DESPESAS */
+/* LISTA DESPESAS */
 
 .despesa{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-top:10px;
 background:#2a2a2a;
 padding:10px;
+margin-top:10px;
 border-radius:8px;
 }
 
@@ -206,7 +206,7 @@ width:auto;
 
 <div class="box">
 
-<h3>💵 Adicionar Despesa</h3>
+<h3>💰 Adicionar Despesa</h3>
 
 <input id="descDespesa" placeholder="Descrição da despesa">
 <input id="valorDespesa" type="number" placeholder="Valor">
@@ -257,6 +257,8 @@ let qtdPedidos=0;
 
 const produtos={};
 
+/* PEDIDOS */
+
 pedidos.forEach(p=>{
 
 totalVendas+=p.valor;
@@ -273,6 +275,8 @@ produtos[prod]++;
 
 });
 
+/* DESPESAS */
+
 let totalDespesas=0;
 
 despesas.forEach(d=>{
@@ -280,6 +284,8 @@ despesas.forEach(d=>{
 totalDespesas+=d.valor;
 
 });
+
+/* CARDS */
 
 document.getElementById("pedidos").innerText=qtdPedidos;
 document.getElementById("vendas").innerText="R$ "+totalVendas.toFixed(2);
@@ -307,7 +313,7 @@ data:Object.values(produtos)
 }
 });
 
-/* LISTA DESPESAS */
+/* LISTAR DESPESAS */
 
 const lista=document.getElementById("listaDespesas");
 
@@ -315,19 +321,16 @@ lista.innerHTML="";
 
 despesas.forEach((d,index)=>{
 
-lista.innerHTML+=`
+const item=document.createElement("div");
 
-<div class="despesa">
+item.className="despesa";
 
+item.innerHTML=`
 <span>${d.desc} - R$ ${d.valor.toFixed(2)}</span>
-
-<button class="btn-excluir" onclick="excluirDespesa(${index})">
-Excluir
-</button>
-
-</div>
-
+<button class="btn-excluir" onclick="excluirDespesa(${index})">Excluir</button>
 `;
+
+lista.appendChild(item);
 
 });
 
@@ -343,7 +346,6 @@ const valor=parseFloat(document.getElementById("valorDespesa").value);
 if(!desc || !valor){
 
 alert("Preencha os campos");
-
 return;
 
 }
@@ -368,7 +370,7 @@ mostrarPainel();
 
 function excluirDespesa(index){
 
-const senha=prompt("Digite a senha para excluir");
+const senha=prompt("Digite a senha para excluir a despesa");
 
 if(senha!==senhaCorreta){
 
