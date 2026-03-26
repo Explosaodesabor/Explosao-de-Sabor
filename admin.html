@@ -15,127 +15,84 @@ background:#111;
 color:white;
 }
 
-/* LOGIN */
-
 .login{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+flex-direction:column;
 }
 
-.login-box{
-background:#1f1f1f;
-padding:40px;
-border-radius:12px;
-width:320px;
-text-align:center;
-box-shadow:0 0 20px rgba(0,0,0,0.6);
-}
-
-.logo{
-width:140px;
-margin-bottom:15px;
-}
-
-.login-box input{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
+.login input{
+padding:10px;
 border-radius:8px;
+border:none;
+margin-top:10px;
+width:200px;
 }
 
-.login-box button{
-width:100%;
-padding:12px;
+.login button{
 margin-top:10px;
+padding:10px 20px;
 border:none;
-border-radius:8px;
-background:#25d366;
+background:#ff6600;
 color:white;
-font-size:16px;
+border-radius:8px;
+cursor:pointer;
 }
-
-/* PAINEL */
 
 .painel{
 display:none;
-max-width:900px;
-margin:auto;
 padding:30px;
 }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
+.card{
+background:#1c1c1c;
+padding:20px;
+border-radius:10px;
 margin-bottom:20px;
 }
 
-.card{
-background:#1f1f1f;
-padding:20px;
-border-radius:12px;
-}
-
-.card h3{
-margin:0;
-font-size:18px;
-}
-
-.card p{
-font-size:22px;
-margin-top:10px;
-color:#25d366;
-}
-
-.box{
-background:#1f1f1f;
-padding:20px;
-border-radius:12px;
-margin-top:20px;
-}
-
 input{
-width:100%;
-padding:10px;
+padding:8px;
 border:none;
-border-radius:8px;
-margin-top:10px;
+border-radius:6px;
+margin-right:5px;
 }
 
 button{
-padding:10px;
-margin-top:10px;
+padding:8px 12px;
 border:none;
-border-radius:8px;
-background:#25d366;
+border-radius:6px;
+background:#ff6600;
 color:white;
-width:100%;
 cursor:pointer;
 }
 
-/* LISTA DESPESAS */
+.excluir{
+background:#ff4d4d;
+}
 
-.despesa{
+.despesa-item{
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:#2a2a2a;
+background:#222;
 padding:10px;
-margin-top:10px;
 border-radius:8px;
+margin-top:8px;
 }
 
-.btn-excluir{
-background:#e53935;
-border:none;
-color:white;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-width:auto;
+.total{
+font-size:18px;
+margin-top:10px;
+color:#00ff9c;
+}
+
+canvas{
+background:#1c1c1c;
+padding:20px;
+border-radius:10px;
 }
 
 </style>
@@ -145,96 +102,82 @@ width:auto;
 
 <!-- LOGIN -->
 
-<div class="login">
+<div class="login" id="login">
 
-<div class="login-box">
+<img src="logo.explosãodesabor.png" width="120">
 
-<img src="logo.explosãodesabor.png" class="logo">
-
-<h2>Painel Admin</h2>
+<h2>Painel ADMIN</h2>
 
 <input type="password" id="senha" placeholder="Digite a senha">
 
-<button onclick="login()">Entrar</button>
+<button onclick="entrar()">Entrar</button>
 
 </div>
 
-</div>
 
 <!-- PAINEL -->
 
 <div class="painel" id="painel">
 
-<h1>📊 Painel Explosão de Sabor</h1>
-
-<div class="cards">
+<h1>Painel Explosão de Sabor</h1>
 
 <div class="card">
-<h3>Pedidos</h3>
-<p id="pedidos">0</p>
+
+<h3>💰 Resumo</h3>
+
+<p>Vendas: R$ <span id="totalVendas">0</span></p>
+
+<p>Despesas: R$ <span id="totalDespesas">0</span></p>
+
+<p>Lucro: R$ <span id="lucro">0</span></p>
+
 </div>
+
 
 <div class="card">
-<h3>Total Vendido</h3>
-<p id="vendas">R$ 0.00</p>
-</div>
 
-<div class="card">
-<h3>Entregas</h3>
-<p id="entregas">R$ 0.00</p>
-</div>
+<h3>💸 Adicionar Despesa</h3>
 
-<div class="card">
-<h3>Despesas</h3>
-<p id="despesasTotal">R$ 0.00</p>
-</div>
+<input id="descricaoDespesa" placeholder="Descrição da despesa">
 
-<div class="card">
-<h3>Lucro</h3>
-<p id="lucro">R$ 0.00</p>
-</div>
-
-</div>
-
-<div class="box">
-
-<h3>📊 Produtos vendidos</h3>
-
-<canvas id="grafico"></canvas>
-
-</div>
-
-<div class="box">
-
-<h3>💰 Adicionar Despesa</h3>
-
-<input id="descDespesa" placeholder="Descrição da despesa">
 <input id="valorDespesa" type="number" placeholder="Valor">
 
 <button onclick="adicionarDespesa()">Adicionar</button>
+
+<div class="total">
+Total Despesas: R$ <span id="totalDespesasPainel">0</span>
+</div>
 
 <div id="listaDespesas"></div>
 
 </div>
 
+
+<div class="card">
+
+<h3>📊 Vendas</h3>
+
+<canvas id="grafico"></canvas>
+
 </div>
+
+</div>
+
 
 <script>
 
-const senhaCorreta="1234";
+const senhaAdmin = "admin123";
 
-/* LOGIN */
+function entrar(){
 
-function login(){
+let senha = document.getElementById("senha").value;
 
-const senha=document.getElementById("senha").value;
+if(senha === senhaAdmin){
 
-if(senha===senhaCorreta){
-
-document.querySelector(".login").style.display="none";
+document.getElementById("login").style.display="none";
 document.getElementById("painel").style.display="block";
 
-mostrarPainel();
+carregarPainel();
 
 }else{
 
@@ -244,148 +187,178 @@ alert("Senha incorreta");
 
 }
 
-/* MOSTRAR PAINEL */
 
-function mostrarPainel(){
+function carregarPainel(){
 
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
-let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
+carregarDespesas();
 
-let totalVendas=0;
-let totalEntrega=0;
-let qtdPedidos=0;
+atualizarPainel();
 
-const produtos={};
-
-/* PEDIDOS */
-
-pedidos.forEach(p=>{
-
-totalVendas+=p.valor;
-totalEntrega+=p.entrega;
-qtdPedidos++;
-
-p.produtos.forEach(prod=>{
-
-if(!produtos[prod]) produtos[prod]=0;
-
-produtos[prod]++;
-
-});
-
-});
-
-/* DESPESAS */
-
-let totalDespesas=0;
-
-despesas.forEach(d=>{
-
-totalDespesas+=d.valor;
-
-});
-
-/* CARDS */
-
-document.getElementById("pedidos").innerText=qtdPedidos;
-document.getElementById("vendas").innerText="R$ "+totalVendas.toFixed(2);
-document.getElementById("entregas").innerText="R$ "+totalEntrega.toFixed(2);
-document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
-
-const lucro=totalVendas-totalDespesas;
-
-document.getElementById("lucro").innerText="R$ "+lucro.toFixed(2);
-
-/* GRAFICO */
-
-const ctx=document.getElementById("grafico");
-
-if(window.grafico) window.grafico.destroy();
-
-window.grafico=new Chart(ctx,{
-type:"bar",
-data:{
-labels:Object.keys(produtos),
-datasets:[{
-label:"Produtos vendidos",
-data:Object.values(produtos)
-}]
-}
-});
-
-/* LISTAR DESPESAS */
-
-const lista=document.getElementById("listaDespesas");
-
-lista.innerHTML="";
-
-despesas.forEach((d,index)=>{
-
-const item=document.createElement("div");
-
-item.className="despesa";
-
-item.innerHTML=`
-<span>${d.desc} - R$ ${d.valor.toFixed(2)}</span>
-<button class="btn-excluir" onclick="excluirDespesa(${index})">Excluir</button>
-`;
-
-lista.appendChild(item);
-
-});
+criarGrafico();
 
 }
 
-/* ADICIONAR DESPESA */
+
 
 function adicionarDespesa(){
 
-const desc=document.getElementById("descDespesa").value;
-const valor=parseFloat(document.getElementById("valorDespesa").value);
+let descricao = document.getElementById("descricaoDespesa").value;
 
-if(!desc || !valor){
+let valor = document.getElementById("valorDespesa").value;
+
+if(descricao=="" || valor==""){
 
 alert("Preencha os campos");
+
 return;
 
 }
 
-let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
 despesas.push({
-desc:desc,
-valor:valor
+
+descricao:descricao,
+valor:parseFloat(valor)
+
 });
 
 localStorage.setItem("despesas",JSON.stringify(despesas));
 
-document.getElementById("descDespesa").value="";
+document.getElementById("descricaoDespesa").value="";
 document.getElementById("valorDespesa").value="";
 
-mostrarPainel();
+carregarDespesas();
+
+atualizarPainel();
 
 }
 
-/* EXCLUIR DESPESA */
+
+
+function carregarDespesas(){
+
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+
+let lista = document.getElementById("listaDespesas");
+
+lista.innerHTML="";
+
+let total=0;
+
+despesas.forEach((d,index)=>{
+
+total += Number(d.valor);
+
+lista.innerHTML += `
+<div class="despesa-item">
+
+<span>${d.descricao} - R$ ${Number(d.valor).toFixed(2)}</span>
+
+<button class="excluir" onclick="excluirDespesa(${index})">
+Excluir
+</button>
+
+</div>
+`;
+
+});
+
+document.getElementById("totalDespesasPainel").innerText = total.toFixed(2);
+
+}
+
+
 
 function excluirDespesa(index){
 
-const senha=prompt("Digite a senha para excluir a despesa");
+let senha = prompt("Digite a senha para excluir:");
 
-if(senha!==senhaCorreta){
+if(senha !== senhaAdmin){
 
 alert("Senha incorreta");
+
 return;
 
 }
 
-let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
 despesas.splice(index,1);
 
 localStorage.setItem("despesas",JSON.stringify(despesas));
 
-mostrarPainel();
+carregarDespesas();
+
+atualizarPainel();
+
+}
+
+
+
+function atualizarPainel(){
+
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+
+let vendas = 0;
+
+pedidos.forEach(p=>{
+
+vendas += Number(p.total);
+
+});
+
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+
+let totalDespesas = 0;
+
+despesas.forEach(d=>{
+
+totalDespesas += Number(d.valor);
+
+});
+
+let lucro = vendas - totalDespesas;
+
+document.getElementById("totalVendas").innerText = vendas.toFixed(2);
+
+document.getElementById("totalDespesas").innerText = totalDespesas.toFixed(2);
+
+document.getElementById("lucro").innerText = lucro.toFixed(2);
+
+}
+
+
+
+function criarGrafico(){
+
+let ctx = document.getElementById("grafico");
+
+new Chart(ctx,{
+
+type:"bar",
+
+data:{
+
+labels:["Vendas","Despesas"],
+
+datasets:[{
+
+label:"Financeiro",
+
+data:[
+
+Number(document.getElementById("totalVendas").innerText),
+
+Number(document.getElementById("totalDespesas").innerText)
+
+]
+
+}]
+
+}
+
+});
 
 }
 
