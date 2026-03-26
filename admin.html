@@ -149,7 +149,7 @@ width:auto;
 
 <div class="login-box">
 
-<img src="logo.explosãodesabor.png" class="logo">
+<img src="logo.png" class="logo">
 
 <h2>Painel Admin</h2>
 
@@ -182,6 +182,11 @@ width:auto;
 <div class="card">
 <h3>Entregas</h3>
 <p id="entregas">R$ 0.00</p>
+</div>
+
+<div class="card">
+<h3>Despesas</h3>
+<p id="despesasTotal">R$ 0.00</p>
 </div>
 
 <div class="card">
@@ -279,6 +284,7 @@ totalDespesas+=d.valor;
 document.getElementById("pedidos").innerText=qtdPedidos;
 document.getElementById("vendas").innerText="R$ "+totalVendas.toFixed(2);
 document.getElementById("entregas").innerText="R$ "+totalEntrega.toFixed(2);
+document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
 
 const lucro=totalVendas-totalDespesas;
 
