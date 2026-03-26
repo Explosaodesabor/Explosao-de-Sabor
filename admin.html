@@ -113,6 +113,7 @@ border-radius:8px;
 background:#25d366;
 color:white;
 width:100%;
+cursor:pointer;
 }
 
 /* DESPESAS */
@@ -131,7 +132,7 @@ border-radius:8px;
 background:#e53935;
 border:none;
 color:white;
-padding:5px 10px;
+padding:6px 10px;
 border-radius:6px;
 cursor:pointer;
 width:auto;
@@ -170,22 +171,22 @@ width:auto;
 
 <div class="card">
 <h3>Pedidos</h3>
-<p id="pedidos"></p>
+<p id="pedidos">0</p>
 </div>
 
 <div class="card">
 <h3>Total Vendido</h3>
-<p id="vendas"></p>
+<p id="vendas">R$ 0.00</p>
 </div>
 
 <div class="card">
 <h3>Entregas</h3>
-<p id="entregas"></p>
+<p id="entregas">R$ 0.00</p>
 </div>
 
 <div class="card">
 <h3>Lucro</h3>
-<p id="lucro"></p>
+<p id="lucro">R$ 0.00</p>
 </div>
 
 </div>
@@ -202,7 +203,7 @@ width:auto;
 
 <h3>💵 Adicionar Despesa</h3>
 
-<input id="descDespesa" placeholder="Descrição">
+<input id="descDespesa" placeholder="Descrição da despesa">
 <input id="valorDespesa" type="number" placeholder="Valor">
 
 <button onclick="adicionarDespesa()">Adicionar</button>
@@ -216,6 +217,8 @@ width:auto;
 <script>
 
 const senhaCorreta="1234";
+
+/* LOGIN */
 
 function login(){
 
@@ -236,6 +239,8 @@ alert("Senha incorreta");
 
 }
 
+/* MOSTRAR PAINEL */
+
 function mostrarPainel(){
 
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
@@ -255,7 +260,7 @@ qtdPedidos++;
 
 p.produtos.forEach(prod=>{
 
-if(!produtos[prod])produtos[prod]=0;
+if(!produtos[prod]) produtos[prod]=0;
 
 produtos[prod]++;
 
@@ -279,9 +284,11 @@ const lucro=totalVendas-totalDespesas;
 
 document.getElementById("lucro").innerText="R$ "+lucro.toFixed(2);
 
+/* GRAFICO */
+
 const ctx=document.getElementById("grafico");
 
-if(window.grafico)window.grafico.destroy();
+if(window.grafico) window.grafico.destroy();
 
 window.grafico=new Chart(ctx,{
 type:"bar",
@@ -294,6 +301,8 @@ data:Object.values(produtos)
 }
 });
 
+/* LISTA DESPESAS */
+
 const lista=document.getElementById("listaDespesas");
 
 lista.innerHTML="";
@@ -301,22 +310,31 @@ lista.innerHTML="";
 despesas.forEach((d,index)=>{
 
 lista.innerHTML+=`
+
 <div class="despesa">
+
 <span>${d.desc} - R$ ${d.valor.toFixed(2)}</span>
-<button class="btn-excluir" onclick="excluirDespesa(${index})">Excluir</button>
+
+<button class="btn-excluir" onclick="excluirDespesa(${index})">
+Excluir
+</button>
+
 </div>
+
 `;
 
 });
 
 }
 
+/* ADICIONAR DESPESA */
+
 function adicionarDespesa(){
 
 const desc=document.getElementById("descDespesa").value;
 const valor=parseFloat(document.getElementById("valorDespesa").value);
 
-if(!desc||!valor){
+if(!desc || !valor){
 
 alert("Preencha os campos");
 
@@ -340,6 +358,8 @@ mostrarPainel();
 
 }
 
+/* EXCLUIR DESPESA */
+
 function excluirDespesa(index){
 
 const senha=prompt("Digite a senha para excluir");
@@ -347,7 +367,6 @@ const senha=prompt("Digite a senha para excluir");
 if(senha!==senhaCorreta){
 
 alert("Senha incorreta");
-
 return;
 
 }
