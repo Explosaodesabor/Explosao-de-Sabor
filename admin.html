@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel ADMIN - Explosão de Sabor</title>
+<title>Painel ADMIN</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -10,8 +10,8 @@
 
 body{
 font-family:Arial;
-background:#f5f5f5;
-padding:15px;
+background:#f4f4f4;
+padding:20px;
 }
 
 .painel{
@@ -39,34 +39,22 @@ border:none;
 border-radius:10px;
 background:#4caf50;
 color:white;
-margin-top:5px;
+font-size:16px;
 }
 
 canvas{
 background:white;
 border-radius:12px;
 padding:10px;
+margin-top:10px;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="painel">
-
-<div id="login">
-
-<h2>🔐 Acesso</h2>
-
-<input type="password" id="senha" placeholder="Digite a senha">
-
-<button onclick="entrar()">Entrar</button>
-
-</div>
-
-<div id="sistema" style="display:none;">
 
 <h2>📊 Painel ADMIN</h2>
 
@@ -76,15 +64,12 @@ padding:10px;
 
 <canvas id="grafico"></canvas>
 
-<div id="itens"></div>
+<h3>💵 Despesas</h3>
 
-<h3>💸 Despesas</h3>
+<input id="descDespesa" placeholder="Descrição">
+<input id="valorDespesa" type="number" placeholder="Valor">
 
-<input type="text" id="nomeDespesa" placeholder="Descrição">
-
-<input type="number" id="valorDespesa" placeholder="Valor">
-
-<button onclick="addDespesa()">Adicionar despesa</button>
+<button onclick="adicionarDespesa()">Adicionar despesa</button>
 
 <div id="listaDespesas"></div>
 
@@ -96,154 +81,116 @@ padding:10px;
 
 </div>
 
-</div>
-
 <script>
-
-const SENHA="1234";
-
-function entrar(){
-
-const s=document.getElementById("senha").value;
-
-if(s===SENHA){
-
-document.getElementById("login").style.display="none";
-
-document.getElementById("sistema").style.display="block";
-
-mostrarPainel();
-
-}else{
-
-alert("Senha incorreta");
-
-}
-
-}
 
 function mostrarPainel(){
 
-let pedidos=localStorage.getItem("pedidos");
-pedidos=pedidos?JSON.parse(pedidos):[];
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
-let despesas=localStorage.getItem("despesas");
-despesas=despesas?JSON.parse(despesas):[];
+const filtro = document.getElementById("filtroData").value;
 
-const filtro=document.getElementById("filtroData").value;
+let totalVendas = 0;
+let totalEntrega = 0;
 
-const resumoItens={};
-
-let totalGeral=0;
-let totalEntrega=0;
+const produtos = {};
 
 pedidos.forEach(p=>{
 
-if(filtro && p.data!==filtro) return;
+if(filtro && p.data !== filtro) return;
 
-totalGeral+=p.total;
-totalEntrega+=p.entrega;
+totalVendas += p.valor;
+totalEntrega += p.entrega;
 
-p.produtos.forEach(nome=>{
+p.produtos.forEach(prod=>{
 
-if(!resumoItens[nome]){
+if(!produtos[prod]) produtos[prod]=0;
 
-resumoItens[nome]={qtd:0};
-
-}
-
-resumoItens[nome].qtd++;
+produtos[prod]++;
 
 });
 
 });
 
-document.getElementById("resumo").innerHTML=`
+let totalDespesas = 0;
 
-<div class="card">💰 Total Vendido: R$ ${totalGeral.toFixed(2)}</div>
+despesas.forEach(d=>{
+
+if(filtro && d.data !== filtro) return;
+
+totalDespesas += d.valor;
+
+});
+
+document.getElementById("resumo").innerHTML = `
+<div class="card">💰 Total Vendido: R$ ${totalVendas.toFixed(2)}</div>
 <div class="card">🚚 Total Entregas: R$ ${totalEntrega.toFixed(2)}</div>
-
 `;
 
-const itensDiv=document.getElementById("itens");
-itensDiv.innerHTML="";
+const lucro = totalVendas - totalDespesas;
 
-let labels=[];
-let valores=[];
+document.getElementById("lucro").innerHTML = `
+<div class="card">Lucro: R$ ${lucro.toFixed(2)}</div>
+`;
 
-Object.entries(resumoItens).forEach(([nome,dados])=>{
+const lista = document.getElementById("listaDespesas");
 
-itensDiv.innerHTML+=`
+lista.innerHTML="";
+
+despesas.forEach(d=>{
+
+if(filtro && d.data !== filtro) return;
+
+lista.innerHTML += `
 <div class="card">
-${nome} — ${dados.qtd} vendas
+${d.desc} - R$ ${d.valor.toFixed(2)}
 </div>
 `;
 
-labels.push(nome);
-valores.push(dados.qtd);
-
 });
 
-const ctx=document.getElementById("grafico");
+const labels = Object.keys(produtos);
+const valores = Object.values(produtos);
 
-if(window.grafico){
+const ctx = document.getElementById("grafico");
 
-window.grafico.destroy();
+if(window.grafico) window.grafico.destroy();
 
-}
-
-window.grafico=new Chart(ctx,{
+window.grafico = new Chart(ctx,{
 type:"bar",
 data:{
 labels:labels,
 datasets:[{
-label:"Vendas",
+label:"Produtos vendidos",
 data:valores
 }]
 }
 });
 
-let totalDespesas=0;
-
-const lista=document.getElementById("listaDespesas");
-lista.innerHTML="";
-
-despesas.forEach(d=>{
-
-totalDespesas+=d.valor;
-
-lista.innerHTML+=`
-<div class="card">
-${d.nome} - R$ ${d.valor}
-</div>
-`;
-
-});
-
-const lucro=totalGeral-totalDespesas;
-
-document.getElementById("lucro").innerHTML=`
-<div class="card">
-Lucro: R$ ${lucro.toFixed(2)}
-</div>
-`;
-
 }
 
-function addDespesa(){
+function adicionarDespesa(){
 
-let nome=document.getElementById("nomeDespesa").value;
-let valor=parseFloat(document.getElementById("valorDespesa").value);
+const desc = document.getElementById("descDespesa").value;
+const valor = parseFloat(document.getElementById("valorDespesa").value);
 
-let despesas=localStorage.getItem("despesas");
-despesas=despesas?JSON.parse(despesas):[];
+if(!desc || !valor){
+alert("Preencha descrição e valor");
+return;
+}
+
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
 despesas.push({
-nome:nome,
-valor:valor
+desc:desc,
+valor:valor,
+data:new Date().toISOString().split('T')[0]
 });
 
-localStorage.setItem("despesas",JSON.stringify(despesas));
+localStorage.setItem("despesas", JSON.stringify(despesas));
+
+document.getElementById("descDespesa").value="";
+document.getElementById("valorDespesa").value="";
 
 mostrarPainel();
 
@@ -251,13 +198,18 @@ mostrarPainel();
 
 function resetar(){
 
-localStorage.removeItem("pedidos");
+if(confirm("Tem certeza que deseja apagar tudo?")){
 
+localStorage.removeItem("pedidos");
 localStorage.removeItem("despesas");
 
 mostrarPainel();
 
 }
+
+}
+
+mostrarPainel();
 
 </script>
 
