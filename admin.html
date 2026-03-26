@@ -15,6 +15,8 @@ background:#111;
 color:white;
 }
 
+/* LOGIN */
+
 .login{
 height:100vh;
 display:flex;
@@ -29,6 +31,11 @@ border-radius:12px;
 width:320px;
 text-align:center;
 box-shadow:0 0 20px rgba(0,0,0,0.6);
+}
+
+.logo{
+width:140px;
+margin-bottom:15px;
 }
 
 .login-box input{
@@ -49,6 +56,8 @@ background:#25d366;
 color:white;
 font-size:16px;
 }
+
+/* PAINEL */
 
 .painel{
 display:none;
@@ -111,11 +120,15 @@ width:100%;
 
 <body>
 
+<!-- LOGIN -->
+
 <div class="login">
 
 <div class="login-box">
 
-<h2>🔒 Painel Admin</h2>
+<img src="logo.png" class="logo">
+
+<h2>Painel Admin</h2>
 
 <input type="password" id="senha" placeholder="Digite a senha">
 
@@ -124,6 +137,8 @@ width:100%;
 </div>
 
 </div>
+
+<!-- PAINEL -->
 
 <div class="painel" id="painel">
 
