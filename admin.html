@@ -2,289 +2,328 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Explosão de Sabor</title>
+<title>Painel Admin - Explosão de Sabor</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 
 body{
+font-family:'Poppins',sans-serif;
 margin:0;
-font-family:Arial;
-background:#111;
-color:white;
-}
-
-.login{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-}
-
-.login input{
-padding:10px;
-border-radius:8px;
-border:none;
-margin-top:10px;
-width:200px;
-}
-
-.login button{
-margin-top:10px;
-padding:10px 20px;
-border:none;
-background:#ff6600;
-color:white;
-border-radius:8px;
-cursor:pointer;
-}
-
-.painel{
-display:none;
-padding:30px;
-}
-
-.card{
-background:#1c1c1c;
+background:#f4f4f4;
 padding:20px;
-border-radius:10px;
-margin-bottom:20px;
 }
 
-input{
-padding:8px;
-border:none;
-border-radius:6px;
-margin-right:5px;
+h1{
+text-align:center;
 }
 
-button{
-padding:8px 12px;
-border:none;
-border-radius:6px;
-background:#ff6600;
-color:white;
-cursor:pointer;
-}
-
-.excluir{
-background:#ff4d4d;
-}
-
-.despesa-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#222;
-padding:10px;
-border-radius:8px;
-margin-top:8px;
-}
-
-.total{
-font-size:18px;
-margin-top:10px;
-color:#00ff9c;
-}
-
-canvas{
-background:#1c1c1c;
-padding:20px;
-border-radius:10px;
-}
-
-.resumo-grid{
+.cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
 margin-top:20px;
 }
 
-.card-resumo{
+.card{
+background:white;
 padding:20px;
 border-radius:10px;
-font-size:18px;
-font-weight:bold;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-.receitas{background:#0f5132;}
-.despesas{background:#842029;}
-.entrega{background:#664d03;}
-.lucro{background:#0d6efd;}
+.valor{
+font-size:22px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.section{
+background:white;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+input,button{
+padding:10px;
+margin-top:10px;
+}
+
+button{
+background:#ff6600;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
 
 </style>
 </head>
 
 <body>
 
-<div class="login" id="login">
+<h1>PAINEL ADMIN - EXPLOSÃO DE SABOR</h1>
 
-<img src="logo.explosãodesabor.png" width="120">
+<label>Filtrar data</label>
+<input type="date" id="filtroData" onchange="atualizar()">
 
-<h2>Painel ADMIN</h2>
-
-<input type="password" id="senha" placeholder="Digite a senha">
-
-<button onclick="entrar()">Entrar</button>
-
-</div>
-
-<div class="painel" id="painel">
-
-<h1>Painel Explosão de Sabor</h1>
+<div class="cards">
 
 <div class="card">
-
-<h3>💰 Resumo</h3>
-
-<label>Filtrar por Data</label>
-<input type="date" id="filtroData" onchange="atualizarPainel()">
-
-<div class="resumo-grid">
-
-<div class="card-resumo receitas">
-Receita Produtos<br>
-R$ <span id="totalVendas">0</span>
+Produtos<br>
+<div class="valor" id="produtosTotal">0</div>
 </div>
 
-<div class="card-resumo despesas">
-Despesas<br>
-R$ <span id="totalDespesas">0</span>
+<div class="card">
+Frete<br>
+<div class="valor" id="freteTotal">0</div>
 </div>
 
-<div class="card-resumo entrega">
-Despesa Entrega<br>
-R$ <span id="despesaEntrega">0</span>
+<div class="card">
+Faturamento<br>
+<div class="valor" id="faturamentoTotal">0</div>
 </div>
 
-<div class="card-resumo lucro">
+<div class="card">
+Pedidos<br>
+<div class="valor" id="pedidosTotal">0</div>
+</div>
+
+<div class="card">
 Lucro<br>
-R$ <span id="lucro">0</span>
+<div class="valor" id="lucroTotal">0</div>
 </div>
 
 </div>
 
-</div>
+<div class="section">
 
-<div class="card">
+<h2>Estatísticas</h2>
 
-<h3>💸 Adicionar Despesa</h3>
+Produto mais vendido:
+<strong id="topProduto"></strong><br><br>
 
-<input id="descricaoDespesa" placeholder="Descrição da despesa">
-<input id="valorDespesa" type="number" placeholder="Valor">
+Bairro que mais compra:
+<strong id="topBairro"></strong><br><br>
 
-<button onclick="adicionarDespesa()">Adicionar</button>
-
-<div class="total">
-Total Despesas: R$ <span id="totalDespesasPainel">0</span>
-</div>
-
-<div id="listaDespesas"></div>
+Ticket médio:
+<strong id="ticketMedio"></strong>
 
 </div>
 
-<div class="card">
+<div class="section">
 
-<h3>🚚 Despesa de Entrega</h3>
-
-<input id="valorEntrega" type="number" placeholder="Valor da entrega">
-
-<button onclick="adicionarEntrega()">Adicionar</button>
-
-</div>
-
-<div class="card">
-
-<h3>📊 Vendas</h3>
+<h2>Gráfico de vendas</h2>
 
 <canvas id="grafico"></canvas>
 
 </div>
 
+<div class="section">
+
+<h2>Pedidos</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Data</th>
+<th>Itens</th>
+<th>Produtos</th>
+<th>Frete</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody id="listaPedidos"></tbody>
+
+</table>
+
+</div>
+
+<div class="section">
+
+<h2>Despesas</h2>
+
+<input id="descDespesa" placeholder="Descrição">
+<input id="valorDespesa" type="number" placeholder="Valor">
+
+<button onclick="addDespesa()">Adicionar</button>
+
+<div id="listaDespesas"></div>
+
 </div>
 
 <script>
 
-const senhaAdmin="admin123";
 let grafico;
 
-function entrar(){
+function atualizar(){
 
-let senha=document.getElementById("senha").value;
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
 
-if(senha===senhaAdmin){
+let filtro = document.getElementById("filtroData").value;
 
-document.getElementById("login").style.display="none";
-document.getElementById("painel").style.display="block";
+let produtosTotal=0;
+let freteTotal=0;
 
-carregarPainel();
+let produtosDia=0;
+let freteDia=0;
 
-}else{
+let lista=document.getElementById("listaPedidos");
 
-alert("Senha incorreta");
+lista.innerHTML="";
+
+let produtosContagem={};
+let bairrosContagem={};
+
+pedidos.forEach(p=>{
+
+let data = p.data.split("T")[0];
+
+produtosTotal += p.total;
+freteTotal += p.entrega;
+
+if(!filtro || data===filtro){
+
+let itens=p.itens.map(i=>i.nome).join(", ");
+
+lista.innerHTML+=`
+<tr>
+<td>${new Date(p.data).toLocaleDateString()}</td>
+<td>${itens}</td>
+<td>R$ ${p.total.toFixed(2)}</td>
+<td>R$ ${p.entrega.toFixed(2)}</td>
+<td>R$ ${p.totalFinal.toFixed(2)}</td>
+</tr>
+`;
 
 }
 
-}
+if(data===filtro){
 
-function carregarPainel(){
-
-carregarDespesas();
-atualizarPainel();
-criarGrafico();
+produtosDia += p.total;
+freteDia += p.entrega;
 
 }
 
-function adicionarEntrega(){
-
-let valor=document.getElementById("valorEntrega").value;
-
-let entregas=JSON.parse(localStorage.getItem("entregas"))||[];
-
-entregas.push({
-valor:parseFloat(valor),
-data:new Date().toISOString().split("T")[0]
+p.itens.forEach(i=>{
+produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
 });
 
-localStorage.setItem("entregas",JSON.stringify(entregas));
+});
 
-document.getElementById("valorEntrega").value="";
+let faturamento = produtosTotal + freteTotal;
 
-atualizarPainel();
-atualizarGrafico();
+let totalDespesas=0;
+
+despesas.forEach(d=>{
+totalDespesas+=Number(d.valor);
+});
+
+let lucro=faturamento-totalDespesas;
+
+document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
+document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
+document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
+document.getElementById("pedidosTotal").innerText=pedidos.length;
+document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
+
+let topProduto="";
+
+let max=0;
+
+for(let p in produtosContagem){
+
+if(produtosContagem[p]>max){
+
+max=produtosContagem[p];
+topProduto=p;
 
 }
 
-function adicionarDespesa(){
+}
 
-let descricao=document.getElementById("descricaoDespesa").value;
+document.getElementById("topProduto").innerText=topProduto;
+
+let ticket=0;
+
+if(pedidos.length>0){
+
+ticket=faturamento/pedidos.length;
+
+}
+
+document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
+
+criarGrafico(produtosTotal,freteTotal,totalDespesas);
+
+carregarDespesas();
+
+}
+
+function criarGrafico(prod,frete,desp){
+
+let ctx=document.getElementById("grafico");
+
+if(grafico){
+
+grafico.destroy();
+
+}
+
+grafico=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Produtos","Frete","Despesas"],
+datasets:[{
+label:"Financeiro",
+data:[prod,frete,desp]
+}]
+}
+});
+
+}
+
+function addDespesa(){
+
+let desc=document.getElementById("descDespesa").value;
 let valor=document.getElementById("valorDespesa").value;
-
-if(descricao==""||valor==""){
-
-alert("Preencha os campos");
-return;
-
-}
 
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
 despesas.push({
-descricao:descricao,
-valor:parseFloat(valor),
-data:new Date().toISOString().split("T")[0]
+
+descricao:desc,
+valor:Number(valor),
+data:new Date().toISOString()
+
 });
 
 localStorage.setItem("despesas",JSON.stringify(despesas));
 
-document.getElementById("descricaoDespesa").value="";
+document.getElementById("descDespesa").value="";
 document.getElementById("valorDespesa").value="";
 
 carregarDespesas();
-atualizarPainel();
-atualizarGrafico();
+atualizar();
 
 }
 
@@ -296,128 +335,17 @@ let lista=document.getElementById("listaDespesas");
 
 lista.innerHTML="";
 
-let total=0;
-
-despesas.forEach((d,index)=>{
-
-total+=Number(d.valor);
+despesas.forEach(d=>{
 
 lista.innerHTML+=`
-<div class="despesa-item">
-<span>${d.descricao} - R$ ${Number(d.valor).toFixed(2)}</span>
-<button class="excluir" onclick="excluirDespesa(${index})">Excluir</button>
-</div>
+<div>${d.descricao} - R$ ${d.valor.toFixed(2)}</div>
 `;
 
 });
 
-document.getElementById("totalDespesasPainel").innerText=total.toFixed(2);
-
 }
 
-function excluirDespesa(index){
-
-let senha=prompt("Digite a senha para excluir:");
-
-if(senha!==senhaAdmin){
-alert("Senha incorreta");
-return;
-}
-
-let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
-
-despesas.splice(index,1);
-
-localStorage.setItem("despesas",JSON.stringify(despesas));
-
-carregarDespesas();
-atualizarPainel();
-atualizarGrafico();
-
-}
-
-function atualizarPainel(){
-
-let filtro=document.getElementById("filtroData").value;
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
-let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
-let entregas=JSON.parse(localStorage.getItem("entregas"))||[];
-
-let vendas=0;
-let totalFreteRecebido=0;
-let totalDespesas=0;
-let totalEntrega=0;
-
-pedidos.forEach(p=>{
-
-let dataPedido=p.data;
-
-if(!filtro||dataPedido==filtro){
-
-vendas+=Number(p.total);
-
-if(p.entrega){
-totalFreteRecebido+=Number(p.entrega);
-}
-
-}
-
-});
-
-despesas.forEach(d=>{
-if(!filtro||d.data==filtro){
-totalDespesas+=Number(d.valor);
-}
-});
-
-entregas.forEach(e=>{
-if(!filtro||e.data==filtro){
-totalEntrega+=Number(e.valor);
-}
-});
-
-let lucro=vendas-totalDespesas-totalEntrega;
-
-document.getElementById("totalVendas").innerText=vendas.toFixed(2);
-document.getElementById("totalDespesas").innerText=totalDespesas.toFixed(2);
-document.getElementById("despesaEntrega").innerText=totalEntrega.toFixed(2);
-document.getElementById("lucro").innerText=lucro.toFixed(2);
-
-atualizarGrafico();
-
-}
-
-function criarGrafico(){
-
-let ctx=document.getElementById("grafico");
-
-grafico=new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Receitas","Despesas","Entrega"],
-datasets:[{
-label:"Financeiro",
-data:[0,0,0]
-}]
-}
-});
-
-}
-
-function atualizarGrafico(){
-
-if(!grafico)return;
-
-let vendas=Number(document.getElementById("totalVendas").innerText);
-let despesas=Number(document.getElementById("totalDespesas").innerText);
-let entrega=Number(document.getElementById("despesaEntrega").innerText);
-
-grafico.data.datasets[0].data=[vendas,despesas,entrega];
-
-grafico.update();
-
-}
+atualizar();
 
 </script>
 
