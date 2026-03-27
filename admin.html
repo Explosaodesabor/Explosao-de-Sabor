@@ -17,8 +17,6 @@ background:#111;
 color:white;
 }
 
-/* LOGIN */
-
 .login{
 height:100vh;
 display:flex;
@@ -27,54 +25,30 @@ align-items:center;
 flex-direction:column;
 }
 
-.logo-login{
-width:180px;
-margin-bottom:20px;
-border-radius:50%;
-box-shadow:0 6px 20px rgba(0,0,0,0.4);
-}
-
 .login input{
-padding:12px;
+padding:10px;
 border-radius:8px;
 border:none;
 margin-top:10px;
-width:200px;
 }
 
 .login button{
 margin-top:10px;
-padding:12px 25px;
+padding:10px 20px;
 border:none;
 background:#ff6600;
 color:white;
 border-radius:8px;
 cursor:pointer;
-font-weight:bold;
 }
-
-/* PAINEL */
 
 .painel{
 display:none;
 padding:20px;
-background:#f4f4f4;
-color:black;
+background:#1c1c1c;
+color:white;
 min-height:100vh;
 }
-
-.topo{
-display:flex;
-align-items:center;
-gap:15px;
-}
-
-.logo-topo{
-width:60px;
-border-radius:50%;
-}
-
-/* CARDS */
 
 .cards{
 display:grid;
@@ -84,31 +58,31 @@ margin-top:20px;
 }
 
 .card{
-background:white;
+background:#2b2b2b;
 padding:20px;
 border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+box-shadow:0 4px 10px rgba(0,0,0,0.4);
 }
 
-.card h3{
-margin:0;
-font-size:16px;
-}
+.card.produtos{border-left:6px solid #2196f3;}
+.card.frete{border-left:6px solid #1976d2;}
+.card.despesas{border-left:6px solid #ff3b3b;}
+.card.faturamento{border-left:6px solid #00bcd4;}
+.card.pedidos{border-left:6px solid #ffc107;}
+.card.lucro{border-left:6px solid #4caf50;}
 
 .valor{
-font-size:26px;
+font-size:24px;
 font-weight:bold;
 margin-top:5px;
 }
 
-/* SECTIONS */
-
 .section{
-background:white;
+background:#2b2b2b;
 padding:20px;
 border-radius:12px;
 margin-top:20px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+box-shadow:0 2px 6px rgba(0,0,0,0.3);
 }
 
 table{
@@ -118,8 +92,8 @@ border-collapse:collapse;
 
 th,td{
 padding:10px;
-border-bottom:1px solid #ddd;
-text-align:left;
+border-bottom:1px solid #444;
+color:white;
 }
 
 button{
@@ -138,7 +112,7 @@ background:#ff4d4d;
 .despesa-item{
 display:flex;
 justify-content:space-between;
-background:#eee;
+background:#3a3a3a;
 padding:8px;
 margin-top:5px;
 border-radius:6px;
@@ -151,8 +125,6 @@ border-radius:6px;
 
 <div class="login" id="login">
 
-<img src="logo.explosãodesabor.png" class="logo-login">
-
 <h2>Painel ADMIN</h2>
 
 <input type="password" id="senha" placeholder="Digite a senha">
@@ -163,45 +135,40 @@ border-radius:6px;
 
 <div class="painel" id="painel">
 
-<div class="topo">
-<img src="logo.explosãodesabor.png" class="logo-topo">
 <h1>Painel Explosão de Sabor</h1>
-</div>
-
-<br>
 
 <label>Filtrar data</label>
 <input type="date" id="filtroData" onchange="atualizar()">
 
 <div class="cards">
 
-<div class="card">
-<h3>Receita Produtos</h3>
+<div class="card produtos">
+Receita Produtos
 <div class="valor" id="produtosTotal">0</div>
 </div>
 
-<div class="card">
-<h3>Receita Frete</h3>
+<div class="card frete">
+Receita Frete
 <div class="valor" id="freteTotal">0</div>
 </div>
 
-<div class="card">
-<h3>Despesas</h3>
+<div class="card despesas">
+Despesas
 <div class="valor" id="despesasTotal">0</div>
 </div>
 
-<div class="card">
-<h3>Faturamento</h3>
+<div class="card faturamento">
+Faturamento
 <div class="valor" id="faturamentoTotal">0</div>
 </div>
 
-<div class="card">
-<h3>Total Pedidos</h3>
+<div class="card pedidos">
+Pedidos
 <div class="valor" id="pedidosTotal">0</div>
 </div>
 
-<div class="card">
-<h3>Lucro</h3>
+<div class="card lucro">
+Lucro
 <div class="valor" id="lucroTotal">0</div>
 </div>
 
@@ -267,6 +234,7 @@ Ticket médio:
 <script>
 
 const senhaAdmin="admin123";
+
 let grafico;
 
 function entrar(){
@@ -293,53 +261,18 @@ function atualizar(){
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
-let filtro=document.getElementById("filtroData").value;
-
-/* TOTAIS GERAIS */
-
-let produtosTotalGeral=0;
-let freteTotalGeral=0;
-
-pedidos.forEach(p=>{
-produtosTotalGeral+=Number(p.total);
-freteTotalGeral+=Number(p.entrega);
-});
-
-let faturamentoGeral=produtosTotalGeral+freteTotalGeral;
-
-let totalDespesas=0;
-
-despesas.forEach(d=>{
-totalDespesas+=Number(d.valor);
-});
-
-let lucroGeral=faturamentoGeral-totalDespesas;
-
-/* FILTRO */
-
-let pedidosFiltrados=pedidos;
-
-if(filtro){
-
-pedidosFiltrados=pedidos.filter(p=>{
-let data=new Date(p.data).toISOString().slice(0,10);
-return data===filtro;
-});
-
-}
-
-let produtosDia=0;
-let freteDia=0;
+let produtosTotal=0;
+let freteTotal=0;
 
 let lista=document.getElementById("listaPedidos");
 lista.innerHTML="";
 
 let produtosContagem={};
 
-pedidosFiltrados.forEach(p=>{
+pedidos.forEach(p=>{
 
-produtosDia+=Number(p.total);
-freteDia+=Number(p.entrega);
+produtosTotal+=Number(p.total);
+freteTotal+=Number(p.entrega);
 
 let itens=p.itens.map(i=>i.nome).join(", ");
 
@@ -359,22 +292,46 @@ produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
 
 });
 
-document.getElementById("produtosTotal").innerText="R$ "+produtosDia.toFixed(2);
-document.getElementById("freteTotal").innerText="R$ "+freteDia.toFixed(2);
+let faturamento=produtosTotal+freteTotal;
+
+let totalDespesas=0;
+
+despesas.forEach(d=>{
+totalDespesas+=Number(d.valor);
+});
+
+let lucro=faturamento-totalDespesas;
+
+document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
+document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
 document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
-document.getElementById("faturamentoTotal").innerText="R$ "+faturamentoGeral.toFixed(2);
-document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
-document.getElementById("lucroTotal").innerText="R$ "+lucroGeral.toFixed(2);
+document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
+document.getElementById("pedidosTotal").innerText=pedidos.length;
+document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
+
+let topProduto="";
+let max=0;
+
+for(let p in produtosContagem){
+
+if(produtosContagem[p]>max){
+max=produtosContagem[p];
+topProduto=p;
+}
+
+}
+
+document.getElementById("topProduto").innerText=topProduto;
 
 let ticket=0;
 
-if(pedidosFiltrados.length>0){
-ticket=(produtosDia+freteDia)/pedidosFiltrados.length;
+if(pedidos.length>0){
+ticket=faturamento/pedidos.length;
 }
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
 
-criarGrafico(produtosDia,freteDia,totalDespesas);
+criarGrafico(produtosTotal,freteTotal,totalDespesas);
 
 carregarDespesas();
 
@@ -394,7 +351,12 @@ data:{
 labels:["Produtos","Frete","Despesas"],
 datasets:[{
 label:"Financeiro",
-data:[prod,frete,desp]
+data:[prod,frete,desp],
+backgroundColor:[
+"#2196f3",
+"#1976d2",
+"#ff3b3b"
+]
 }]
 }
 });
