@@ -111,8 +111,6 @@ margin-top:20px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* TABELA */
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -123,8 +121,6 @@ padding:10px;
 border-bottom:1px solid #ddd;
 text-align:left;
 }
-
-/* BOTÕES */
 
 button{
 padding:8px 12px;
@@ -138,8 +134,6 @@ cursor:pointer;
 .excluir{
 background:#ff4d4d;
 }
-
-/* DESPESAS */
 
 .despesa-item{
 display:flex;
@@ -192,6 +186,11 @@ border-radius:6px;
 </div>
 
 <div class="card">
+<h3>Despesas</h3>
+<div class="valor" id="despesasTotal">0</div>
+</div>
+
+<div class="card">
 <h3>Faturamento</h3>
 <div class="valor" id="faturamentoTotal">0</div>
 </div>
@@ -213,9 +212,7 @@ border-radius:6px;
 <h2>Estatísticas</h2>
 
 Produto mais vendido:
-<strong id="topProduto"></strong>
-
-<br><br>
+<strong id="topProduto"></strong><br><br>
 
 Ticket médio:
 <strong id="ticketMedio"></strong>
@@ -298,31 +295,51 @@ let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
 let filtro=document.getElementById("filtroData").value;
 
-let produtosTotal=0;
-let freteTotal=0;
+/* TOTAIS GERAIS */
 
-let lista=document.getElementById("listaPedidos");
-lista.innerHTML="";
+let produtosTotalGeral=0;
+let freteTotalGeral=0;
 
-let produtosContagem={};
+pedidos.forEach(p=>{
+produtosTotalGeral+=Number(p.total);
+freteTotalGeral+=Number(p.entrega);
+});
+
+let faturamentoGeral=produtosTotalGeral+freteTotalGeral;
+
+let totalDespesas=0;
+
+despesas.forEach(d=>{
+totalDespesas+=Number(d.valor);
+});
+
+let lucroGeral=faturamentoGeral-totalDespesas;
+
+/* FILTRO */
 
 let pedidosFiltrados=pedidos;
 
 if(filtro){
 
 pedidosFiltrados=pedidos.filter(p=>{
-
 let data=new Date(p.data).toISOString().slice(0,10);
 return data===filtro;
-
 });
 
 }
 
+let produtosDia=0;
+let freteDia=0;
+
+let lista=document.getElementById("listaPedidos");
+lista.innerHTML="";
+
+let produtosContagem={};
+
 pedidosFiltrados.forEach(p=>{
 
-produtosTotal+=Number(p.total);
-freteTotal+=Number(p.entrega);
+produtosDia+=Number(p.total);
+freteDia+=Number(p.entrega);
 
 let itens=p.itens.map(i=>i.nome).join(", ");
 
@@ -342,45 +359,22 @@ produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
 
 });
 
-let faturamento=produtosTotal+freteTotal;
-
-let totalDespesas=0;
-
-despesas.forEach(d=>{
-totalDespesas+=Number(d.valor);
-});
-
-let lucro=faturamento-totalDespesas;
-
-document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
-document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
-document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
+document.getElementById("produtosTotal").innerText="R$ "+produtosDia.toFixed(2);
+document.getElementById("freteTotal").innerText="R$ "+freteDia.toFixed(2);
+document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
+document.getElementById("faturamentoTotal").innerText="R$ "+faturamentoGeral.toFixed(2);
 document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
-document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
-
-let topProduto="";
-let max=0;
-
-for(let p in produtosContagem){
-
-if(produtosContagem[p]>max){
-max=produtosContagem[p];
-topProduto=p;
-}
-
-}
-
-document.getElementById("topProduto").innerText=topProduto;
+document.getElementById("lucroTotal").innerText="R$ "+lucroGeral.toFixed(2);
 
 let ticket=0;
 
 if(pedidosFiltrados.length>0){
-ticket=faturamento/pedidosFiltrados.length;
+ticket=(produtosDia+freteDia)/pedidosFiltrados.length;
 }
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
 
-criarGrafico(produtosTotal,freteTotal,totalDespesas);
+criarGrafico(produtosDia,freteDia,totalDespesas);
 
 carregarDespesas();
 
