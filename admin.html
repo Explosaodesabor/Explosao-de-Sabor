@@ -25,11 +25,6 @@ align-items:center;
 flex-direction:column;
 }
 
-.login img{
-width:180px;
-margin-bottom:20px;
-}
-
 .login input{
 padding:10px;
 border-radius:8px;
@@ -50,8 +45,8 @@ cursor:pointer;
 .painel{
 display:none;
 padding:20px;
-background:#1b1b1b;
-color:white;
+background:#f4f4f4;
+color:black;
 min-height:100vh;
 }
 
@@ -63,18 +58,11 @@ margin-top:20px;
 }
 
 .card{
+background:white;
 padding:20px;
 border-radius:10px;
-color:white;
-box-shadow:0 2px 8px rgba(0,0,0,0.4);
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
-
-.card:nth-child(1){background:#1565c0;}
-.card:nth-child(2){background:#0277bd;}
-.card:nth-child(3){background:#2e7d32;}
-.card:nth-child(4){background:#6a1b9a;}
-.card:nth-child(5){background:#c62828;}
-.card:nth-child(6){background:#ef6c00;}
 
 .valor{
 font-size:22px;
@@ -82,10 +70,11 @@ font-weight:bold;
 }
 
 .section{
-background:#2a2a2a;
+background:white;
 padding:20px;
 border-radius:10px;
 margin-top:20px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 table{
@@ -95,7 +84,7 @@ border-collapse:collapse;
 
 th,td{
 padding:10px;
-border-bottom:1px solid #444;
+border-bottom:1px solid #ddd;
 }
 
 button{
@@ -114,7 +103,7 @@ background:#ff4d4d;
 .despesa-item{
 display:flex;
 justify-content:space-between;
-background:#3a3a3a;
+background:#eee;
 padding:8px;
 margin-top:5px;
 border-radius:6px;
@@ -126,8 +115,6 @@ border-radius:6px;
 <body>
 
 <div class="login" id="login">
-
-<img src="logo.explosãodesabor.png">
 
 <h2>Painel ADMIN</h2>
 
@@ -164,11 +151,6 @@ Faturamento
 <div class="card">
 Pedidos
 <div class="valor" id="pedidosTotal">0</div>
-</div>
-
-<div class="card">
-Despesas
-<div class="valor" id="despesasTotal">0</div>
 </div>
 
 <div class="card">
@@ -312,24 +294,24 @@ produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
 
 });
 
-let faturamentoTotal=0;
-let despesasTotal=0;
+let faturamento=0;
 
 pedidos.forEach(p=>{
-faturamentoTotal+=Number(p.total)+Number(p.entrega);
+faturamento+=Number(p.total)+Number(p.entrega);
 });
+
+let totalDespesas=0;
 
 despesas.forEach(d=>{
-despesasTotal+=Number(d.valor);
+totalDespesas+=Number(d.valor);
 });
 
-let lucro=faturamentoTotal-despesasTotal;
+let lucro=faturamento-totalDespesas;
 
 document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
 document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
-document.getElementById("faturamentoTotal").innerText="R$ "+faturamentoTotal.toFixed(2);
+document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
 document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
-document.getElementById("despesasTotal").innerText="R$ "+despesasTotal.toFixed(2);
 document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
 
 let topProduto="";
@@ -354,7 +336,7 @@ ticket=(produtosTotal+freteTotal)/pedidosFiltrados.length;
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
 
-criarGrafico(produtosTotal,freteTotal,despesasTotal);
+criarGrafico(produtosTotal,freteTotal,totalDespesas);
 
 carregarDespesas();
 
