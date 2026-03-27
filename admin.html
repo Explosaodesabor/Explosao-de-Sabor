@@ -95,8 +95,6 @@ padding:20px;
 border-radius:10px;
 }
 
-/* NOVOS QUADROS DO RESUMO */
-
 .resumo-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -111,21 +109,10 @@ font-size:18px;
 font-weight:bold;
 }
 
-.receitas{
-background:#0f5132;
-}
-
-.despesas{
-background:#842029;
-}
-
-.entrega{
-background:#664d03;
-}
-
-.lucro{
-background:#0d6efd;
-}
+.receitas{background:#0f5132;}
+.despesas{background:#842029;}
+.entrega{background:#664d03;}
+.lucro{background:#0d6efd;}
 
 </style>
 </head>
@@ -158,7 +145,7 @@ background:#0d6efd;
 <div class="resumo-grid">
 
 <div class="card-resumo receitas">
-Receitas<br>
+Receita Produtos<br>
 R$ <span id="totalVendas">0</span>
 </div>
 
@@ -168,7 +155,7 @@ R$ <span id="totalDespesas">0</span>
 </div>
 
 <div class="card-resumo entrega">
-Despesa de Entrega<br>
+Despesa Entrega<br>
 R$ <span id="despesaEntrega">0</span>
 </div>
 
@@ -186,7 +173,6 @@ R$ <span id="lucro">0</span>
 <h3>💸 Adicionar Despesa</h3>
 
 <input id="descricaoDespesa" placeholder="Descrição da despesa">
-
 <input id="valorDespesa" type="number" placeholder="Valor">
 
 <button onclick="adicionarDespesa()">Adicionar</button>
@@ -221,14 +207,14 @@ Total Despesas: R$ <span id="totalDespesasPainel">0</span>
 
 <script>
 
-const senhaAdmin = "admin123";
+const senhaAdmin="admin123";
 let grafico;
 
 function entrar(){
 
-let senha = document.getElementById("senha").value;
+let senha=document.getElementById("senha").value;
 
-if(senha === senhaAdmin){
+if(senha===senhaAdmin){
 
 document.getElementById("login").style.display="none";
 document.getElementById("painel").style.display="block";
@@ -253,9 +239,9 @@ criarGrafico();
 
 function adicionarEntrega(){
 
-let valor = document.getElementById("valorEntrega").value;
+let valor=document.getElementById("valorEntrega").value;
 
-let entregas = JSON.parse(localStorage.getItem("entregas")) || [];
+let entregas=JSON.parse(localStorage.getItem("entregas"))||[];
 
 entregas.push({
 valor:parseFloat(valor),
@@ -273,17 +259,17 @@ atualizarGrafico();
 
 function adicionarDespesa(){
 
-let descricao = document.getElementById("descricaoDespesa").value;
-let valor = document.getElementById("valorDespesa").value;
+let descricao=document.getElementById("descricaoDespesa").value;
+let valor=document.getElementById("valorDespesa").value;
 
-if(descricao=="" || valor==""){
+if(descricao==""||valor==""){
 
 alert("Preencha os campos");
 return;
 
 }
 
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
 despesas.push({
 descricao:descricao,
@@ -304,9 +290,9 @@ atualizarGrafico();
 
 function carregarDespesas(){
 
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
-let lista = document.getElementById("listaDespesas");
+let lista=document.getElementById("listaDespesas");
 
 lista.innerHTML="";
 
@@ -314,38 +300,31 @@ let total=0;
 
 despesas.forEach((d,index)=>{
 
-total += Number(d.valor);
+total+=Number(d.valor);
 
-lista.innerHTML += `
+lista.innerHTML+=`
 <div class="despesa-item">
-
 <span>${d.descricao} - R$ ${Number(d.valor).toFixed(2)}</span>
-
-<button class="excluir" onclick="excluirDespesa(${index})">
-Excluir
-</button>
-
+<button class="excluir" onclick="excluirDespesa(${index})">Excluir</button>
 </div>
 `;
 
 });
 
-document.getElementById("totalDespesasPainel").innerText = total.toFixed(2);
+document.getElementById("totalDespesasPainel").innerText=total.toFixed(2);
 
 }
 
 function excluirDespesa(index){
 
-let senha = prompt("Digite a senha para excluir:");
+let senha=prompt("Digite a senha para excluir:");
 
-if(senha !== senhaAdmin){
-
+if(senha!==senhaAdmin){
 alert("Senha incorreta");
 return;
-
 }
 
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
 despesas.splice(index,1);
 
@@ -359,48 +338,61 @@ atualizarGrafico();
 
 function atualizarPainel(){
 
-let filtro = document.getElementById("filtroData").value;
+let filtro=document.getElementById("filtroData").value;
 
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-let entregas = JSON.parse(localStorage.getItem("entregas")) || [];
+let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
+let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
+let entregas=JSON.parse(localStorage.getItem("entregas"))||[];
 
-let vendas = 0;
-let totalDespesas = 0;
-let totalEntrega = 0;
+let vendas=0;
+let totalFreteRecebido=0;
+let totalDespesas=0;
+let totalEntrega=0;
 
 pedidos.forEach(p=>{
-if(!filtro || p.data==filtro){
-vendas += Number(p.total);
+
+let dataPedido=p.data;
+
+if(!filtro||dataPedido==filtro){
+
+vendas+=Number(p.total);
+
+if(p.entrega){
+totalFreteRecebido+=Number(p.entrega);
 }
+
+}
+
 });
 
 despesas.forEach(d=>{
-if(!filtro || d.data==filtro){
-totalDespesas += Number(d.valor);
+if(!filtro||d.data==filtro){
+totalDespesas+=Number(d.valor);
 }
 });
 
 entregas.forEach(e=>{
-if(!filtro || e.data==filtro){
-totalEntrega += Number(e.valor);
+if(!filtro||e.data==filtro){
+totalEntrega+=Number(e.valor);
 }
 });
 
-let lucro = vendas - totalDespesas - totalEntrega;
+let lucro=vendas-totalDespesas-totalEntrega;
 
-document.getElementById("totalVendas").innerText = vendas.toFixed(2);
-document.getElementById("totalDespesas").innerText = totalDespesas.toFixed(2);
-document.getElementById("despesaEntrega").innerText = totalEntrega.toFixed(2);
-document.getElementById("lucro").innerText = lucro.toFixed(2);
+document.getElementById("totalVendas").innerText=vendas.toFixed(2);
+document.getElementById("totalDespesas").innerText=totalDespesas.toFixed(2);
+document.getElementById("despesaEntrega").innerText=totalEntrega.toFixed(2);
+document.getElementById("lucro").innerText=lucro.toFixed(2);
+
+atualizarGrafico();
 
 }
 
 function criarGrafico(){
 
-let ctx = document.getElementById("grafico");
+let ctx=document.getElementById("grafico");
 
-grafico = new Chart(ctx,{
+grafico=new Chart(ctx,{
 type:"bar",
 data:{
 labels:["Receitas","Despesas","Entrega"],
@@ -411,15 +403,15 @@ data:[0,0,0]
 }
 });
 
-atualizarGrafico();
-
 }
 
 function atualizarGrafico(){
 
-let vendas = Number(document.getElementById("totalVendas").innerText);
-let despesas = Number(document.getElementById("totalDespesas").innerText);
-let entrega = Number(document.getElementById("despesaEntrega").innerText);
+if(!grafico)return;
+
+let vendas=Number(document.getElementById("totalVendas").innerText);
+let despesas=Number(document.getElementById("totalDespesas").innerText);
+let entrega=Number(document.getElementById("despesaEntrega").innerText);
 
 grafico.data.datasets[0].data=[vendas,despesas,entrega];
 
