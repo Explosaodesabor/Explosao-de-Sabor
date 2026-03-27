@@ -13,12 +13,41 @@
 body{
 font-family:'Poppins',sans-serif;
 margin:0;
-background:#f4f4f4;
-padding:20px;
+background:#111;
+color:white;
 }
 
-h1{
-text-align:center;
+.login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.login input{
+padding:10px;
+border-radius:8px;
+border:none;
+margin-top:10px;
+}
+
+.login button{
+margin-top:10px;
+padding:10px 20px;
+border:none;
+background:#ff6600;
+color:white;
+border-radius:8px;
+cursor:pointer;
+}
+
+.painel{
+display:none;
+padding:20px;
+background:#f4f4f4;
+color:black;
+min-height:100vh;
 }
 
 .cards{
@@ -38,7 +67,6 @@ box-shadow:0 2px 6px rgba(0,0,0,0.1);
 .valor{
 font-size:22px;
 font-weight:bold;
-margin-top:5px;
 }
 
 .section{
@@ -57,35 +85,28 @@ border-collapse:collapse;
 th,td{
 padding:10px;
 border-bottom:1px solid #ddd;
-text-align:left;
-}
-
-input,button{
-padding:10px;
-margin-top:10px;
 }
 
 button{
-background:#ff6600;
-color:white;
+padding:8px 12px;
 border:none;
 border-radius:6px;
+background:#ff6600;
+color:white;
 cursor:pointer;
+}
+
+.excluir{
+background:#ff4d4d;
 }
 
 .despesa-item{
 display:flex;
 justify-content:space-between;
-align-items:center;
 background:#eee;
 padding:8px;
-margin-top:6px;
+margin-top:5px;
 border-radius:6px;
-}
-
-.excluir{
-background:#ff4d4d;
-padding:5px 10px;
 }
 
 </style>
@@ -93,7 +114,19 @@ padding:5px 10px;
 
 <body>
 
-<h1>PAINEL ADMIN - EXPLOSÃO DE SABOR</h1>
+<div class="login" id="login">
+
+<h2>Painel ADMIN</h2>
+
+<input type="password" id="senha" placeholder="Digite a senha">
+
+<button onclick="entrar()">Entrar</button>
+
+</div>
+
+<div class="painel" id="painel">
+
+<h1>Painel Explosão de Sabor</h1>
 
 <label>Filtrar data</label>
 <input type="date" id="filtroData" onchange="atualizar()">
@@ -182,18 +215,37 @@ Ticket médio:
 
 </div>
 
+</div>
+
 <script>
 
 const senhaAdmin="admin123";
 
 let grafico;
 
+function entrar(){
+
+let senha=document.getElementById("senha").value;
+
+if(senha===senhaAdmin){
+
+document.getElementById("login").style.display="none";
+document.getElementById("painel").style.display="block";
+
+atualizar();
+
+}else{
+
+alert("Senha incorreta");
+
+}
+
+}
+
 function atualizar(){
 
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
-
-let filtro=document.getElementById("filtroData").value;
 
 let produtosTotal=0;
 let freteTotal=0;
@@ -205,12 +257,8 @@ let produtosContagem={};
 
 pedidos.forEach(p=>{
 
-let data=p.data.split("T")[0];
-
 produtosTotal+=Number(p.total);
 freteTotal+=Number(p.entrega);
-
-if(!filtro || data===filtro){
 
 let itens=p.itens.map(i=>i.nome).join(", ");
 
@@ -223,8 +271,6 @@ lista.innerHTML+=`
 <td>R$ ${p.totalFinal.toFixed(2)}</td>
 </tr>
 `;
-
-}
 
 p.itens.forEach(i=>{
 produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
@@ -351,8 +397,10 @@ function excluirDespesa(index){
 let senha=prompt("Digite a senha para excluir:");
 
 if(senha!==senhaAdmin){
+
 alert("Senha incorreta");
 return;
+
 }
 
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
@@ -365,8 +413,6 @@ carregarDespesas();
 atualizar();
 
 }
-
-atualizar();
 
 </script>
 
