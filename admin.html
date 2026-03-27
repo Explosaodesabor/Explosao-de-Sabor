@@ -18,12 +18,12 @@ color:white;
 }
 
 .logo{
-width:300px;
+width:500px;
 margin-bottom:50px;
 }
 
 .logoPainel{
-width:80px;
+width:100px;
 }
 
 .topo{
@@ -282,6 +282,19 @@ function atualizar(){
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
+let dataFiltro=document.getElementById("filtroData").value;
+
+let pedidosFiltrados=pedidos;
+
+if(dataFiltro){
+
+pedidosFiltrados=pedidos.filter(p=>{
+let dataPedido=new Date(p.data).toISOString().split("T")[0];
+return dataPedido===dataFiltro;
+});
+
+}
+
 let produtosTotal=0;
 let freteTotal=0;
 
@@ -290,7 +303,7 @@ lista.innerHTML="";
 
 let produtosContagem={};
 
-pedidos.forEach(p=>{
+pedidosFiltrados.forEach(p=>{
 
 produtosTotal+=Number(p.total);
 freteTotal+=Number(p.entrega);
@@ -327,7 +340,7 @@ document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2
 document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
 document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
 document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
-document.getElementById("pedidosTotal").innerText=pedidos.length;
+document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
 document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
 
 let topProduto="";
@@ -346,8 +359,8 @@ document.getElementById("topProduto").innerText=topProduto;
 
 let ticket=0;
 
-if(pedidos.length>0){
-ticket=faturamento/pedidos.length;
+if(pedidosFiltrados.length>0){
+ticket=faturamento/pedidosFiltrados.length;
 }
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
