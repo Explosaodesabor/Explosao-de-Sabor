@@ -17,6 +17,8 @@ background:#111;
 color:white;
 }
 
+/* LOGIN */
+
 .login{
 height:100vh;
 display:flex;
@@ -25,22 +27,33 @@ align-items:center;
 flex-direction:column;
 }
 
+.logo-login{
+width:180px;
+margin-bottom:20px;
+border-radius:50%;
+box-shadow:0 6px 20px rgba(0,0,0,0.4);
+}
+
 .login input{
-padding:10px;
+padding:12px;
 border-radius:8px;
 border:none;
 margin-top:10px;
+width:200px;
 }
 
 .login button{
 margin-top:10px;
-padding:10px 20px;
+padding:12px 25px;
 border:none;
 background:#ff6600;
 color:white;
 border-radius:8px;
 cursor:pointer;
+font-weight:bold;
 }
+
+/* PAINEL */
 
 .painel{
 display:none;
@@ -50,9 +63,22 @@ color:black;
 min-height:100vh;
 }
 
+.topo{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.logo-topo{
+width:60px;
+border-radius:50%;
+}
+
+/* CARDS */
+
 .cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:15px;
 margin-top:20px;
 }
@@ -60,22 +86,32 @@ margin-top:20px;
 .card{
 background:white;
 padding:20px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+border-radius:12px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card h3{
+margin:0;
+font-size:16px;
 }
 
 .valor{
-font-size:22px;
+font-size:26px;
 font-weight:bold;
+margin-top:5px;
 }
+
+/* SECTIONS */
 
 .section{
 background:white;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 margin-top:20px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
+
+/* TABELA */
 
 table{
 width:100%;
@@ -85,7 +121,10 @@ border-collapse:collapse;
 th,td{
 padding:10px;
 border-bottom:1px solid #ddd;
+text-align:left;
 }
+
+/* BOTÕES */
 
 button{
 padding:8px 12px;
@@ -99,6 +138,8 @@ cursor:pointer;
 .excluir{
 background:#ff4d4d;
 }
+
+/* DESPESAS */
 
 .despesa-item{
 display:flex;
@@ -116,6 +157,8 @@ border-radius:6px;
 
 <div class="login" id="login">
 
+<img src="logo.explosãodesabor.png" class="logo-login">
+
 <h2>Painel ADMIN</h2>
 
 <input type="password" id="senha" placeholder="Digite a senha">
@@ -126,7 +169,12 @@ border-radius:6px;
 
 <div class="painel" id="painel">
 
+<div class="topo">
+<img src="logo.explosãodesabor.png" class="logo-topo">
 <h1>Painel Explosão de Sabor</h1>
+</div>
+
+<br>
 
 <label>Filtrar data</label>
 <input type="date" id="filtroData" onchange="atualizar()">
@@ -134,27 +182,27 @@ border-radius:6px;
 <div class="cards">
 
 <div class="card">
-Produtos
+<h3>Receita Produtos</h3>
 <div class="valor" id="produtosTotal">0</div>
 </div>
 
 <div class="card">
-Frete
+<h3>Receita Frete</h3>
 <div class="valor" id="freteTotal">0</div>
 </div>
 
 <div class="card">
-Faturamento
+<h3>Faturamento</h3>
 <div class="valor" id="faturamentoTotal">0</div>
 </div>
 
 <div class="card">
-Pedidos
+<h3>Total Pedidos</h3>
 <div class="valor" id="pedidosTotal">0</div>
 </div>
 
 <div class="card">
-Lucro
+<h3>Lucro</h3>
 <div class="valor" id="lucroTotal">0</div>
 </div>
 
@@ -165,7 +213,9 @@ Lucro
 <h2>Estatísticas</h2>
 
 Produto mais vendido:
-<strong id="topProduto"></strong><br><br>
+<strong id="topProduto"></strong>
+
+<br><br>
 
 Ticket médio:
 <strong id="ticketMedio"></strong>
@@ -220,7 +270,6 @@ Ticket médio:
 <script>
 
 const senhaAdmin="admin123";
-
 let grafico;
 
 function entrar(){
@@ -247,6 +296,8 @@ function atualizar(){
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
+let filtro=document.getElementById("filtroData").value;
+
 let produtosTotal=0;
 let freteTotal=0;
 
@@ -255,7 +306,20 @@ lista.innerHTML="";
 
 let produtosContagem={};
 
-pedidos.forEach(p=>{
+let pedidosFiltrados=pedidos;
+
+if(filtro){
+
+pedidosFiltrados=pedidos.filter(p=>{
+
+let data=new Date(p.data).toISOString().slice(0,10);
+return data===filtro;
+
+});
+
+}
+
+pedidosFiltrados.forEach(p=>{
 
 produtosTotal+=Number(p.total);
 freteTotal+=Number(p.entrega);
@@ -291,7 +355,7 @@ let lucro=faturamento-totalDespesas;
 document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
 document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
 document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
-document.getElementById("pedidosTotal").innerText=pedidos.length;
+document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
 document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
 
 let topProduto="";
@@ -310,8 +374,8 @@ document.getElementById("topProduto").innerText=topProduto;
 
 let ticket=0;
 
-if(pedidos.length>0){
-ticket=faturamento/pedidos.length;
+if(pedidosFiltrados.length>0){
+ticket=faturamento/pedidosFiltrados.length;
 }
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
