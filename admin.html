@@ -17,28 +17,17 @@ background:#111;
 color:white;
 }
 
-.logo{
-width:500px;
-margin-bottom:50px;
-}
-
-.logoPainel{
-width:100px;
-}
-
-.topo{
-display:flex;
-align-items:center;
-gap:15px;
-margin-bottom:20px;
-}
-
 .login{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+}
+
+.login img{
+width:180px;
+margin-bottom:20px;
 }
 
 .login input{
@@ -61,44 +50,42 @@ cursor:pointer;
 .painel{
 display:none;
 padding:20px;
-background:#1c1c1c;
+background:#1b1b1b;
 color:white;
 min-height:100vh;
 }
 
 .cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:15px;
 margin-top:20px;
 }
 
 .card{
-background:#2b2b2b;
 padding:20px;
-border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.4);
+border-radius:10px;
+color:white;
+box-shadow:0 2px 8px rgba(0,0,0,0.4);
 }
 
-.card.produtos{border-left:6px solid #2196f3;}
-.card.frete{border-left:6px solid #1976d2;}
-.card.despesas{border-left:6px solid #ff3b3b;}
-.card.faturamento{border-left:6px solid #00bcd4;}
-.card.pedidos{border-left:6px solid #ffc107;}
-.card.lucro{border-left:6px solid #4caf50;}
+.card:nth-child(1){background:#1565c0;}
+.card:nth-child(2){background:#0277bd;}
+.card:nth-child(3){background:#2e7d32;}
+.card:nth-child(4){background:#6a1b9a;}
+.card:nth-child(5){background:#c62828;}
+.card:nth-child(6){background:#ef6c00;}
 
 .valor{
-font-size:24px;
+font-size:22px;
 font-weight:bold;
-margin-top:5px;
 }
 
 .section{
-background:#2b2b2b;
+background:#2a2a2a;
 padding:20px;
-border-radius:12px;
+border-radius:10px;
 margin-top:20px;
-box-shadow:0 2px 6px rgba(0,0,0,0.3);
 }
 
 table{
@@ -109,7 +96,6 @@ border-collapse:collapse;
 th,td{
 padding:10px;
 border-bottom:1px solid #444;
-color:white;
 }
 
 button{
@@ -141,7 +127,7 @@ border-radius:6px;
 
 <div class="login" id="login">
 
-<img src="logo.explosãodesabor.png" class="logo">
+<img src="logo.explosãodesabor.png">
 
 <h2>Painel ADMIN</h2>
 
@@ -153,42 +139,39 @@ border-radius:6px;
 
 <div class="painel" id="painel">
 
-<div class="topo">
-<img src="logo.explosãodesabor.png" class="logoPainel">
 <h1>Painel Explosão de Sabor</h1>
-</div>
 
 <label>Filtrar data</label>
 <input type="date" id="filtroData" onchange="atualizar()">
 
 <div class="cards">
 
-<div class="card produtos">
-Receita Produtos
+<div class="card">
+Produtos
 <div class="valor" id="produtosTotal">0</div>
 </div>
 
-<div class="card frete">
-Receita Frete
+<div class="card">
+Frete
 <div class="valor" id="freteTotal">0</div>
 </div>
 
-<div class="card despesas">
-Despesas
-<div class="valor" id="despesasTotal">0</div>
-</div>
-
-<div class="card faturamento">
+<div class="card">
 Faturamento
 <div class="valor" id="faturamentoTotal">0</div>
 </div>
 
-<div class="card pedidos">
+<div class="card">
 Pedidos
 <div class="valor" id="pedidosTotal">0</div>
 </div>
 
-<div class="card lucro">
+<div class="card">
+Despesas
+<div class="valor" id="despesasTotal">0</div>
+</div>
+
+<div class="card">
 Lucro
 <div class="valor" id="lucroTotal">0</div>
 </div>
@@ -282,15 +265,18 @@ function atualizar(){
 let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 let despesas=JSON.parse(localStorage.getItem("despesas"))||[];
 
-let dataFiltro=document.getElementById("filtroData").value;
+let filtro=document.getElementById("filtroData").value;
 
 let pedidosFiltrados=pedidos;
 
-if(dataFiltro){
+if(filtro){
 
 pedidosFiltrados=pedidos.filter(p=>{
+
 let dataPedido=new Date(p.data).toISOString().split("T")[0];
-return dataPedido===dataFiltro;
+
+return dataPedido===filtro;
+
 });
 
 }
@@ -326,21 +312,24 @@ produtosContagem[i.nome]=(produtosContagem[i.nome]||0)+1;
 
 });
 
-let faturamento=produtosTotal+freteTotal;
+let faturamentoTotal=0;
+let despesasTotal=0;
 
-let totalDespesas=0;
-
-despesas.forEach(d=>{
-totalDespesas+=Number(d.valor);
+pedidos.forEach(p=>{
+faturamentoTotal+=Number(p.total)+Number(p.entrega);
 });
 
-let lucro=faturamento-totalDespesas;
+despesas.forEach(d=>{
+despesasTotal+=Number(d.valor);
+});
+
+let lucro=faturamentoTotal-despesasTotal;
 
 document.getElementById("produtosTotal").innerText="R$ "+produtosTotal.toFixed(2);
 document.getElementById("freteTotal").innerText="R$ "+freteTotal.toFixed(2);
-document.getElementById("despesasTotal").innerText="R$ "+totalDespesas.toFixed(2);
-document.getElementById("faturamentoTotal").innerText="R$ "+faturamento.toFixed(2);
+document.getElementById("faturamentoTotal").innerText="R$ "+faturamentoTotal.toFixed(2);
 document.getElementById("pedidosTotal").innerText=pedidosFiltrados.length;
+document.getElementById("despesasTotal").innerText="R$ "+despesasTotal.toFixed(2);
 document.getElementById("lucroTotal").innerText="R$ "+lucro.toFixed(2);
 
 let topProduto="";
@@ -360,12 +349,12 @@ document.getElementById("topProduto").innerText=topProduto;
 let ticket=0;
 
 if(pedidosFiltrados.length>0){
-ticket=faturamento/pedidosFiltrados.length;
+ticket=(produtosTotal+freteTotal)/pedidosFiltrados.length;
 }
 
 document.getElementById("ticketMedio").innerText="R$ "+ticket.toFixed(2);
 
-criarGrafico(produtosTotal,freteTotal,totalDespesas);
+criarGrafico(produtosTotal,freteTotal,despesasTotal);
 
 carregarDespesas();
 
@@ -385,8 +374,7 @@ data:{
 labels:["Produtos","Frete","Despesas"],
 datasets:[{
 label:"Financeiro",
-data:[prod,frete,desp],
-backgroundColor:["#2196f3","#1976d2","#ff3b3b"]
+data:[prod,frete,desp]
 }]
 }
 });
