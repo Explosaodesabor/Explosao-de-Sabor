@@ -155,7 +155,7 @@ margin-top:10px;
 
 <option value="4">QUINTINO FACCI 1 – R$ 4,00</option>
 <option value="4">QUINTINO FACCI 2 – R$ 4,00</option>
-<option value="4">SIMIOMI – R$ 4,00</option>
+<option value="4">SIMIONI – R$ 4,00</option>
 
 <option value="5">CENTRO – R$ 5,00</option>
 <option value="5">JARDIM SUMARE – R$ 5,00</option>
@@ -272,6 +272,7 @@ let total=0;
 
 cart.forEach((item,index)=>{
 total+=item.preco;
+
 cartItems.innerHTML+=`
 <li>
 ${item.nome} - R$ ${item.preco}
@@ -336,7 +337,6 @@ if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 message+="\n";
-
 message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
 message+=`\n💳 Pagamento: ${payment}\n`;
 
@@ -348,19 +348,19 @@ message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
 
 let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
 
-let novoPedido = {
-data:new Date().toISOString().split("T")[0],
+pedidos.push({
+data:new Date().toISOString(),
 itens:cart,
 total:total,
 entrega:taxa,
 totalFinal:total+taxa
-};
-
-pedidos.push(novoPedido);
+});
 
 localStorage.setItem("pedidos",JSON.stringify(pedidos));
 
+setTimeout(()=>{
 window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+},300);
 
 }
 
