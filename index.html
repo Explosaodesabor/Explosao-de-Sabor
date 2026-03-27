@@ -221,12 +221,9 @@ const extras=[
 let cart=[];
 
 function renderMenu(){
-
 const menu=document.getElementById("menu");
 menu.innerHTML="";
-
 produtos.forEach(p=>{
-
 menu.innerHTML+=`
 <div class="item">
 <div>
@@ -237,41 +234,30 @@ menu.innerHTML+=`
 <button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
 </div>
 `;
-
 });
-
 }
 
 function renderExtras(){
-
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
-
 extras.forEach(e=>{
-
 extrasDiv.innerHTML+=`
 <div class="item">
 <div>➕ ${e.nome} - R$ ${e.preco}</div>
 <button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
 </div>
 `;
-
 });
-
 }
 
 function addToCart(nome,descricao,preco){
-
 cart.push({nome,descricao,preco});
 updateCart();
-
 }
 
 function removeItem(index){
-
 cart.splice(index,1);
 updateCart();
-
 }
 
 function updateCart(){
@@ -282,38 +268,30 @@ const entregaEl=document.getElementById("entrega");
 const bairro=document.getElementById("bairro").value;
 
 cartItems.innerHTML="";
-
 let total=0;
 
 cart.forEach((item,index)=>{
-
 total+=item.preco;
-
 cartItems.innerHTML+=`
 <li>
 ${item.nome} - R$ ${item.preco}
 <button class="remove" onclick="removeItem(${index})">x</button>
 </li>
 `;
-
 });
 
 let taxa=parseFloat(bairro);
-
 if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 entregaEl.innerText=taxa===0?"GRÁTIS":"R$ "+taxa.toFixed(2);
-
 totalEl.innerText=(total+taxa).toFixed(2);
 
 }
 
 function toggleTroco(){
-
 const payment=document.getElementById("payment").value;
 document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"none";
-
 }
 
 function sendWhatsApp(){
@@ -345,37 +323,42 @@ message+=`🏠 ${address}\n\n`;
 let total=0;
 
 cart.forEach(item=>{
-
 message+=`🧾 ${item.nome}\n`;
-
 if(item.descricao){
 message+=`${item.descricao}\n`;
 }
-
 message+=`R$ ${item.preco}\n`;
-
 total+=item.preco;
-
 });
 
 let taxa=parseFloat(bairroValor);
-
 if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 message+="\n";
 
 message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
-
 message+=`\n💳 Pagamento: ${payment}\n`;
 
 if(payment==="Dinheiro"){
-
 message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
-
 }
 
 message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
+
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+
+let novoPedido = {
+data:new Date().toISOString().split("T")[0],
+itens:cart,
+total:total,
+entrega:taxa,
+totalFinal:total+taxa
+};
+
+pedidos.push(novoPedido);
+
+localStorage.setItem("pedidos",JSON.stringify(pedidos));
 
 window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
