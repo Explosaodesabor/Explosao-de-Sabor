@@ -13,9 +13,11 @@
 body{
 font-family:'Poppins',sans-serif;
 margin:0;
-background:#111;
+background:#0b0b0b;
 color:white;
 }
+
+/* LOGIN */
 
 .login{
 height:100vh;
@@ -23,6 +25,11 @@ display:flex;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+}
+
+.logo-login{
+width:220px;
+margin-bottom:20px;
 }
 
 .login input{
@@ -42,13 +49,22 @@ border-radius:8px;
 cursor:pointer;
 }
 
+/* PAINEL */
+
 .painel{
 display:none;
 padding:20px;
-background:#f4f4f4;
-color:black;
+background:#1b1b1b;
+color:white;
 min-height:100vh;
 }
+
+.logo-painel{
+width:160px;
+margin-bottom:10px;
+}
+
+/* CARDS */
 
 .cards{
 display:grid;
@@ -58,34 +74,62 @@ margin-top:20px;
 }
 
 .card{
-background:white;
 padding:20px;
 border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+color:white;
+box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+
+.card.produtos{
+background:#1e88e5;
+}
+
+.card.frete{
+background:#43a047;
+}
+
+.card.faturamento{
+background:#00acc1;
+}
+
+.card.pedidos{
+background:#6d4c41;
+}
+
+.card.lucro{
+background:#8e24aa;
 }
 
 .valor{
 font-size:22px;
 font-weight:bold;
+margin-top:5px;
 }
 
+/* SEÇÕES */
+
 .section{
-background:white;
+background:#2a2a2a;
 padding:20px;
 border-radius:10px;
 margin-top:20px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+box-shadow:0 2px 6px rgba(0,0,0,0.3);
 }
+
+/* TABELA */
 
 table{
 width:100%;
 border-collapse:collapse;
+color:white;
 }
 
 th,td{
 padding:10px;
-border-bottom:1px solid #ddd;
+border-bottom:1px solid #444;
 }
+
+/* BOTÕES */
 
 button{
 padding:8px 12px;
@@ -97,13 +141,15 @@ cursor:pointer;
 }
 
 .excluir{
-background:#ff4d4d;
+background:#e53935;
 }
+
+/* DESPESAS */
 
 .despesa-item{
 display:flex;
 justify-content:space-between;
-background:#eee;
+background:#333;
 padding:8px;
 margin-top:5px;
 border-radius:6px;
@@ -116,6 +162,8 @@ border-radius:6px;
 
 <div class="login" id="login">
 
+<img src="logo.png" class="logo-login">
+
 <h2>Painel ADMIN</h2>
 
 <input type="password" id="senha" placeholder="Digite a senha">
@@ -126,6 +174,8 @@ border-radius:6px;
 
 <div class="painel" id="painel">
 
+<img src="logo.png" class="logo-painel">
+
 <h1>Painel Explosão de Sabor</h1>
 
 <label>Filtrar data</label>
@@ -133,27 +183,27 @@ border-radius:6px;
 
 <div class="cards">
 
-<div class="card">
+<div class="card produtos">
 Produtos
 <div class="valor" id="produtosTotal">0</div>
 </div>
 
-<div class="card">
+<div class="card frete">
 Frete
 <div class="valor" id="freteTotal">0</div>
 </div>
 
-<div class="card">
+<div class="card faturamento">
 Faturamento
 <div class="valor" id="faturamentoTotal">0</div>
 </div>
 
-<div class="card">
+<div class="card pedidos">
 Pedidos
 <div class="valor" id="pedidosTotal">0</div>
 </div>
 
-<div class="card">
+<div class="card lucro">
 Lucro
 <div class="valor" id="lucroTotal">0</div>
 </div>
@@ -218,6 +268,8 @@ Ticket médio:
 </div>
 
 <script>
+
+/* TODO SEU SCRIPT ORIGINAL FOI MANTIDO */
 
 const senhaAdmin="admin123";
 
@@ -356,7 +408,12 @@ data:{
 labels:["Produtos","Frete","Despesas"],
 datasets:[{
 label:"Financeiro",
-data:[prod,frete,desp]
+data:[prod,frete,desp],
+backgroundColor:[
+"#2196f3",
+"#4caf50",
+"#e53935"
+]
 }]
 }
 });
