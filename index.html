@@ -211,7 +211,7 @@ let isAgendamento = false;
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
-produtos.forEach(p=>{
+produtos.forEach((p, index)=>{
 menu.innerHTML+=`
 <div class="item">
 <div>
@@ -219,7 +219,7 @@ menu.innerHTML+=`
 <div>${p.descricao}</div>
 <strong>R$ ${p.preco.toFixed(2)}</strong>
 </div>
-<button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
+<button onclick="addProdutoToCart(${index})">+</button>
 </div>
 `;
 });
@@ -228,14 +228,26 @@ menu.innerHTML+=`
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
-extras.forEach(e=>{
+extras.forEach((e, index)=>{
 extrasDiv.innerHTML+=`
 <div class="item">
 <div>➕ ${e.nome} - R$ ${e.preco.toFixed(2)}</div>
-<button onclick='addToCart("Extra: ${e.nome}","",${e.preco})'>+</button>
+<button onclick="addExtraToCart(${index})">+</button>
 </div>
 `;
 });
+}
+
+function addProdutoToCart(index) {
+const p = produtos[index];
+cart.push({nome: p.nome, descricao: p.descricao, preco: p.preco});
+updateCart();
+}
+
+function addExtraToCart(index) {
+const e = extras[index];
+cart.push({nome: "Extra: " + e.nome, descricao: "", preco: e.preco});
+updateCart();
 }
 
 function checarAgendamento(){
@@ -249,11 +261,6 @@ const campos = document.getElementById("agendamento-campos");
 if(aviso) aviso.style.display = "block";
 if(campos) campos.style.display = "block";
 }
-}
-
-function addToCart(nome,descricao,preco){
-cart.push({nome,descricao,preco});
-updateCart();
 }
 
 function removeItem(index){
@@ -328,12 +335,4 @@ message+=`🕒 *Horário:* ${horaAgendada}\n\n`;
 
 message+=`👤 *Cliente:* ${nome}\n`;
 message+=`📍 *Bairro:* ${bairroTexto}\n`;
-message+=`🏠 *Endereço:* ${address}\n\n`;
-message+=`🛒 *Itens do Pedido:*\n`;
-
-let total=0;
-cart.forEach(item=>{
-message+=`• ${item.nome} (R$ ${item.preco.toFixed(2)})\n`;
-total+=item.preco;
-});
 
