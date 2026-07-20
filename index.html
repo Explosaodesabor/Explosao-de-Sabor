@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -56,6 +56,7 @@ padding:12px 14px;
 border-radius:10px;
 font-weight:bold;
 font-size:16px;
+cursor:pointer;
 }
 
 .remove{
@@ -88,7 +89,6 @@ border-radius:12px;
 margin-top:10px;
 }
 
-/* ESTILO DO AVISO DE AGENDAMENTO */
 .notice{
 background:#fff3cd;
 color:#856404;
@@ -118,13 +118,12 @@ Mordeu. Sorriu. Sentiu. Voltou.</p>
 Sábado e Domingo<br>
 Das 14h às 20h</p>
 
-<p><strong>🚚 Entregas a partir R$ 2,00</strong></p>
+<p><strong>🚚 Entregas a partir de R$ 2,00</strong></p>
 
 </header>
 
 <div class="container">
 
-<!-- AVISO DE AGENDAMENTO -->
 <div id="agendamento-aviso" class="notice" style="display:none;">
 📅 Atenção: Atendimento apenas de Sábado e Domingo. Faça seu AGENDAMENTO abaixo!
 </div>
@@ -190,7 +189,6 @@ Das 14h às 20h</p>
 
 <input type="text" id="address" placeholder="Rua e número">
 
-<!-- OPÇÕES DE AGENDAMENTO -->
 <div id="agendamento-campos" style="display:none;">
 <h2>📅 Escolha o Agendamento</h2>
 <select id="agendamento-dia">
@@ -265,7 +263,7 @@ let isAgendamento = false;
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
-produtos.forEach(p=>{
+produtos.forEach((p, index)=>{
 menu.innerHTML+=`
 <div class="item">
 <div>
@@ -273,7 +271,7 @@ menu.innerHTML+=`
 <div>${p.descricao}</div>
 <strong>R$ ${p.preco}</strong>
 </div>
-<button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
+<button onclick="addProduto(${index})">+</button>
 </div>
 `;
 });
@@ -282,20 +280,29 @@ menu.innerHTML+=`
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
-extras.forEach(e=>{
+extras.forEach((e, index)=>{
 extrasDiv.innerHTML+=`
 <div class="item">
 <div>➕ ${e.nome} - R$ ${e.preco}</div>
-<button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
+<button onclick="addExtra(${index})">+</button>
 </div>
 `;
 });
 }
 
-// FUNÇÃO PARA DETERMINAR SE MOSTRA O AGENDAMENTO DE SEGUNDA A SEXTA
+function addProduto(index){
+const p = produtos[index];
+addToCart(p.nome, p.descricao, p.preco);
+}
+
+function addExtra(index){
+const e = extras[index];
+addToCart("Extra: " + e.nome, e.nome, e.preco);
+}
+
 function checarAgendamento(){
 const hoje = new Date();
-const diaDaSemana = hoje.getDay(); // 0=Domingo, 6=Sábado
+const diaDaSemana = hoje.getDay(); 
 
 if(diaDaSemana !== 6 && diaDaSemana !== 0){
 isAgendamento = true;
@@ -364,7 +371,6 @@ alert("Preencha nome e pagamento!");
 return;
 }
 
-// Exige preenchimento do agendamento se os campos estiverem ativos
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -381,7 +387,6 @@ return;
 
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 
-// Adiciona os dados do agendamento no topo do texto do WhatsApp
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -419,5 +424,10 @@ message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
 
 message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
 
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
 
-
+pedidos.push({
+data:new Date().toISOString(),
+itens:cart,
+total:total,
+entrega:taxa,
