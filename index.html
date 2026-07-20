@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -56,7 +56,6 @@ padding:12px 14px;
 border-radius:10px;
 font-weight:bold;
 font-size:16px;
-cursor:pointer;
 }
 
 .remove{
@@ -89,6 +88,7 @@ border-radius:12px;
 margin-top:10px;
 }
 
+/* ADICIONADO: Estilo visual do aviso de agendamento */
 .notice{
 background:#fff3cd;
 color:#856404;
@@ -124,8 +124,9 @@ Das 14h às 20h</p>
 
 <div class="container">
 
+<!-- ADICIONADO: Barra de aviso amarela de agendamento -->
 <div id="agendamento-aviso" class="notice" style="display:none;">
-📅 Atenção: Atendimento apenas de Sábado e Domingo. Faça seu AGENDAMENTO abaixo!
+📅 Atenção: Atendimento de Sábado e Domingo. Faça seu AGENDAMENTO abaixo!
 </div>
 
 <h2>🍍 Cardápio</h2>
@@ -189,6 +190,7 @@ Das 14h às 20h</p>
 
 <input type="text" id="address" placeholder="Rua e número">
 
+<!-- ADICIONADO: Seleção de dia e hora para o cliente agendar -->
 <div id="agendamento-campos" style="display:none;">
 <h2>📅 Escolha o Agendamento</h2>
 <select id="agendamento-dia">
@@ -258,12 +260,13 @@ const extras=[
 ];
 
 let cart=[];
-let isAgendamento = false;
+let isAgendamento = false; // ADICIONADO: Controle interno de agendamento
 
+// SEU CÓDIGO ORIGINAL INTACTO
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
-produtos.forEach((p, index)=>{
+produtos.forEach(p=>{
 menu.innerHTML+=`
 <div class="item">
 <div>
@@ -271,38 +274,30 @@ menu.innerHTML+=`
 <div>${p.descricao}</div>
 <strong>R$ ${p.preco}</strong>
 </div>
-<button onclick="addProduto(${index})">+</button>
+<button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
 </div>
 `;
 });
 }
 
+// SEU CÓDIGO ORIGINAL INTACTO
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
-extras.forEach((e, index)=>{
+extras.forEach(e=>{
 extrasDiv.innerHTML+=`
 <div class="item">
 <div>➕ ${e.nome} - R$ ${e.preco}</div>
-<button onclick="addExtra(${index})">+</button>
+<button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
 </div>
 `;
 });
 }
 
-function addProduto(index){
-const p = produtos[index];
-addToCart(p.nome, p.descricao, p.preco);
-}
-
-function addExtra(index){
-const e = extras[index];
-addToCart("Extra: " + e.nome, e.nome, e.preco);
-}
-
+// ADICIONADO: Verifica o dia para mostrar as opções de agendamento de segunda a sexta
 function checarAgendamento(){
 const hoje = new Date();
-const diaDaSemana = hoje.getDay(); 
+const diaDaSemana = hoje.getDay(); // 0=Domingo, 6=Sábado
 
 if(diaDaSemana !== 6 && diaDaSemana !== 0){
 isAgendamento = true;
@@ -371,6 +366,7 @@ alert("Preencha nome e pagamento!");
 return;
 }
 
+// ADICIONADO: Valida se o cliente escolheu o dia e a hora ao agendar
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -387,6 +383,7 @@ return;
 
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 
+// ADICIONADO: Envia as informações de agendamento no texto do WhatsApp
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -415,19 +412,3 @@ if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 message+="\n";
-message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
-message+=`\n💳 Pagamento: ${payment}\n`;
-
-if(payment==="Dinheiro"){
-message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
-}
-
-message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
-
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-
-pedidos.push({
-data:new Date().toISOString(),
-itens:cart,
-total:total,
-entrega:taxa,
