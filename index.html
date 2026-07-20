@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Explosão de Sabor</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 body{
 font-family:'Poppins',sans-serif;
@@ -77,6 +77,16 @@ font-size:17px;
 border-radius:12px;
 margin-top:10px;
 }
+.notice{
+background:#fff3cd;
+color:#856404;
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+font-weight:bold;
+text-align:center;
+border:1px solid #ffeeba;
+}
 </style>
 </head>
 <body>
@@ -90,6 +100,11 @@ margin-top:10px;
 </header>
 
 <div class="container">
+
+<div id="agendamento-aviso" class="notice" style="display:none;">
+📅 Estamos aceitando apenas AGENDAMENTOS para o fim de semana!
+</div>
+
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
 
@@ -136,6 +151,24 @@ margin-top:10px;
 </select>
 <input type="text" id="address" placeholder="Rua e número">
 
+<div id="agendamento-campos" style="display:none;">
+<h2>📅 Escolha o Agendamento</h2>
+<select id="agendamento-dia">
+<option value="">Selecione o dia da entrega</option>
+<option value="Sábado">Sábado</option>
+<option value="Domingo">Domingo</option>
+</select>
+<select id="agendamento-hora">
+<option value="">Selecione o horário</option>
+<option value="14:00 às 15:00">14:00 às 15:00</option>
+<option value="15:00 às 16:00">15:00 às 16:00</option>
+<option value="16:00 às 17:00">16:00 às 17:00</option>
+<option value="17:00 às 18:00">17:00 às 18:00</option>
+<option value="18:00 às 19:00">18:00 às 19:00</option>
+<option value="19:00 às 20:00">19:00 às 20:00</option>
+</select>
+</div>
+
 <h2>💳 Pagamento</h2>
 <select id="payment" onchange="toggleTroco()">
 <option value="">Selecione a forma</option>
@@ -173,6 +206,19 @@ const extras=[
 ];
 
 let cart=[];
+let isAgendamento = false;
+
+function checarAgendamento(){
+const hoje = new Date();
+const diaDaSemana = hoje.getDay(); // 4 = Quinta, 5 = Sexta
+
+// Se for Quinta (4) ou Sexta (5), força o modo agendamento
+if(diaDaSemana === 4 || diaDaSemana === 5){
+isAgendamento = true;
+document.getElementById("agendamento-aviso").style.display = "block";
+document.getElementById("agendamento-campos").style.display = "block";
+}
+}
 
 function renderMenu(){
 const menu=document.getElementById("menu");
@@ -255,28 +301,30 @@ const address=document.getElementById("address").value.trim();
 const payment=document.getElementById("payment").value;
 const troco=document.getElementById("troco").value.trim();
 
-if(!nome){
-alert("Por favor, preencha seu nome!");
-return;
-}
-if(!bairroValor){
-alert("Por favor, selecione seu bairro!");
-return;
-}
-if(!address){
-alert("Por favor, preencha seu endereço (Rua e número)!");
-return;
-}
-if(!payment){
-alert("Por favor, selecione a forma de pagamento!");
-return;
-}
-if(cart.length===0){
-alert("Seu carrinho está vazio! Adicione itens antes de finalizar.");
-return;
+if(!nome){ alert("Por favor, preencha seu nome!"); return; }
+if(!bairroValor){ alert("Por favor, selecione seu bairro!"); return; }
+if(!address){ alert("Por favor, preencha seu endereço (Rua e número)!"); return; }
+
+if(isAgendamento){
+const diaAgendado = document.getElementById("agendamento-dia").value;
+const horaAgendada = document.getElementById("agendamento-hora").value;
+if(!diaAgendado){ alert("Por favor, selecione o dia para o agendamento!"); return; }
+if(!horaAgendada){ alert("Por favor, selecione o horário para o agendamento!"); return; }
 }
 
+if(!payment){ alert("Por favor, selecione a forma de pagamento!"); return; }
+if(cart.length===0){ alert("Seu carrinho está vazio! Adicione itens antes de finalizar."); return; }
+
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
+
+if(isAgendamento){
+const diaAgendado = document.getElementById("agendamento-dia").value;
+const horaAgendada = document.getElementById("agendamento-hora").value;
+message+=`📅 *PEDIDO AGENDADO*\n`;
+message+=`📆 *Dia:* ${diaAgendado}\n`;
+message+=`🕒 *Horário:* ${horaAgendada}\n\n`;
+}
+
 message+=`👤 *Cliente:* ${nome}\n`;
 message+=`📍 *Bairro:* ${bairroTexto}\n`;
 message+=`🏠 *Endereço:* ${address}\n\n`;
@@ -288,37 +336,3 @@ message+=`• ${item.nome} (R$ ${item.preco.toFixed(2)})\n`;
 total+=item.preco;
 });
 
-let taxa=parseFloat(bairroValor);
-if(isNaN(taxa))taxa=0;
-if(total>=50)taxa=0;
-
-message+="\n";
-message+=taxa===0?"🚚 *Entrega:* GRÁTIS\n":`🚚 *Entrega:* R$ ${taxa.toFixed(2)}\n`;
-message+=`💳 *Pagamento:* ${payment}\n`;
-
-if(payment==="Dinheiro"){
-message+=troco?`💵 *Troco para:* R$ ${troco}\n`:`💵 *Sem troco*\n`;
-}
-
-message+=`\n💰 *Total Geral:* R$ ${(total+taxa).toFixed(2)}`;
-
-let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
-pedidos.push({
-data:new Date().toISOString(),
-itens:cart,
-total:total,
-entrega:taxa,
-totalFinal:total+taxa
-});
-localStorage.setItem("pedidos",JSON.stringify(pedidos));
-
-setTimeout(()=>{
-window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-},300);
-}
-
-renderMenu();
-renderExtras();
-</script>
-</body>
-</html>
