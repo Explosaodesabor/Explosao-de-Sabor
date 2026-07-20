@@ -208,18 +208,6 @@ const extras=[
 let cart=[];
 let isAgendamento = false;
 
-function checarAgendamento(){
-const hoje = new Date();
-const diaDaSemana = hoje.getDay(); // 4 = Quinta, 5 = Sexta
-
-// Se for Quinta (4) ou Sexta (5), força o modo agendamento
-if(diaDaSemana === 4 || diaDaSemana === 5){
-isAgendamento = true;
-document.getElementById("agendamento-aviso").style.display = "block";
-document.getElementById("agendamento-campos").style.display = "block";
-}
-}
-
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
@@ -248,6 +236,19 @@ extrasDiv.innerHTML+=`
 </div>
 `;
 });
+}
+
+function checarAgendamento(){
+const hoje = new Date();
+const diaDaSemana = hoje.getDay(); // 4 = Quinta, 5 = Sexta
+
+if(diaDaSemana === 4 || diaDaSemana === 5){
+isAgendamento = true;
+const aviso = document.getElementById("agendamento-aviso");
+const campos = document.getElementById("agendamento-campos");
+if(aviso) aviso.style.display = "block";
+if(campos) campos.style.display = "block";
+}
 }
 
 function addToCart(nome,descricao,preco){
