@@ -88,7 +88,6 @@ border-radius:12px;
 margin-top:10px;
 }
 
-/* ESTILO DA BARRA DE AVISO DE AGENDAMENTO */
 .notice{
 background:#fff3cd;
 color:#856404;
@@ -124,7 +123,6 @@ Das 14h às 20h</p>
 
 <div class="container">
 
-<!-- AVISO DE AGENDAMENTO (APARECE DE SEGUNDA A SEXTA) -->
 <div id="agendamento-aviso" class="notice" style="display:none;">
 📅 Atenção: Atendimento apenas de Sábado e Domingo. Faça seu AGENDAMENTO abaixo!
 </div>
@@ -190,7 +188,6 @@ Das 14h às 20h</p>
 
 <input type="text" id="address" placeholder="Rua e número">
 
-<!-- CAMPOS DE SELEÇÃO DE DIA E HORA (APARECEM DE SEGUNDA A SEXTA) -->
 <div id="agendamento-campos" style="display:none;">
 <h2>📅 Escolha o Agendamento</h2>
 <select id="agendamento-dia">
@@ -262,13 +259,11 @@ const extras=[
 let cart=[];
 let isAgendamento = false;
 
-// Mantive sua função original exatamente como estava
+// CORREÇÃO DEFINITIVA: O botão agora passa apenas a posição (index) do item, evitando conflitos de aspas
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
-produtos.forEach(p=>{
-// Essa linha limpa o conflito do caractere '•' que quebrava o HTML antigo
-const descLimpa = p.descricao.replace(/'/g, "\\'");
+produtos.forEach((p, index)=>{
 menu.innerHTML+=`
 <div class="item">
 <div>
@@ -276,32 +271,39 @@ menu.innerHTML+=`
 <div>${p.descricao}</div>
 <strong>R$ ${p.preco}</strong>
 </div>
-<button onclick="addToCart('${p.nome.replace(/'/g, "\\'")}', '${descLimpa}', ${p.preco})">+</button>
+<button onclick="addProdutoByIndex(${index})">+</button>
 </div>
 `;
 });
 }
 
-// Mantive sua função original exatamente como estava
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
-extras.forEach(e=>{
+extras.forEach((e, index)=>{
 extrasDiv.innerHTML+=`
 <div class="item">
 <div>➕ ${e.nome} - R$ ${e.preco}</div>
-<button onclick="addToCart('Extra: ${e.nome.replace(/'/g, "\\'")}', '${e.nome.replace(/'/g, "\\'")}', ${e.preco})">+</button>
+<button onclick="addExtraByIndex(${index})">+</button>
 </div>
 `;
 });
 }
 
-// Função que gerencia se os campos de agendamento aparecem ou não com base no dia atual
+function addProdutoByIndex(index) {
+const p = produtos[index];
+addToCart(p.nome, p.descricao, p.preco);
+}
+
+function addExtraByIndex(index) {
+const e = extras[index];
+addToCart("Extra: " + e.nome, e.nome, e.preco);
+}
+
 function checarAgendamento(){
 const hoje = new Date();
-const diaDaSemana = hoje.getDay(); // 0=Domingo, 6=Sábado
+const diaDaSemana = hoje.getDay(); // 0=Dom, 6=Sáb
 
-// Se for de Segunda a Sexta (qualquer dia diferente de 0 e 6), ativa o agendamento
 if(diaDaSemana !== 6 && diaDaSemana !== 0){
 isAgendamento = true;
 document.getElementById("agendamento-aviso").style.display = "block";
@@ -369,7 +371,6 @@ alert("Preencha nome e pagamento!");
 return;
 }
 
-// Validação extra caso esteja no período de agendamento de segunda a sexta
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -386,7 +387,6 @@ return;
 
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 
-// Injeta o bloco de agendamento no topo do texto do WhatsApp se o cliente agendou
 if(isAgendamento){
 const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
@@ -402,4 +402,26 @@ message+=`🏠 ${address}\n\n`;
 let total=0;
 
 cart.forEach(item=>{
+message+=`🧾 ${item.nome}\n`;
+if(item.descricao){
+message+=`${item.descricao}\n`;
+}
+message+=`R$ ${item.preco}\n`;
+total+=item.preco;
+});
+
+let taxa=parseFloat(bairroValor);
+if(isNaN(taxa))taxa=0;
+if(total>=50)taxa=0;
+
+message+="\n";
+message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
+message+=`\n💳 Pagamento: ${payment}\n`;
+
+if(payment==="Dinheiro"){
+message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
+}
+
+message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
+
 
