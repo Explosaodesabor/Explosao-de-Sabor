@@ -210,6 +210,7 @@ let isAgendamento = false;
 
 function renderMenu(){
 const menu=document.getElementById("menu");
+if(!menu) return;
 menu.innerHTML="";
 produtos.forEach((p, index)=>{
 menu.innerHTML+=`
@@ -227,6 +228,7 @@ menu.innerHTML+=`
 
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
+if(!extrasDiv) return;
 extrasDiv.innerHTML="";
 extras.forEach((e, index)=>{
 extrasDiv.innerHTML+=`
@@ -252,7 +254,7 @@ updateCart();
 
 function checarAgendamento(){
 const hoje = new Date();
-const diaDaSemana = hoje.getDay(); // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sáb
+const diaDaSemana = hoje.getDay(); 
 
 if(diaDaSemana !== 6 && diaDaSemana !== 0){
 isAgendamento = true;
@@ -273,6 +275,8 @@ const cartItems=document.getElementById("cart-items");
 const totalEl=document.getElementById("total");
 const entregaEl=document.getElementById("entrega");
 const bairro=document.getElementById("bairro").value;
+
+if(!cartItems || !totalEl || !entregaEl) return;
 
 cartItems.innerHTML="";
 let total=0;
@@ -297,7 +301,8 @@ totalEl.innerText=(total+taxa).toFixed(2);
 
 function toggleTroco(){
 const payment=document.getElementById("payment").value;
-document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"none";
+const trocoEl = document.getElementById("troco");
+if(trocoEl) trocoEl.style.display=payment==="Dinheiro"?"block":"none";
 }
 
 function sendWhatsApp(){
@@ -330,8 +335,4 @@ const diaAgendado = document.getElementById("agendamento-dia").value;
 const horaAgendada = document.getElementById("agendamento-hora").value;
 message+=`📅 *PEDIDO AGENDADO*\n`;
 message+=`📆 *Dia:* ${diaAgendado}\n`;
-message+=`🕒 *Horário:* ${horaAgendada}\n\n`;
-}
-
-message+=`👤 *Cliente:* ${nome}\n`;
 
