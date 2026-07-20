@@ -172,7 +172,66 @@ Das 14h às 20h</p>
 </select>
 
 <input type="text" id="address" placeholder="Rua e número">
+<h2>📅 Pedido</h2>
 
+<select id="tipoPedido" onchange="mostrarAgendamento()">
+
+<option value="Pedido para hoje">
+Pedido para hoje
+</option>
+
+<option value="Pedido agendado">
+Pedido agendado
+</option>
+
+</select>
+
+
+<div id="campoAgendamento" style="display:none;">
+
+
+<select id="diaPedido">
+
+<option value="">
+Escolha o dia
+</option>
+
+<option value="Sábado">
+Sábado
+</option>
+
+<option value="Domingo">
+Domingo
+</option>
+
+</select>
+
+
+
+<select id="horaPedido">
+
+<option value="">
+Escolha o horário
+</option>
+
+<option value="14:00">14:00</option>
+<option value="14:30">14:30</option>
+<option value="15:00">15:00</option>
+<option value="15:30">15:30</option>
+<option value="16:00">16:00</option>
+<option value="16:30">16:30</option>
+<option value="17:00">17:00</option>
+<option value="17:30">17:30</option>
+<option value="18:00">18:00</option>
+<option value="18:30">18:30</option>
+<option value="19:00">19:00</option>
+<option value="19:30">19:30</option>
+<option value="20:00">20:00</option>
+
+</select>
+
+
+</div>
 <h2>💳 Pagamento</h2>
 
 <select id="payment" onchange="toggleTroco()">
@@ -294,6 +353,21 @@ entregaEl.innerText=taxa===0?"GRÁTIS":"R$ "+taxa.toFixed(2);
 totalEl.innerText=(total+taxa).toFixed(2);
 
 }
+function mostrarAgendamento(){
+
+const tipo=document.getElementById("tipoPedido").value;
+
+const campo=document.getElementById("campoAgendamento");
+
+if(tipo==="Pedido agendado"){
+
+campo.style.display="block";
+
+}else{
+
+campo.style.display="none";
+
+}
 
 function toggleTroco(){
 const payment=document.getElementById("payment").value;
@@ -309,6 +383,9 @@ const bairroValor=bairroSelect.value;
 const address=document.getElementById("address").value;
 const payment=document.getElementById("payment").value;
 const troco=document.getElementById("troco").value;
+const tipoPedido=document.getElementById("tipoPedido").value;
+const diaPedido=document.getElementById("diaPedido").value;
+const horaPedido=document.getElementById("horaPedido").value;
 
 if(!nome||!payment){
 alert("Preencha nome e pagamento!");
@@ -324,7 +401,18 @@ let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 
 message+=`👤 ${nome}\n`;
 message+=`📍 ${bairroTexto}\n`;
-message+=`🏠 ${address}\n\n`;
+message+=`🏠 ${address}\n`;
+
+message+=`📅 ${tipoPedido}\n`;
+
+if(tipoPedido==="Pedido agendado"){
+
+message+=`📆 Dia: ${diaPedido}\n`;
+message+=`⏰ Horário: ${horaPedido}\n`;
+
+}
+
+message+="\n";
 
 let total=0;
 
