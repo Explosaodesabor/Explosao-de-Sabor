@@ -2,39 +2,33 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Explosão de Sabor</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
-
 body{
 font-family:'Poppins',sans-serif;
 margin:0;
 background:#f5f5f5;
 font-size:16px;
 }
-
 header{
 text-align:center;
 background:linear-gradient(135deg,#ff5722,#ff9800);
 color:white;
 padding:25px 15px;
 }
-
 .logo{
 width:90px;
 border-radius:50%;
 border:3px solid white;
 margin-bottom:10px;
 }
-
 .container{
 padding:15px;
 max-width:500px;
 margin:auto;
 }
-
 .item{
 background:white;
 padding:14px;
@@ -45,9 +39,7 @@ justify-content:space-between;
 align-items:center;
 box-shadow:0 3px 8px rgba(0,0,0,0.08);
 }
-
 .item div{max-width:75%}
-
 button{
 background:#4caf50;
 color:white;
@@ -56,29 +48,27 @@ padding:12px 14px;
 border-radius:10px;
 font-weight:bold;
 font-size:16px;
+cursor:pointer;
 }
-
 .remove{
 background:#f44336;
 padding:5px 8px;
 font-size:12px;
 }
-
 input,select{
 width:100%;
 padding:14px;
 margin-bottom:12px;
 border-radius:10px;
 border:1px solid #ddd;
+box-sizing:border-box;
 }
-
 #cart{
 background:white;
 padding:15px;
 border-radius:12px;
 box-shadow:0 3px 10px rgba(0,0,0,0.08);
 }
-
 .whatsapp{
 background:#25d366;
 width:100%;
@@ -87,31 +77,19 @@ font-size:17px;
 border-radius:12px;
 margin-top:10px;
 }
-
 </style>
 </head>
-
 <body>
 
 <header>
-
-<img src="logo.explosãodesabor.png" class="logo">
-
+<img src="logo.explosãodesabor.png" class="logo" alt="Logo">
 <h1>🔥 Explosão de Sabor 🥭</h1>
-
-<p>Sabores que surpreendem.<br>
-Mordeu. Sorriu. Sentiu. Voltou.</p>
-
-<p><strong>⏰ Horário de Atendimento</strong><br>
-Sábado e Domingo<br>
-Das 14h às 20h</p>
-
+<p>Sabores que surpreendem.<br>Mordeu. Sorriu. Sentiu. Voltou.</p>
+<p><strong>⏰ Horário de Atendimento</strong><br>Sábado e Domingo<br>Das 14h às 20h</p>
 <p><strong>🚚 Entregas a partir de R$ 2,00</strong></p>
-
 </header>
 
 <div class="container">
-
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
 
@@ -119,93 +97,64 @@ Das 14h às 20h</p>
 <div id="extras"></div>
 
 <h2>📍 Seus Dados</h2>
-
 <input type="text" id="name" placeholder="Seu nome">
-
 <select id="bairro" onchange="updateCart()">
-
 <option value="">Selecione seu bairro</option>
-
 <option value="2">PARQUE DOS PINUS – R$ 2,00</option>
 <option value="2">HEITOR RIGON – R$ 2,00</option>
 <option value="2">ORESTES LOPES – R$ 2,00</option>
 <option value="2">MARIA CASA GRANDE – R$ 2,00</option>
-
 <option value="3">MARINCEK – R$ 3,00</option>
 <option value="3">VALENTINA FIGUEIREDO – R$ 3,00</option>
 <option value="3">GERALDO DE CARVALHO – R$ 3,00</option>
-
 <option value="3">CRISTO REDENTOR – R$ 3,00</option>
 <option value="3">PARQUE DAS OLIVEIRAS – R$ 3,00</option>
 <option value="3">ALEXANDRE BALBO – R$ 3,00</option>
 <option value="3">PARQUE DAS ANDORINHAS – R$ 3,00</option>
-
 <option value="3">PARQUE DAS FIGUEIRAS – R$ 3,00</option>
 <option value="3">JOSE SAMPAIO – R$ 3,00</option>
-
 <option value="3">PLANALTO VERDE – R$ 3,00</option>
 <option value="3">DOM MIELLI – R$ 3,00</option>
 <option value="3">EUGENIO LOPES – R$ 3,00</option>
 <option value="3">PAULO GOMES – R$ 3,00</option>
 <option value="3">JARDIM PAIVA – R$ 3,00</option>
-
 <option value="4">MACAUBAS – R$ 4,00</option>
 <option value="4">ALTO DO IPIRANGA – R$ 4,00</option>
 <option value="4">IPIRANGA – R$ 4,00</option>
 <option value="4">MONTE ALEGRE – R$ 4,00</option>
 <option value="4">SUMAREZINHO – R$ 4,00</option>
-
 <option value="4">VILA TIBERIO – R$ 4,00</option>
 <option value="4">CAMPOS ELISEOS – R$ 4,00</option>
-
 <option value="4">QUINTINO FACCI 1 – R$ 4,00</option>
 <option value="4">QUINTINO FACCI 2 – R$ 4,00</option>
 <option value="4">SIMIONI – R$ 4,00</option>
-
 <option value="5">CENTRO – R$ 5,00</option>
 <option value="5">JARDIM SUMARE – R$ 5,00</option>
 <option value="5">VILA VIRGINIA – R$ 5,00</option>
 <option value="5">JARDIM PAULISTA – R$ 5,00</option>
-
 <option value="10">OUTROS BAIRROS – R$ 10,00</option>
-
 </select>
-
 <input type="text" id="address" placeholder="Rua e número">
 
 <h2>💳 Pagamento</h2>
-
 <select id="payment" onchange="toggleTroco()">
-
 <option value="">Selecione a forma</option>
 <option value="Dinheiro">Dinheiro</option>
 <option value="PIX">PIX</option>
 <option value="Cartão">Cartão</option>
-
 </select>
-
 <input type="text" id="troco" placeholder="Troco para quanto?" style="display:none;">
 
 <div id="cart">
-
 <h3>🛒 Carrinho</h3>
-
 <ul id="cart-items"></ul>
-
-<p>🚚 Entrega: <span id="entrega">0</span></p>
-
-<p><strong>Total: R$ <span id="total">0</span></strong></p>
-
-<button class="whatsapp" onclick="sendWhatsApp()">
-🚀 Finalizar Pedido no WhatsApp
-</button>
-
+<p>🚚 Entrega: <span id="entrega">R$ 0.00</span></p>
+<p><strong>Total: R$ <span id="total">0.00</span></strong></p>
+<button class="whatsapp" onclick="sendWhatsApp()">🚀 Finalizar Pedido no WhatsApp</button>
 </div>
-
 </div>
 
 <script>
-
 const phone="5516981201169";
 
 const produtos=[
@@ -234,7 +183,7 @@ menu.innerHTML+=`
 <div>
 <strong>${p.nome}</strong><br>
 <div>${p.descricao}</div>
-<strong>R$ ${p.preco}</strong>
+<strong>R$ ${p.preco.toFixed(2)}</strong>
 </div>
 <button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
 </div>
@@ -248,8 +197,8 @@ extrasDiv.innerHTML="";
 extras.forEach(e=>{
 extrasDiv.innerHTML+=`
 <div class="item">
-<div>➕ ${e.nome} - R$ ${e.preco}</div>
-<button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
+<div>➕ ${e.nome} - R$ ${e.preco.toFixed(2)}</div>
+<button onclick='addToCart("Extra: ${e.nome}","",${e.preco})'>+</button>
 </div>
 `;
 });
@@ -266,7 +215,6 @@ updateCart();
 }
 
 function updateCart(){
-
 const cartItems=document.getElementById("cart-items");
 const totalEl=document.getElementById("total");
 const entregaEl=document.getElementById("entrega");
@@ -277,10 +225,9 @@ let total=0;
 
 cart.forEach((item,index)=>{
 total+=item.preco;
-
 cartItems.innerHTML+=`
-<li>
-${item.nome} - R$ ${item.preco}
+<li style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+<span>${item.nome} - R$ ${item.preco.toFixed(2)}</span>
 <button class="remove" onclick="removeItem(${index})">x</button>
 </li>
 `;
@@ -288,11 +235,10 @@ ${item.nome} - R$ ${item.preco}
 
 let taxa=parseFloat(bairro);
 if(isNaN(taxa))taxa=0;
-if(total>=50)taxa=0;
+if(total>=50&&bairro!=="")taxa=0;
 
-entregaEl.innerText=taxa===0?"GRÁTIS":"R$ "+taxa.toFixed(2);
+entregaEl.innerText=taxa===0&&document.getElementById("bairro").value!==""?"GRÁTIS":"R$ "+taxa.toFixed(2);
 totalEl.innerText=(total+taxa).toFixed(2);
-
 }
 
 function toggleTroco(){
@@ -301,39 +247,44 @@ document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"non
 }
 
 function sendWhatsApp(){
-
-const nome=document.getElementById("name").value;
+const nome=document.getElementById("name").value.trim();
 const bairroSelect=document.getElementById("bairro");
 const bairroTexto=bairroSelect.options[bairroSelect.selectedIndex].text;
 const bairroValor=bairroSelect.value;
-const address=document.getElementById("address").value;
+const address=document.getElementById("address").value.trim();
 const payment=document.getElementById("payment").value;
-const troco=document.getElementById("troco").value;
+const troco=document.getElementById("troco").value.trim();
 
-if(!nome||!payment){
-alert("Preencha nome e pagamento!");
+if(!nome){
+alert("Por favor, preencha seu nome!");
 return;
 }
-
+if(!bairroValor){
+alert("Por favor, selecione seu bairro!");
+return;
+}
+if(!address){
+alert("Por favor, preencha seu endereço (Rua e número)!");
+return;
+}
+if(!payment){
+alert("Por favor, selecione a forma de pagamento!");
+return;
+}
 if(cart.length===0){
-alert("Adicione itens!");
+alert("Seu carrinho está vazio! Adicione itens antes de finalizar.");
 return;
 }
 
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
-
-message+=`👤 ${nome}\n`;
-message+=`📍 ${bairroTexto}\n`;
-message+=`🏠 ${address}\n\n`;
+message+=`👤 *Cliente:* ${nome}\n`;
+message+=`📍 *Bairro:* ${bairroTexto}\n`;
+message+=`🏠 *Endereço:* ${address}\n\n`;
+message+=`🛒 *Itens do Pedido:*\n`;
 
 let total=0;
-
 cart.forEach(item=>{
-message+=`🧾 ${item.nome}\n`;
-if(item.descricao){
-message+=`${item.descricao}\n`;
-}
-message+=`R$ ${item.preco}\n`;
+message+=`• ${item.nome} (R$ ${item.preco.toFixed(2)})\n`;
 total+=item.preco;
 });
 
@@ -342,17 +293,16 @@ if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 message+="\n";
-message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
-message+=`\n💳 Pagamento: ${payment}\n`;
+message+=taxa===0?"🚚 *Entrega:* GRÁTIS\n":`🚚 *Entrega:* R$ ${taxa.toFixed(2)}\n`;
+message+=`💳 *Pagamento:* ${payment}\n`;
 
 if(payment==="Dinheiro"){
-message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
+message+=troco?`💵 *Troco para:* R$ ${troco}\n`:`💵 *Sem troco*\n`;
 }
 
-message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
+message+=`\n💰 *Total Geral:* R$ ${(total+taxa).toFixed(2)}`;
 
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-
+let pedidos=JSON.parse(localStorage.getItem("pedidos"))||[];
 pedidos.push({
 data:new Date().toISOString(),
 itens:cart,
@@ -360,19 +310,15 @@ total:total,
 entrega:taxa,
 totalFinal:total+taxa
 });
-
 localStorage.setItem("pedidos",JSON.stringify(pedidos));
 
 setTimeout(()=>{
 window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 },300);
-
 }
 
 renderMenu();
 renderExtras();
-
 </script>
-
 </body>
 </html>
