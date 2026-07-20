@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Explosão de Sabor</title>
 
-<link href="https://googleapis.com" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 
@@ -88,18 +88,6 @@ border-radius:12px;
 margin-top:10px;
 }
 
-/* ADICIONADO: Estilo visual do aviso de agendamento */
-.notice{
-background:#fff3cd;
-color:#856404;
-padding:12px;
-border-radius:10px;
-margin-bottom:15px;
-font-weight:bold;
-text-align:center;
-border:1px solid #ffeeba;
-}
-
 </style>
 </head>
 
@@ -123,11 +111,6 @@ Das 14h às 20h</p>
 </header>
 
 <div class="container">
-
-<!-- ADICIONADO: Barra de aviso amarela de agendamento -->
-<div id="agendamento-aviso" class="notice" style="display:none;">
-📅 Atenção: Atendimento de Sábado e Domingo. Faça seu AGENDAMENTO abaixo!
-</div>
 
 <h2>🍍 Cardápio</h2>
 <div id="menu"></div>
@@ -190,25 +173,6 @@ Das 14h às 20h</p>
 
 <input type="text" id="address" placeholder="Rua e número">
 
-<!-- ADICIONADO: Seleção de dia e hora para o cliente agendar -->
-<div id="agendamento-campos" style="display:none;">
-<h2>📅 Escolha o Agendamento</h2>
-<select id="agendamento-dia">
-<option value="">Selecione o dia da entrega</option>
-<option value="Sábado">Sábado</option>
-<option value="Domingo">Domingo</option>
-</select>
-<select id="agendamento-hora">
-<option value="">Selecione o horário</option>
-<option value="14:00 às 15:00">14:00 às 15:00</option>
-<option value="15:00 às 16:00">15:00 às 16:00</option>
-<option value="16:00 às 17:00">16:00 às 17:00</option>
-<option value="17:00 às 18:00">17:00 às 18:00</option>
-<option value="18:00 às 19:00">18:00 às 19:00</option>
-<option value="19:00 às 20:00">19:00 às 20:00</option>
-</select>
-</div>
-
 <h2>💳 Pagamento</h2>
 
 <select id="payment" onchange="toggleTroco()">
@@ -260,9 +224,7 @@ const extras=[
 ];
 
 let cart=[];
-let isAgendamento = false; // ADICIONADO: Controle interno de agendamento
 
-// SEU CÓDIGO ORIGINAL INTACTO
 function renderMenu(){
 const menu=document.getElementById("menu");
 menu.innerHTML="";
@@ -280,7 +242,6 @@ menu.innerHTML+=`
 });
 }
 
-// SEU CÓDIGO ORIGINAL INTACTO
 function renderExtras(){
 const extrasDiv=document.getElementById("extras");
 extrasDiv.innerHTML="";
@@ -292,18 +253,6 @@ extrasDiv.innerHTML+=`
 </div>
 `;
 });
-}
-
-// ADICIONADO: Verifica o dia para mostrar as opções de agendamento de segunda a sexta
-function checarAgendamento(){
-const hoje = new Date();
-const diaDaSemana = hoje.getDay(); // 0=Domingo, 6=Sábado
-
-if(diaDaSemana !== 6 && diaDaSemana !== 0){
-isAgendamento = true;
-document.getElementById("agendamento-aviso").style.display = "block";
-document.getElementById("agendamento-campos").style.display = "block";
-}
 }
 
 function addToCart(nome,descricao,preco){
@@ -366,31 +315,12 @@ alert("Preencha nome e pagamento!");
 return;
 }
 
-// ADICIONADO: Valida se o cliente escolheu o dia e a hora ao agendar
-if(isAgendamento){
-const diaAgendado = document.getElementById("agendamento-dia").value;
-const horaAgendada = document.getElementById("agendamento-hora").value;
-if(!diaAgendado || !horaAgendada){
-alert("Por favor, selecione o dia e o horário do agendamento!");
-return;
-}
-}
-
 if(cart.length===0){
 alert("Adicione itens!");
 return;
 }
 
 let message="🔥 *Pedido - Explosão de Sabor*\n\n";
-
-// ADICIONADO: Envia as informações de agendamento no texto do WhatsApp
-if(isAgendamento){
-const diaAgendado = document.getElementById("agendamento-dia").value;
-const horaAgendada = document.getElementById("agendamento-hora").value;
-message+=`📅 *PEDIDO AGENDADO*\n`;
-message+=`📆 *Dia de Entrega:* ${diaAgendado}\n`;
-message+=`🕒 *Horário:* ${horaAgendada}\n\n`;
-}
 
 message+=`👤 ${nome}\n`;
 message+=`📍 ${bairroTexto}\n`;
@@ -412,3 +342,37 @@ if(isNaN(taxa))taxa=0;
 if(total>=50)taxa=0;
 
 message+="\n";
+message+=taxa===0?"🚚 Entrega: GRÁTIS\n":`🚚 Entrega: R$ ${taxa.toFixed(2)}\n`;
+message+=`\n💳 Pagamento: ${payment}\n`;
+
+if(payment==="Dinheiro"){
+message+=troco?`💵 Troco para: R$ ${troco}\n`:`💵 Sem troco\n`;
+}
+
+message+=`💰 Total: R$ ${(total+taxa).toFixed(2)}`;
+
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+
+pedidos.push({
+data:new Date().toISOString(),
+itens:cart,
+total:total,
+entrega:taxa,
+totalFinal:total+taxa
+});
+
+localStorage.setItem("pedidos",JSON.stringify(pedidos));
+
+setTimeout(()=>{
+window.location.href=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+},300);
+
+}
+
+renderMenu();
+renderExtras();
+
+</script>
+
+</body>
+</html>
