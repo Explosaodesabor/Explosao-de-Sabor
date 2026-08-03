@@ -256,7 +256,7 @@ extrasDiv.innerHTML="";
 extras.forEach(e=>{
 extrasDiv.innerHTML+=`
 <div class="item">
-<div>➕ ${e.nome} - R$ ${e.preco}</div>
+<div>➕ ${e.nome} - R$ ${e.preco.toFixed(2).replace(".",",")}</div>
 <button onclick='addToCart("Extra: ${e.nome}","${e.nome}",${e.preco})'>+</button>
 </div>
 `;
