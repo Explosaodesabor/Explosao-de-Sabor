@@ -180,7 +180,25 @@ Das 14h às 20h</p>
 
 <h2>🍴 Talher</h2>
 <select id="talher"><option value="Não">Não preciso de talher</option><option value="Sim">Preciso de talher</option></select>
+  
+<h2>📅 Agendamento</h2>
 
+<select id="diaPedido" onchange="validarHorario()">
+<option value="">Selecione o dia da entrega</option>
+<option value="Quarta-feira">Quarta-feira</option>
+<option value="Quinta-feira">Quinta-feira</option>
+<option value="Sexta-feira">Sexta-feira</option>
+<option value="Sábado">Sábado</option>
+<option value="Domingo">Domingo</option>
+</select>
+
+<input type="time" id="horarioPedido">
+
+<p style="font-size:14px">
+🚫 Segunda e terça não realizamos entregas.<br>
+🚚 Quarta a sexta: entregas a partir das 19h.<br>
+🚚 Sábado e domingo: entregas a partir das 14h.
+</p>
 <h2>💳 Pagamento</h2>
 
 <select id="payment" onchange="toggleTroco()">
@@ -304,9 +322,15 @@ totalEl.innerText=(total+taxa).toFixed(2);
 
 }
 
-function toggleTroco(){
-const payment=document.getElementById("payment").value;
-document.getElementById("troco").style.display=payment==="Dinheiro"?"block":"none";
+function validarHorario(){
+
+const dia=document.getElementById("diaPedido").value;
+const horario=document.getElementById("horarioPedido");
+
+if(dia==="Quarta-feira" || dia==="Quinta-feira" || dia==="Sexta-feira"){
+horario.min="19:00";
+}else if(dia==="Sábado" || dia==="Domingo"){
+horario.min="14:00";
 }
 
 function sendWhatsApp(){
@@ -320,9 +344,34 @@ const payment=document.getElementById("payment").value;
 const troco=document.getElementById("troco").value;
 const recebimento=document.getElementById("recebimento").value;
 const talher=document.getElementById("talher").value;
-
+const diaPedido=document.getElementById("diaPedido").value;
+const horarioPedido=document.getElementById("horarioPedido").value;
+  
 if(!nome||!payment){
 alert("Preencha nome e pagamento!");
+return;
+}
+
+if(!diaPedido || !horarioPedido){
+alert("Selecione o dia e horário da entrega!");
+return;
+}
+
+
+if(
+(diaPedido==="Quarta-feira" || diaPedido==="Quinta-feira" || diaPedido==="Sexta-feira")
+&& horarioPedido < "19:00"
+){
+alert("De quarta a sexta entregamos somente após as 19h.");
+return;
+}
+
+
+if(
+(diaPedido==="Sábado" || diaPedido==="Domingo")
+&& horarioPedido < "14:00"
+){
+alert("Sábado e domingo entregamos somente após as 14h.");
 return;
 }
 
@@ -336,7 +385,9 @@ let message="🔥 *Pedido - Explosão de Sabor*\n\n";
 message+=`👤 ${nome}\n`;
 message+=`🚚 Recebimento: ${recebimento}\n`;
 if(recebimento==="Entrega"){message+=`📍 ${bairroTexto}\n`;message+=`🏠 ${address}\n`;}
-message+=`🍴 Talher: ${talher}\n\n`;
+message+=`🍴 Talher: ${talher}\n\n`;message+=`🍴 Talher: ${talher}\n`;
+message+=`📅 Entrega: ${diaPedido}\n`;
+message+=`⏰ Horário: ${horarioPedido}\n\n`;
 
 let total=0;
 
