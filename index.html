@@ -242,7 +242,7 @@ menu.innerHTML+=`
 <div>
 <strong>${p.nome}</strong><br>
 <div>${p.descricao}</div>
-<strong>R$ ${p.preco}</strong>
+<strong>R$ ${p.preco.toFixed(2).replace(".",",")}</strong>
 </div>
 <button onclick='addToCart("${p.nome}","${p.descricao}",${p.preco})'>+</button>
 </div>
